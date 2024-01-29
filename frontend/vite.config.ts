@@ -7,7 +7,7 @@ export default defineConfig({
     server: {
       proxy: {
           "/api": {
-              target: "http://localhost:8000/api",
+              target: "http://localhost:8080/",
               changeOrigin: true,
               secure: false,
               configure: (proxy, _options) => {
@@ -15,10 +15,10 @@ export default defineConfig({
                       console.log('proxy error', err);
                   });
                   proxy.on('proxyReq', (proxyReq, req, _res) => {
-                      // console.log('Sending Request to the Target:', req.method, req.url);
+                      console.log('Sending Request to the Target:', req.method, req.url);
                   });
                   proxy.on('proxyRes', (proxyRes, req, _res) => {
-                      // console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+                      console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
                   });
               },
           }

@@ -1,6 +1,7 @@
 import {Editor} from "@monaco-editor/react";
 import {useRef, useState} from "react";
 import {Button, Flex, SegmentedControl, Stack} from "@mantine/core";
+import axios from "axios";
 
 export default function Playground() {
   const [language, setLanguage] = useState('javascript')
@@ -12,7 +13,12 @@ export default function Playground() {
     const code = editorRef.current.getValue()
     console.log({code})
 
-
+    axios.post('/api/', code, {
+      headers: {
+        "Content-Type": "text/plain"
+      }
+    })
+      .then(res => setResult(res.data))
   }
 
 
@@ -27,9 +33,14 @@ export default function Playground() {
           </Button>
         </Flex>
         <Editor onMount={editor => editorRef.current = editor}
-                height="100dvh" language={language} defaultValue="// some comment"/>
+                height="100dvh" language={language} defaultValue={`
+#include <iostream>
+int main() {
+  std::cout << "aboba";
+}
+`}/>
       </Stack>
-      <div className={'w-[30vw]'}>
+      <div className={'w-[30vw] p-5'}>
         {result}
       </div>
     </Flex>
