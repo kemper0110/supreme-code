@@ -31,13 +31,18 @@
     "@tiptap/starter-kit": "^2.2.0",
     "dayjs": "^1.11.10",
     "embla-carousel-react": "^8.0.0-rc21",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "recharts": "2"
+    "react-router-dom": "^6.21.3",
+    "recharts": "2",
+    "sort-by": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
+    "@types/sort-by": "^1",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
