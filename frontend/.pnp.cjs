@@ -37,6 +37,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-react-refresh", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:0.4.5"],\
           ["postcss", "npm:8.4.33"],\
           ["postcss-preset-mantine", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:1.12.3"],\
+          ["postcss-simple-vars", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:7.0.1"],\
           ["react", "npm:18.2.0"],\
           ["react-dom", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:18.2.0"],\
           ["tailwindcss", "npm:3.4.1"],\
@@ -1963,6 +1964,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-react-refresh", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:0.4.5"],\
           ["postcss", "npm:8.4.33"],\
           ["postcss-preset-mantine", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:1.12.3"],\
+          ["postcss-simple-vars", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:7.0.1"],\
           ["react", "npm:18.2.0"],\
           ["react-dom", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:18.2.0"],\
           ["tailwindcss", "npm:3.4.1"],\
@@ -3020,7 +3022,7 @@ const RAW_RUNTIME_STATE =
           ["fast-glob", "npm:3.3.2"],\
           ["postcss", "npm:8.4.33"],\
           ["postcss-js", "virtual:3903e2abcca6da181c68e3e2b020ce8f100d606c384b27bb480d49951a24008cb45e54ac92bc5acb3f9572c7f339e46fe691a8e40f22e16c18dac03b8a3a63fc#npm:4.0.1"],\
-          ["postcss-simple-vars", "virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:7.0.1"],\
+          ["postcss-simple-vars", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:7.0.1"],\
           ["sugarss", "virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:4.0.1"]\
         ],\
         "packagePeers": [\
@@ -3096,10 +3098,10 @@ const RAW_RUNTIME_STATE =
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:7.0.1", {\
-        "packageLocation": "./.yarn/__virtual__/postcss-simple-vars-virtual-f823dace84/4/AppData/Local/Yarn/Berry/cache/postcss-simple-vars-npm-7.0.1-81b50cf904-10c0.zip/node_modules/postcss-simple-vars/",\
+      ["virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:7.0.1", {\
+        "packageLocation": "./.yarn/__virtual__/postcss-simple-vars-virtual-876e611e58/4/AppData/Local/Yarn/Berry/cache/postcss-simple-vars-npm-7.0.1-81b50cf904-10c0.zip/node_modules/postcss-simple-vars/",\
         "packageDependencies": [\
-          ["postcss-simple-vars", "virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:7.0.1"],\
+          ["postcss-simple-vars", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:7.0.1"],\
           ["@types/postcss", null],\
           ["postcss", "npm:8.4.33"]\
         ],\

@@ -1565,6 +1565,7 @@ __metadata:
     eslint-plugin-react-refresh: "npm:^0.4.5"
     postcss: "npm:^8.4.33"
     postcss-preset-mantine: "npm:^1.12.3"
+    postcss-simple-vars: "npm:^7.0.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     tailwindcss: "npm:^3.4.1"
@@ -2510,7 +2511,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-simple-vars@npm:^7.0.0":
+"postcss-simple-vars@npm:^7.0.0, postcss-simple-vars@npm:^7.0.1":
   version: 7.0.1
   resolution: "postcss-simple-vars@npm:7.0.1"
   peerDependencies:
