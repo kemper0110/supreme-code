@@ -31,7 +31,7 @@ public class CodePageController {
     }
 
     @ResponseBody
-    @PostMapping("/")
+    @PostMapping("/api/")
     Mono<String> run(@RequestBody String code) {
         return Mono.create(sink -> {
             kafka.send("task-topic", code);
