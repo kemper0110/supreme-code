@@ -36,6 +36,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-react-hooks", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:4.6.0"],\
           ["eslint-plugin-react-refresh", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:0.4.5"],\
           ["postcss", "npm:8.4.33"],\
+          ["postcss-preset-mantine", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:1.12.3"],\
           ["react", "npm:18.2.0"],\
           ["react-dom", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:18.2.0"],\
           ["tailwindcss", "npm:3.4.1"],\
@@ -1961,6 +1962,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-react-hooks", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:4.6.0"],\
           ["eslint-plugin-react-refresh", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:0.4.5"],\
           ["postcss", "npm:8.4.33"],\
+          ["postcss-preset-mantine", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:1.12.3"],\
           ["react", "npm:18.2.0"],\
           ["react-dom", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:18.2.0"],\
           ["tailwindcss", "npm:3.4.1"],\
@@ -3002,6 +3004,32 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["postcss-mixins", [\
+      ["npm:9.0.4", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/postcss-mixins-npm-9.0.4-bf1b5f33a2-10c0.zip/node_modules/postcss-mixins/",\
+        "packageDependencies": [\
+          ["postcss-mixins", "npm:9.0.4"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:843a88afdaa2860cf6958620ae94adcc93dd24d85a4bec41a152e90c1f5f61c3b0821cd68ab805b127b67606882714b6194dc105c4e3671e7b696e07f69a117b#npm:9.0.4", {\
+        "packageLocation": "./.yarn/__virtual__/postcss-mixins-virtual-e4bf607255/4/AppData/Local/Yarn/Berry/cache/postcss-mixins-npm-9.0.4-bf1b5f33a2-10c0.zip/node_modules/postcss-mixins/",\
+        "packageDependencies": [\
+          ["postcss-mixins", "virtual:843a88afdaa2860cf6958620ae94adcc93dd24d85a4bec41a152e90c1f5f61c3b0821cd68ab805b127b67606882714b6194dc105c4e3671e7b696e07f69a117b#npm:9.0.4"],\
+          ["@types/postcss", null],\
+          ["fast-glob", "npm:3.3.2"],\
+          ["postcss", "npm:8.4.33"],\
+          ["postcss-js", "virtual:3903e2abcca6da181c68e3e2b020ce8f100d606c384b27bb480d49951a24008cb45e54ac92bc5acb3f9572c7f339e46fe691a8e40f22e16c18dac03b8a3a63fc#npm:4.0.1"],\
+          ["postcss-simple-vars", "virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:7.0.1"],\
+          ["sugarss", "virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:4.0.1"]\
+        ],\
+        "packagePeers": [\
+          "@types/postcss",\
+          "postcss"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["postcss-nested", [\
       ["npm:6.0.1", {\
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/postcss-nested-npm-6.0.1-5cdc427fe8-10c0.zip/node_modules/postcss-nested/",\
@@ -3025,6 +3053,30 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["postcss-preset-mantine", [\
+      ["npm:1.12.3", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/postcss-preset-mantine-npm-1.12.3-5711587c8f-10c0.zip/node_modules/postcss-preset-mantine/",\
+        "packageDependencies": [\
+          ["postcss-preset-mantine", "npm:1.12.3"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:1.12.3", {\
+        "packageLocation": "./.yarn/__virtual__/postcss-preset-mantine-virtual-843a88afda/4/AppData/Local/Yarn/Berry/cache/postcss-preset-mantine-npm-1.12.3-5711587c8f-10c0.zip/node_modules/postcss-preset-mantine/",\
+        "packageDependencies": [\
+          ["postcss-preset-mantine", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:1.12.3"],\
+          ["@types/postcss", null],\
+          ["postcss", "npm:8.4.33"],\
+          ["postcss-mixins", "virtual:843a88afdaa2860cf6958620ae94adcc93dd24d85a4bec41a152e90c1f5f61c3b0821cd68ab805b127b67606882714b6194dc105c4e3671e7b696e07f69a117b#npm:9.0.4"],\
+          ["postcss-nested", "virtual:3903e2abcca6da181c68e3e2b020ce8f100d606c384b27bb480d49951a24008cb45e54ac92bc5acb3f9572c7f339e46fe691a8e40f22e16c18dac03b8a3a63fc#npm:6.0.1"]\
+        ],\
+        "packagePeers": [\
+          "@types/postcss",\
+          "postcss"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["postcss-selector-parser", [\
       ["npm:6.0.15", {\
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/postcss-selector-parser-npm-6.0.15-0ec4819b4e-10c0.zip/node_modules/postcss-selector-parser/",\
@@ -3032,6 +3084,28 @@ const RAW_RUNTIME_STATE =
           ["postcss-selector-parser", "npm:6.0.15"],\
           ["cssesc", "npm:3.0.0"],\
           ["util-deprecate", "npm:1.0.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["postcss-simple-vars", [\
+      ["npm:7.0.1", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/postcss-simple-vars-npm-7.0.1-81b50cf904-10c0.zip/node_modules/postcss-simple-vars/",\
+        "packageDependencies": [\
+          ["postcss-simple-vars", "npm:7.0.1"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:7.0.1", {\
+        "packageLocation": "./.yarn/__virtual__/postcss-simple-vars-virtual-f823dace84/4/AppData/Local/Yarn/Berry/cache/postcss-simple-vars-npm-7.0.1-81b50cf904-10c0.zip/node_modules/postcss-simple-vars/",\
+        "packageDependencies": [\
+          ["postcss-simple-vars", "virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:7.0.1"],\
+          ["@types/postcss", null],\
+          ["postcss", "npm:8.4.33"]\
+        ],\
+        "packagePeers": [\
+          "@types/postcss",\
+          "postcss"\
         ],\
         "linkType": "HARD"\
       }]\
@@ -3407,6 +3481,28 @@ const RAW_RUNTIME_STATE =
           ["mz", "npm:2.7.0"],\
           ["pirates", "npm:4.0.6"],\
           ["ts-interface-checker", "npm:0.1.13"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["sugarss", [\
+      ["npm:4.0.1", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/sugarss-npm-4.0.1-b793885888-10c0.zip/node_modules/sugarss/",\
+        "packageDependencies": [\
+          ["sugarss", "npm:4.0.1"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:4.0.1", {\
+        "packageLocation": "./.yarn/__virtual__/sugarss-virtual-fb1db3dc74/4/AppData/Local/Yarn/Berry/cache/sugarss-npm-4.0.1-b793885888-10c0.zip/node_modules/sugarss/",\
+        "packageDependencies": [\
+          ["sugarss", "virtual:e4bf607255047161e10865099df1479fa7ad2a3441a9434628e6cf8c05d40e179db7b692e1804ec205239f54ca9143de1c9e1b2e0d6227f59243a97219d57c83#npm:4.0.1"],\
+          ["@types/postcss", null],\
+          ["postcss", "npm:8.4.33"]\
+        ],\
+        "packagePeers": [\
+          "@types/postcss",\
+          "postcss"\
         ],\
         "linkType": "HARD"\
       }]\
