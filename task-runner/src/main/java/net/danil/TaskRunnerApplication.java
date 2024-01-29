@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
-public class Main {
+public class TaskRunnerApplication {
     static String taskTopic = "task-topic";
     static String resultTopic = "result-topic";
 
