@@ -41,6 +41,7 @@ const RAW_RUNTIME_STATE =
           ["@mantine/tiptap", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:7.5.0"],\
           ["@monaco-editor/react", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:4.6.0"],\
           ["@tabler/icons-react", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:2.46.0"],\
+          ["@tanstack/react-query", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:5.18.0"],\
           ["@tiptap/core", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:2.2.0"],\
           ["@tiptap/extension-link", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:2.2.0"],\
           ["@tiptap/pm", "npm:2.2.0"],\
@@ -1495,6 +1496,38 @@ const RAW_RUNTIME_STATE =
           ["@tabler/icons", "npm:2.46.0"],\
           ["@types/react", "npm:18.2.48"],\
           ["prop-types", "npm:15.8.1"],\
+          ["react", "npm:18.2.0"]\
+        ],\
+        "packagePeers": [\
+          "@types/react",\
+          "react"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@tanstack/query-core", [\
+      ["npm:5.18.0", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@tanstack-query-core-npm-5.18.0-36ff187f6b-10c0.zip/node_modules/@tanstack/query-core/",\
+        "packageDependencies": [\
+          ["@tanstack/query-core", "npm:5.18.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@tanstack/react-query", [\
+      ["npm:5.18.0", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/@tanstack-react-query-npm-5.18.0-2e8d9fd9a5-10c0.zip/node_modules/@tanstack/react-query/",\
+        "packageDependencies": [\
+          ["@tanstack/react-query", "npm:5.18.0"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:5.18.0", {\
+        "packageLocation": "./.yarn/__virtual__/@tanstack-react-query-virtual-d30e0cc7c2/4/AppData/Local/Yarn/Berry/cache/@tanstack-react-query-npm-5.18.0-2e8d9fd9a5-10c0.zip/node_modules/@tanstack/react-query/",\
+        "packageDependencies": [\
+          ["@tanstack/react-query", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:5.18.0"],\
+          ["@tanstack/query-core", "npm:5.18.0"],\
+          ["@types/react", "npm:18.2.48"],\
           ["react", "npm:18.2.0"]\
         ],\
         "packagePeers": [\
@@ -3830,6 +3863,7 @@ const RAW_RUNTIME_STATE =
           ["@mantine/tiptap", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:7.5.0"],\
           ["@monaco-editor/react", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:4.6.0"],\
           ["@tabler/icons-react", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:2.46.0"],\
+          ["@tanstack/react-query", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:5.18.0"],\
           ["@tiptap/core", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:2.2.0"],\
           ["@tiptap/extension-link", "virtual:d9650954c7f1725ea712d2e40695de9ea5d1c0fa9b89379134c62909d440d91b03d6c37e2823804a3404472b90a5bec73c82193190dd3c4db4c9e9edd75db91e#npm:2.2.0"],\
           ["@tiptap/pm", "npm:2.2.0"],\

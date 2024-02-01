@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 @Controller
 @RequiredArgsConstructor
 public class CodePageController {
-    final private KafkaTemplate<String, String> kafka;
+    final private KafkaTemplate<String, WebApplication.Task> kafka;
     private SubscribableChannel resultsChannel;
     {
         this.resultsChannel = MessageChannels
@@ -30,11 +30,12 @@ public class CodePageController {
         return "index";
     }
 
+    record TaskRequest(String code, String language) {}
     @ResponseBody
     @PostMapping("/api/")
-    Mono<String> run(@RequestBody String code) {
+    Mono<String> run(@RequestBody TaskRequest taskRequest) {
         return Mono.create(sink -> {
-            kafka.send("task-topic", code);
+            kafka.send("task-topic", new WebApplication.Task(taskRequest.code, taskRequest.language));
             MessageHandler handler = message -> sink.success((String) message.getPayload());
             sink.onDispose(() -> resultsChannel.unsubscribe(handler));
             resultsChannel.subscribe(handler);

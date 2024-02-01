@@ -922,6 +922,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.18.0":
+  version: 5.18.0
+  resolution: "@tanstack/query-core@npm:5.18.0"
+  checksum: 49ad7eb9dc9463910a86947e1794d1725b45d470c95b1364fba516eaeecb51f6b94bfcac3bf82d2db15ee49cd9e6ca45fbdf0ce83b126a238e3cbb6294d54be3
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.18.0":
+  version: 5.18.0
+  resolution: "@tanstack/react-query@npm:5.18.0"
+  dependencies:
+    "@tanstack/query-core": "npm:5.18.0"
+  peerDependencies:
+    react: ^18.0.0
+  checksum: c8831a63e2e351dada19e63e168b885917d40b02c7299bdc9352af0747eefa474c2eca8d84acd3f1b4856091981bd2bce55103e117442a9b15412008f472cd6d
+  languageName: node
+  linkType: hard
+
 "@tiptap/core@npm:^2.2.0":
   version: 2.2.0
   resolution: "@tiptap/core@npm:2.2.0"
@@ -2576,6 +2594,7 @@ __metadata:
     "@mantine/tiptap": "npm:^7.5.0"
     "@monaco-editor/react": "npm:^4.6.0"
     "@tabler/icons-react": "npm:^2.46.0"
+    "@tanstack/react-query": "npm:^5.18.0"
     "@tiptap/core": "npm:^2.2.0"
     "@tiptap/extension-link": "npm:^2.2.0"
     "@tiptap/pm": "npm:^2.2.0"
