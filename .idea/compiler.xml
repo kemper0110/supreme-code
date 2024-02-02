@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="web" />
         <module name="task-runner" />
+        <module name="test-runner" />
       </profile>
     </annotationProcessing>
   </component>

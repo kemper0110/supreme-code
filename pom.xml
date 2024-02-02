@@ -11,6 +11,7 @@
     <modules>
         <module>task-runner</module>
         <module>web</module>
+        <module>test-runner</module>
     </modules>
 
     <properties>
