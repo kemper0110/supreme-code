@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="2"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="0"
+	timestamp="2024-02-02T20:05:36"
+	>
+	<testcase name="HelloTest.BasicAssertions" classname="HelloTest.BasicAssertions" time="0.00249532" status="run">
+		<system-out>Running main() from /home/danil/IdeaProjects/testing/cpp/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = HelloTest.BasicAssertions
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from HelloTest
+[ RUN      ] HelloTest.BasicAssertions
+[       OK ] HelloTest.BasicAssertions (0 ms)
+[----------] 1 test from HelloTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="AbobaTest.BasicAssertions" classname="AbobaTest.BasicAssertions" time="0.00360881" status="run">
+		<system-out>Running main() from /home/danil/IdeaProjects/testing/cpp/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = AbobaTest.BasicAssertions
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AbobaTest
+[ RUN      ] AbobaTest.BasicAssertions
+[       OK ] AbobaTest.BasicAssertions (0 ms)
+[----------] 1 test from AbobaTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+</testsuite>
