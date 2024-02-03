@@ -1,30 +1,65 @@
 import {Editor} from "@monaco-editor/react";
 import React, {ReactNode, useEffect, useRef, useState} from "react";
-import {Badge, Button, Flex, SegmentedControl, Stack} from "@mantine/core";
+import {Badge, Button, Flex, SegmentedControl, Stack, Text} from "@mantine/core";
 import axios from "axios";
-import {IconGripVertical} from "@tabler/icons-react";
+import {IconBrain, IconGripVertical, IconMoodCrazyHappy, IconPigMoney} from "@tabler/icons-react";
 import {useMutation} from "@tanstack/react-query";
+import {editor} from "monaco-editor";
+import ICodeEditor = editor.ICodeEditor;
 
 type RunRequest = {
   code: string
   language: string
 }
 
+const codeExamples = {
+  javascript: `console.log("Hello, supremecode, from javascript")`,
+  java: `class App {
+  public static void main(String... args) {
+    System.out.println("Hello, supremecode, from java");
+  }
+}
+`,
+  "c++": `#include <iostream>
+
+int main() {
+  std::cout << "Hello, supremecode, from c++";
+}`
+};
+
+const languages = [
+  {
+    label: <Flex align={'center'} gap={4}><IconMoodCrazyHappy/><Text size={'lg'}>node.js 20</Text></Flex>,
+    value: "javascript"
+  },
+  {
+    label: <Flex align={'center'} gap={4}><IconBrain/><Text size={'lg'}>C++17 gcc:13.2.0</Text></Flex>,
+    value: "c++"
+  },
+  {
+    label: <Flex align={'center'} gap={4}><IconPigMoney/><Text size={'lg'}>java 21 corretto</Text></Flex>,
+    value: "java"
+  }
+] as { label: string, value: LanguageValue }[]
+
+type LanguageValue = 'c++' | 'javascript' | 'java'
+
 export default function Playground() {
-  const [language, setLanguage] = useState('javascript')
-  const editorRef = useRef()
+  const [language, setLanguage] = useState<LanguageValue>(languages[0].value)
+  const editorRef = useRef<ICodeEditor>()
 
   const [result, setResult] = useState("")
 
   const runMutation = useMutation({
-    mutationFn: (code: string) => axios.post('/api/', {code, language}),
+    mutationFn: (code: string) => axios.post('/api/', {code, language} as RunRequest),
     onSuccess: response => {
       setResult(response.data)
     }
   })
 
   const handleRun = () => {
-    const code = editorRef.current.getValue()
+    console.log(editorRef.current)
+    const code = editorRef.current?.getValue()
     console.log({code})
     runMutation.mutate(code)
   }
@@ -36,31 +71,38 @@ int main() {
 }
 `
   const keyboardHandler = (e: React.KeyboardEvent) => {
-    if(e.key === 'F9') {
+    if (e.key === 'F9') {
       handleRun()
     }
   }
 
+  const onExample = () => {
+    const code = codeExamples[language]
+    editorRef.current?.setValue(code)
+  };
   console.log({language})
-  const languages = ['javascript', 'c++', 'java']
   return (
     <SplitView left={leftRef => (
       <Stack ref={leftRef} className={''} onKeyDown={keyboardHandler}>
         <Flex justify={'space-between'} className={'shadow-md'} p={9}>
-
-          <Flex gap={30} align={'center'}>
-            <SegmentedControl data={languages} value={language} onChange={v => setLanguage(v)}/>
-            <Button onClick={handleRun}>
-              Run
-            </Button>
+          <Flex columnGap={30} rowGap={8} align={'center'} wrap={'wrap'}>
+            <SegmentedControl data={languages} value={language} onChange={value => setLanguage(value)}/>
+            <Flex gap={30} align={'center'}>
+              <Button onClick={handleRun}>
+                Run
+              </Button>
+              <Button onClick={onExample}>
+                Example code
+              </Button>
+            </Flex>
           </Flex>
         </Flex>
         <Editor onMount={editor => editorRef.current = editor}
-                height="100dvh" language={language} defaultValue={cppCode}/>
+                height="100%" language={language} defaultValue={cppCode}/>
       </Stack>
     )} right={
-      <div className={'grow bg-slate-100'}>
-        <div className={'p-4 shadow-md'}>
+      <Stack className={'grow bg-slate-100'} gap={0}>
+        <Flex className={'p-4 shadow-md'} align={'center'} gap={8}>
           Output: {
           runMutation.isPending ? (
             <Badge color={'blue'}>Running</Badge>
@@ -68,11 +110,11 @@ int main() {
             <Badge color={'teal'}>Finished</Badge>
           )
         }
-        </div>
-        <pre className={'px-4 py-2'}>
+        </Flex>
+        <pre className={'px-4 py-4 overflow-auto h-[100%]'}>
           {result}
         </pre>
-      </div>
+      </Stack>
     }
     />
   )
@@ -125,7 +167,8 @@ const SplitView = ({left, right}: { left: (ref: any) => ReactNode, right: ReactN
   return (
     <Flex className={'h-screen'}>
       {left(leftRef)}
-      <div onMouseDown={onMouseDown} className={'flex items-center shrink-0 w-[20px] h-full bg-slate-300 cursor-col-resize'}>
+      <div onMouseDown={onMouseDown}
+           className={'flex items-center shrink-0 w-[20px] h-full bg-slate-300 cursor-col-resize'}>
         <IconGripVertical className={'text-slate-500'}/>
       </div>
       {right}
