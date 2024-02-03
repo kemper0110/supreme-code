@@ -27,12 +27,8 @@ public class WebApplication {
 //	Flux<String> results() {
 //
 //	}
-
-	public record Task(String code, String language) {
-
-	}
 	@Bean
-	public ProducerFactory<String, Task> producerFactory() {
+	public ProducerFactory<String, String> producerFactory() {
 		return new DefaultKafkaProducerFactory<>(producerConfigs());
 	}
 
@@ -41,13 +37,13 @@ public class WebApplication {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-		props.put(JsonSerializer.TYPE_MAPPINGS, "task:net.danil.web.WebApplication.Task");
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+
 		return props;
 	}
 
 	@Bean
-	public KafkaTemplate<String, Task> kafkaTemplate() {
+	public KafkaTemplate<String, String> kafkaTemplate() {
 		return new KafkaTemplate<>(producerFactory());
 	}
 }

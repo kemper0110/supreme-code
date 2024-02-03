@@ -1,5 +1,7 @@
 package net.danil.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -18,7 +20,7 @@ import reactor.core.publisher.Mono;
 @Controller
 @RequiredArgsConstructor
 public class CodePageController {
-    final private KafkaTemplate<String, WebApplication.Task> kafka;
+    final private KafkaTemplate<String, String> kafka;
     private SubscribableChannel resultsChannel;
     {
         this.resultsChannel = MessageChannels
@@ -34,8 +36,13 @@ public class CodePageController {
     @ResponseBody
     @PostMapping("/api/")
     Mono<String> run(@RequestBody TaskRequest taskRequest) {
+        final var mapper = new ObjectMapper();
         return Mono.create(sink -> {
-            kafka.send("task-topic", new WebApplication.Task(taskRequest.code, taskRequest.language));
+            try {
+                kafka.send("task-topic", mapper.writeValueAsString(taskRequest));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
             MessageHandler handler = message -> sink.success((String) message.getPayload());
             sink.onDispose(() -> resultsChannel.unsubscribe(handler));
             resultsChannel.subscribe(handler);

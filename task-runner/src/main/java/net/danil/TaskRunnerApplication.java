@@ -1,10 +1,11 @@
 package net.danil;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
-import io.confluent.kafka.serializers.KafkaJsonDeserializer;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -29,13 +30,13 @@ public class TaskRunnerApplication {
 
     }
 
-    public static Consumer<String, Task> makeConsumer() {
+    public static Consumer<String, String> makeConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "test-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaJsonDeserializer.class);
-        Consumer<String, Task> consumer = new KafkaConsumer<>(props);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        Consumer<String, String> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Collections.singletonList(taskTopic));
         return consumer;
     }
@@ -68,19 +69,26 @@ public class TaskRunnerApplication {
         final var javascriptRunner = new JavascriptRunner(config, httpClientProvider.get());
 
 
-        try (Consumer<String, Task> consumer = makeConsumer();
+        try (Consumer<String, String> consumer = makeConsumer();
              Producer<String, String> producer = makeProducer()
         ) {
             System.out.println("Kafka initialized, started consuming");
             int i = 0;
             while (true) {
-                ConsumerRecords<String, Task> records = consumer.poll(Duration.ofMillis(1000));
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
                 System.out.println("Consume timeout " + i++);
                 records.forEach(record -> {
-                    final var task = record.value();
                     System.out.printf("Consumed record with key %s and value %s%n", record.key(), record.value());
 
                     final var runnerStart = System.currentTimeMillis();
+
+                    final var mapper = new ObjectMapper();
+                    final Task task;
+                    try {
+                        task = mapper.readValue(record.value(), Task.class);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
 
                     final var result = switch (task.language) {
                         case "c++" -> cppRunner.run(task.code);
