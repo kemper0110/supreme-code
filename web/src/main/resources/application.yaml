@@ -4,3 +4,11 @@ spring:
 
     consumer:
       group-id: web-group
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost/supreme_code
+    username: supreme_user
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
