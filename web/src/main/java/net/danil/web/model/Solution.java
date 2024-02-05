@@ -8,28 +8,17 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-@Table(name = "solution")
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(Solution.SolutionId.class)
 public class Solution {
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class SolutionId implements Serializable {
-        private Long problemLanguageId;
-        private Long userId;
-    }
-
     @Id
-    private Long userId;
-    @Id
-    private Long problemLanguageId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private User user;
+    private ProblemLanguage problemLanguage;
 
-    @Column(nullable = false, length = 65_536)
     private String code;
 }

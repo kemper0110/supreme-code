@@ -6,19 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "solution_result")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@IdClass(Solution.SolutionId.class)
 public class SolutionResult {
     @Id
-    private Long userId;
-    @Id
-    private Long problemLanguageId;
+    private Solution solution;
 
     // TODO: think about compile error, test error, test success
-    @Column(length = 131_072, nullable = false) // 128kb
     private String result;
+    private Boolean isError;
 }
