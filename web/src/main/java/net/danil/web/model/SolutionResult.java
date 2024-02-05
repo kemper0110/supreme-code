@@ -16,5 +16,5 @@ public class SolutionResult {
 
     // TODO: think about compile error, test error, test success
     private String result;
-    private Boolean isError;
+    private Boolean isBuildError;
 }
