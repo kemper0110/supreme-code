@@ -93,7 +93,7 @@
                             </extensions>
                             <xsdOptions>
                                 <xsdOption>
-                                    <xsdDir>src/main/resources/xsd</xsdDir>
+                                    <xsdDir>${basedir}/src/main/resources/xsd</xsdDir>
                                     <packagename>net.danil.generated.junit</packagename>
                                     <extensionArgs>
                                         <extensionArg>-extension</extensionArg>
