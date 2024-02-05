@@ -12,3 +12,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  flyway:
+    url: jdbc:postgresql://localhost/supreme_code
+    user: supreme_user
+    password: password
+    default-schema: supreme_code
