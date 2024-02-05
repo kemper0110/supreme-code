@@ -1,16 +1,15 @@
 package net.danil.web.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.IdClass;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
 
-@Table("problem_language")
+import java.io.Serializable;
+
+@Table(name = "problem_language")
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,7 +20,7 @@ public class ProblemLanguage {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ProblemLanguageId {
+    public static class ProblemLanguageId implements Serializable {
         private Long problemId;
         private Long userId;
     }
@@ -31,12 +30,12 @@ public class ProblemLanguage {
     @Id
     private Long userId;
 
+    @Column(nullable = false)
+    @Enumerated
     private Language language;
 
-    @NotNull
-    @Column(length = 2048)
+    @Column(length = 2048, nullable = false)
     private String template;
-    @NotNull
-    @Column(length = 65_536)
+    @Column(length = 65_536, nullable = false)
     private String test;
 }

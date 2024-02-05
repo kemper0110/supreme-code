@@ -1,14 +1,12 @@
 package net.danil.web.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
 
-@Table("users")
+@Table(name = "users")
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,9 +16,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
     private Long id;
-    @NotNull
+
+    @Column(nullable = false, length = 50)
+    @NotBlank
+    @Size(min = 5, max = 30)
     private String username;
-    @NotNull
+
+    @Column(nullable = false)
+    @NotBlank
+    @Size(max = 50)
     private String password;
+
     private String image;
 }

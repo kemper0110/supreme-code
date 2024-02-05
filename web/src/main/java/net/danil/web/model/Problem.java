@@ -1,17 +1,13 @@
 package net.danil.web.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
 
-@Table("problem")
+@Table(name = "problem")
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,15 +17,16 @@ public class Problem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
     private Long id;
-    @NotNull
+    @Column(nullable = false, length = 50)
     private String name;
     // TODO: run OWASP Java HTML Sanitizer
-    @NotNull
+    @Column(nullable = false, length = 4096)
     private String description;
 
     enum Difficulty {
         Easy, Normal, Hard
     }
-    @NotNull
+
+    @Column(nullable = false)
     private Difficulty difficulty;
 }

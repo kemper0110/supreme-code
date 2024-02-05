@@ -1,16 +1,12 @@
 package net.danil.web.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.IdClass;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
 
-@Table("solution_result")
+@Table(name = "solution_result")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,7 +19,6 @@ public class SolutionResult {
     private Long problemLanguageId;
 
     // TODO: think about compile error, test error, test success
-    @NotNull
-    @Column(length = 131_072) // 128kb
+    @Column(length = 131_072, nullable = false) // 128kb
     private String result;
 }
