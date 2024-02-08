@@ -25,4 +25,7 @@ public class Solution {
     private ProblemLanguage problemLanguage;
 
     private String code;
+
+    @OneToOne(mappedBy = "solution", cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+    private SolutionResult solutionResult;
 }
