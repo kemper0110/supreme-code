@@ -1,17 +1,25 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost/supreme_code
+    username: supreme_user
+    password: password
+    driver-class-name: org.postgresql.Driver
   kafka:
     bootstrap-servers: localhost:9092
 
     consumer:
       group-id: web-group
 
-  r2dbc:
-    url: r2dbc:postgresql://localhost/supreme_code
-    username: supreme_user
-    password: password
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: supreme_code
+    database: postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQL14Dialect
   flyway:
     url: jdbc:postgresql://localhost/supreme_code
     user: supreme_user
