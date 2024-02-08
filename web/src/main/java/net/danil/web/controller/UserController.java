@@ -1,13 +1,12 @@
 package net.danil.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.danil.web.dto.BasicUserDto;
 import net.danil.web.model.User;
 import net.danil.web.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,18 +15,18 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping
-    List<User> index() {
-        return userRepository.findAll();
+    Stream<BasicUserDto> index() {
+        return userRepository.findAll().stream().map(BasicUserDto::fromUser);
     }
 
     @PostMapping
-    User store(User user) {
-        return userRepository.save(user);
+    BasicUserDto store(User user) {
+        return BasicUserDto.fromUser(userRepository.save(user));
     }
 
     @PutMapping("/{id}")
-    User update(User user) {
-        return userRepository.save(user);
+    BasicUserDto update(User user) {
+        return BasicUserDto.fromUser(userRepository.save(user));
     }
 
     @DeleteMapping("/{id}")
