@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SolutionResult {
     @Id
+    @OneToOne
     private Solution solution;
 
     // TODO: think about compile error, test error, test success

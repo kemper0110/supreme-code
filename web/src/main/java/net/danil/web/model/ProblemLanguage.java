@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -16,7 +18,11 @@ public class ProblemLanguage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     private Problem problem;
+
+    @OneToMany(mappedBy = "problemLanguage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Solution> solutions;
 
     @Enumerated(EnumType.STRING)
     private Language language;

@@ -3,6 +3,8 @@ package net.danil.web.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Table
 @Entity
 @Getter
@@ -23,4 +25,7 @@ public class Problem {
 
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
+
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProblemLanguage> languages;
 }

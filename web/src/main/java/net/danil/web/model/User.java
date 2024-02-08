@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Table(name = "users")
-@Entity
+@Entity(name = "users")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,4 +27,7 @@ public class User {
     private String password;
 
     private String image;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Solution> solutions;
 }
