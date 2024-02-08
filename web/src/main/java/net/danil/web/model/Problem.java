@@ -1,11 +1,9 @@
 package net.danil.web.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Table
 @Entity
 @Getter
 @Setter
@@ -23,5 +21,6 @@ public class Problem {
         Easy, Normal, Hard
     }
 
+    @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 }
