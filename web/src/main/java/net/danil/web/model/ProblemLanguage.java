@@ -21,7 +21,7 @@ public class ProblemLanguage {
     @ManyToOne(fetch = FetchType.LAZY)
     private Problem problem;
 
-    @OneToMany(mappedBy = "problemLanguage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "problemLanguage", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Solution> solutions;
 
     @Enumerated(EnumType.STRING)

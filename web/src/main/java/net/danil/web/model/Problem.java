@@ -26,7 +26,7 @@ public class Problem {
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
-    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProblemLanguage> languages;
 
     private Boolean active = false;

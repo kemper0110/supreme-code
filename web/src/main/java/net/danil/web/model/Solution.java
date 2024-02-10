@@ -26,6 +26,6 @@ public class Solution {
 
     private String code;
 
-    @OneToOne(mappedBy = "solution", cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "solution", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
     private SolutionResult solutionResult;
 }
