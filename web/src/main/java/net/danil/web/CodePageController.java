@@ -24,7 +24,7 @@ public class CodePageController {
     private SubscribableChannel resultsChannel;
     {
         this.resultsChannel = MessageChannels
-                .publishSubscribe("GameListChannel")
+                .publishSubscribe("ResultsChannel")
                 .getObject();
     }
     @GetMapping("/")
