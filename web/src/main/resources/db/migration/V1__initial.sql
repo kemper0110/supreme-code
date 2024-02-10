@@ -13,7 +13,8 @@ create table problem
     id          bigserial primary key,
     name        varchar(50) not null,
     description text        not null,
-    difficulty  varchar(20) not null
+    difficulty  varchar(20) not null,
+    active bool not null default false
 );
 
 create table problem_language

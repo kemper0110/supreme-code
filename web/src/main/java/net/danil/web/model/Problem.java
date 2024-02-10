@@ -28,4 +28,6 @@ public class Problem {
 
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProblemLanguage> languages;
+
+    private Boolean active = false;
 }
