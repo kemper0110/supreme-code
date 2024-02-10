@@ -1,4 +1,4 @@
-package net.danil.web;
+package net.danil.web.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

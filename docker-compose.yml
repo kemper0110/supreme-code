@@ -15,6 +15,8 @@ services:
     environment:
       KAFKA_ADVERTISED_HOST_NAME: localhost
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - zookeeper
 
   rdbms:
     image: postgres:14.1-alpine
@@ -26,7 +28,20 @@ services:
       - '5432:5432'
     volumes:
       - rdbms:/var/lib/postgresql/data
+      - ./init-rdb:/docker-entrypoint-initdb.d
 
+#  flyway:
+#    image: redgate/flyway:latest
+#    container_name: sc-flyway
+#    command:
+#      - "-url=jdbc:postgresql://rdbms/supreme_code"
+#      - "-user=supreme_user"
+#      - "-password=password"
+#      - "-schemas=supreme_code"
+#    depends_on:
+#      - rdbms
+#    volumes:
+#      - ./web/src/main/resources/db/migration
 volumes:
   rdbms:
     driver: local
