@@ -1,10 +1,12 @@
 import {Editor} from "@monaco-editor/react";
-import React, {ReactNode, useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {Badge, Button, Flex, SegmentedControl, Stack, Text} from "@mantine/core";
 import axios from "axios";
-import {IconBrain, IconGripVertical, IconMoodCrazyHappy, IconPigMoney} from "@tabler/icons-react";
+import {IconBrain, IconMoodCrazyHappy, IconPigMoney} from "@tabler/icons-react";
 import {useMutation} from "@tanstack/react-query";
 import {editor} from "monaco-editor";
+import {LanguageValue} from "../types/LanguageValue.tsx";
+import {SplitView} from "../components/SplitView.tsx";
 import ICodeEditor = editor.ICodeEditor;
 
 type RunRequest = {
@@ -41,8 +43,6 @@ const languages = [
     value: "java"
   }
 ] as { label: string, value: LanguageValue }[]
-
-type LanguageValue = 'c++' | 'javascript' | 'java'
 
 export default function Playground() {
   const [language, setLanguage] = useState<LanguageValue>(languages[0].value)
@@ -120,58 +120,3 @@ int main() {
   )
 }
 
-const SplitView = ({left, right}: { left: (ref: any) => ReactNode, right: ReactNode }) => {
-
-  const [leftWidth, setLeftWidth] = useState<number>(500)
-  const leftRef = useRef<any>()
-
-  useEffect(() => {
-    if (!leftRef.current) return
-    leftRef.current.style.width = leftWidth + 'px'
-  }, [leftRef, leftWidth]);
-
-  const [separatorXPosition, setSeparatorXPosition] = useState<undefined | number>(undefined);
-  const [dragging, setDragging] = useState(false);
-
-  const onMouseDown = (e: React.MouseEvent) => {
-    setSeparatorXPosition(e.clientX);
-    setDragging(true);
-  };
-  const onMouseMove = (e: React.MouseEvent) => {
-    if (dragging && leftWidth && separatorXPosition) {
-      const newLeftWidth = leftWidth + e.clientX - separatorXPosition;
-      setSeparatorXPosition(e.clientX);
-
-      if (newLeftWidth < 500) {
-        setLeftWidth(500)
-      } else {
-        setLeftWidth(newLeftWidth);
-      }
-    }
-  };
-
-  const onMouseUp = () => {
-    setDragging(false);
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-  });
-
-  return (
-    <Flex className={'h-screen'}>
-      {left(leftRef)}
-      <div onMouseDown={onMouseDown}
-           className={'flex items-center shrink-0 w-[20px] h-full bg-slate-300 cursor-col-resize'}>
-        <IconGripVertical className={'text-slate-500'}/>
-      </div>
-      {right}
-    </Flex>
-  )
-}

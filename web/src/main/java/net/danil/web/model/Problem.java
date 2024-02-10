@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Problem {
@@ -19,7 +20,7 @@ public class Problem {
     // TODO: run OWASP Java HTML Sanitizer
     private String description;
 
-    enum Difficulty {
+    public enum Difficulty {
         Easy, Normal, Hard
     }
 
