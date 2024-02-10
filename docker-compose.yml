@@ -30,6 +30,18 @@ services:
       - rdbms:/var/lib/postgresql/data
       - ./init-rdb:/docker-entrypoint-initdb.d
 
+#  flyway:
+#    image: redgate/flyway:latest
+#    container_name: sc-flyway
+#    command:
+#      - "-url=jdbc:postgresql://rdbms/supreme_code"
+#      - "-user=supreme_user"
+#      - "-password=password"
+#      - "-schemas=supreme_code"
+#    depends_on:
+#      - rdbms
+#    volumes:
+#      - ./web/src/main/resources/db/migration
 volumes:
   rdbms:
     driver: local
