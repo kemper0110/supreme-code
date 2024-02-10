@@ -13,8 +13,9 @@ import SubScript from '@tiptap/extension-subscript';
 import {IconGripHorizontal, IconGripVertical} from "@tabler/icons-react";
 import {Button, Flex, Stepper, Title} from "@mantine/core";
 import {useParams} from "react-router-dom";
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery} from "@tanstack/react-query";
 import ICodeEditor = editor.ICodeEditor;
+import axios from "axios";
 
 export default function Problem() {
   const {id} = useParams()
@@ -26,6 +27,13 @@ export default function Problem() {
   const step = 0
 
   const editorRef = useRef<ICodeEditor>()
+
+  const testMutation = useMutation({
+    mutationFn: (code: string) => axios.post(`/api/problem/${encodeURIComponent(id!)}`, {language: "Java", code}),
+    onSuccess: response => {
+      console.log(response.data)
+    }
+  })
 
   const editor = useEditor({
     extensions: [
@@ -40,6 +48,10 @@ export default function Problem() {
     content: description,
     editable: false,
   });
+
+  const onRunClick = () => {
+    testMutation.mutate(editorRef.current?.getValue())
+  }
 
   return (
     <div className={'h-screen'}>
@@ -61,7 +73,7 @@ export default function Problem() {
               <Editor onMount={editor => editorRef.current = editor}
                       height="100%" language={language.toLowerCase()} defaultValue={template}/>
               <Flex justify={'end'} pr={20}>
-                <Button>
+                <Button onClick={onRunClick}>
                   Запустить
                 </Button>
               </Flex>

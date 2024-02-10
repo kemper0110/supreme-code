@@ -1,23 +1,105 @@
 package net.danil.web.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import net.danil.web.model.Language;
 import net.danil.web.model.Problem;
 import net.danil.web.model.ProblemLanguage;
 import net.danil.web.repository.ProblemRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.integration.dsl.MessageChannels;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.SubscribableChannel;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/problem")
 public class ProblemController {
+    Logger logger = LoggerFactory.getLogger(ProblemController.class);
     private final ProblemRepository problemRepository;
 
+    final private KafkaTemplate<String, String> kafka;
+    private SubscribableChannel resultsChannel;
+    {
+        this.resultsChannel = MessageChannels
+                .publishSubscribe("TestResultsChannel")
+                .getObject();
+    }
     @GetMapping
     List<Problem> index() {
         return problemRepository.findAll();
+    }
+
+    record TestRequest(String code, Language language) {}
+
+    record TestMessage (String code, String test, Language language) {
+        public static TestMessage fromRequest(TestRequest testRequest) {
+            return new TestMessage(testRequest.code(), """
+                                                import org.example.Solution;
+                                                import org.junit.jupiter.params.ParameterizedTest;
+                                                import org.junit.jupiter.params.provider.Arguments;
+                                                import org.junit.jupiter.params.provider.MethodSource;
+
+                                                import java.util.stream.Stream;
+
+                                                import static org.junit.jupiter.api.Assertions.*;
+
+                                                class TwoSumTest {
+                                                    static Stream<Arguments> basicTests() {
+                                                        return Stream.of(
+                                                                Arguments.of(new int[]{1, 2, 3}, 4, new int[]{0, 2}),
+                                                                Arguments.of(new int[]{1234, 5678, 9012}, 14690, new int[]{1, 2}),
+                                                                Arguments.of(new int[]{2, 2, 3}, 4, new int[]{0, 1}),
+                                                                Arguments.of(new int[]{2, 3, 1}, 4, new int[]{1, 2})
+                                                        );
+                                                    }
+
+                                                    @ParameterizedTest
+                                                    @MethodSource
+                                                    void basicTests(int[] numbers, int target, int[] expected) {
+                                                        int[] actual = Solution.twoSum(numbers.clone(), target);
+                                                        assertNotNull(actual, "Should return an array");
+                                                        assertEquals(2, actual.length, "Returned array must be of length 2");
+                                                        assertNotEquals(actual[0], actual[1], "Indices must be distinct");
+                                                        int num1 = numbers[actual[0]];
+                                                        int num2 = numbers[actual[1]];
+                                                        assertEquals(target, num1 + num2);
+                                                    }
+                                                }
+                                                """, testRequest.language());
+        }
+    }
+    @PostMapping("/{id}")
+    Mono<Object> submit(@PathVariable Long id, @RequestBody TestRequest testRequest) {
+        logger.debug("submitted solution {}", testRequest);
+        final var mapper = new ObjectMapper();
+        final var testMessage = TestMessage.fromRequest(testRequest);
+        return Mono.create(sink -> {
+            try {
+                kafka.send("test-topic", mapper.writeValueAsString(testMessage));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            MessageHandler handler = message -> sink.success((String) message.getPayload());
+            sink.onDispose(() -> resultsChannel.unsubscribe(handler));
+            resultsChannel.subscribe(handler);
+        });
+    }
+
+    @KafkaListener(topics = "test-result-topic")
+    public void listen(String in) {
+        System.out.println("received result: " + in);
+        resultsChannel.send(new GenericMessage<>(in));
     }
 
     @GetMapping("/{id}")
