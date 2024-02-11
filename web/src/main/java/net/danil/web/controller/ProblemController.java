@@ -3,10 +3,9 @@ package net.danil.web.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import net.danil.web.dto.DetailProblemDto;
+import net.danil.web.dto.DetailProblemProjection;
 import net.danil.web.model.Language;
 import net.danil.web.model.Problem;
-import net.danil.web.model.ProblemLanguage;
 import net.danil.web.repository.ProblemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -75,7 +73,7 @@ public class ProblemController {
     }
 
     @GetMapping("/{id}")
-    DetailProblemDto view(@PathVariable Long id) {
-        return problemRepository.findDetailedById(id).map(DetailProblemDto::fromProblem).get();
+    DetailProblemProjection view(@PathVariable Long id) {
+        return problemRepository.findDetailedById(id).get();
     }
 }
