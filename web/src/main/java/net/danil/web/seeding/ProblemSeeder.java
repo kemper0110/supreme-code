@@ -22,26 +22,30 @@ public class ProblemSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if (problemRepository.count() > 0) return;
 
-        final var saved = problemRepository.save(
+        var saved = problemRepository.save(
                 Problem.builder()
                         .id(1L)
                         .name("Two sum")
                         .active(true)
                         .difficulty(Problem.Difficulty.Easy)
                         .description(description)
-                        .languages(
-                                List.of(
-                                        ProblemLanguage.builder()
-                                                .id(1L)
-                                                .language(Language.Java)
-                                                .template(template)
-                                                .test(test)
-                                                .build()
-                                )
-                        )
                         .build()
         );
 
+        if (saved == null) {
+            logger.warn("two sum problem not created");
+            return;
+        }
+        saved.setLanguages(List.of(
+                ProblemLanguage.builder()
+                        .problem(saved)
+                        .id(1L)
+                        .language(Language.Java)
+                        .template(template)
+                        .test(test)
+                        .build()
+        ));
+        saved = problemRepository.save(saved);
         if (saved != null) {
             logger.info("created two sum problem {}", saved);
         } else {
