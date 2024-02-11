@@ -1,24 +1,21 @@
 import {RouteObject,} from "react-router-dom";
 import "./index.css";
-import Root from "./pages/Root.tsx";
-import Playground from "./pages/Playground.tsx";
-import Problem from "./pages/Problem.tsx";
 import axios from "axios";
-import {queryClient} from "./queryClient.tsx";
+import {queryClient} from "./queryClient.ts";
 
 
 export const routes = [
   {
     path: "/",
-    element: <Root/>,
+    lazy: () => import("./pages/Root")
   },
   {
     path: "/playground",
-    element: <Playground/>
+    lazy: () => import("./pages/Playground")
   },
   {
     path: "/problem/:id",
-    element: <Problem/>,
+    lazy: () => import("./pages/Problem"),
     loader: async (params) => {
       const id = params.params.id
       const queryKey = ['problem', id]
