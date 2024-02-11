@@ -31,6 +31,6 @@ public interface DetailProblemProjection {
 
         String getTemplate();
 
-        String getTest();
+//        String getTest();
     }
 }
