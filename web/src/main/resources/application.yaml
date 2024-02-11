@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: reactive
   datasource:
     url: jdbc:postgresql://localhost/supreme_code
     username: supreme_user
