@@ -6,8 +6,6 @@ create table users
     image    varchar(255)
 );
 
-create type languages as enum ('Cpp', 'Java', 'Javascript');
-
 create table problem
 (
     id          bigserial primary key,
@@ -20,8 +18,8 @@ create table problem
 create table problem_language
 (
     id         bigserial primary key,
-    problem_id bigint      not null references problem (id),
-    language   languages not null,
+    problem_id bigint      not null references problem (id) on update cascade on delete cascade,
+    language   varchar(20) not null,
     template   text        not null,
     test       text        not null,
     unique (problem_id, language)
