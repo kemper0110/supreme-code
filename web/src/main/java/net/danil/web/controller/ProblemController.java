@@ -3,6 +3,7 @@ package net.danil.web.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import net.danil.web.dto.DetailProblemDto;
 import net.danil.web.model.Language;
 import net.danil.web.model.Problem;
 import net.danil.web.model.ProblemLanguage;
@@ -74,7 +75,7 @@ public class ProblemController {
     }
 
     @GetMapping("/{id}")
-    Problem view(@PathVariable Long id, @RequestParam Language language) {
-        return problemRepository.findById(id).get();
+    DetailProblemDto view(@PathVariable Long id) {
+        return problemRepository.findDetailedById(id).map(DetailProblemDto::fromProblem).get();
     }
 }
