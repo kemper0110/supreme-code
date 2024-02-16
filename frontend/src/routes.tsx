@@ -5,6 +5,9 @@ import {queryClient} from "./queryClient.ts";
 import Root from "./pages/Root.tsx";
 import Playground from "./pages/Playground.tsx";
 import Problem from "./pages/Problem.tsx";
+import Page404 from "./pages/Page404";
+import Page500 from "./pages/Page500";
+import Auth from "./pages/Auth.tsx";
 
 
 export const routes = [
@@ -15,6 +18,18 @@ export const routes = [
   {
     path: "/playground",
     element: <Playground/>
+  },
+  {
+    path: "/404",
+    element: <Page404/>
+  },
+  {
+    path: "/500",
+    element: <Page500/>
+  },
+  {
+    path: "/auth",
+    element: <Auth/>
   },
   {
     path: "/problem/:id",
