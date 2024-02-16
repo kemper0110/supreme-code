@@ -55,8 +55,8 @@ public class TestRunnerApplication {
         System.out.println("Test runner initialized");
 
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("unix:///var/run/docker.sock")
-//                .withDockerHost("tcp://localhost:2375")
+//                .withDockerHost("unix:///var/run/docker.sock")
+                .withDockerHost("tcp://localhost:2375")
                 .build();
 
         Supplier<DockerHttpClient> httpClientProvider = () -> new ApacheDockerHttpClient.Builder()
@@ -65,6 +65,8 @@ public class TestRunnerApplication {
                 .connectionTimeout(Duration.ofSeconds(30))
                 .responseTimeout(Duration.ofSeconds(45))
                 .build();
+
+        final var javascriptTester = new JavascriptTester(config, httpClientProvider.get());
 
         try (Consumer<String, String> consumer = makeConsumer();
              Producer<String, String> producer = makeProducer()
@@ -89,17 +91,22 @@ public class TestRunnerApplication {
 
                     System.out.println("received " + test);
 
-//                    final var result = switch (task.language) {
+                    java.util.function.Consumer<Object> onResult = result -> {
+                        final var runnerEnd = System.currentTimeMillis();
+                        System.out.println("Runner finished after " + (runnerEnd - runnerStart) + " ms");
+                        try {
+                            producer.send(new ProducerRecord<>(resultTopic, record.key(), mapper.writeValueAsString(result)));
+                        } catch (JsonProcessingException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    };
+
+                    switch (test.language) {
 //                        case "c++" -> cppRunner.run(task.code);
 //                        case "java" -> javaRunner.run(task.code);
-//                        case "javascript" -> javascriptRunner.run(task.code);
-//                        default -> "Unknown language";
-//                    };
-//
-//                    final var runnerEnd = System.currentTimeMillis();
-//                    System.out.println("Runner finished after " + (runnerEnd - runnerStart) + " ms");
-
-                    producer.send(new ProducerRecord<>(resultTopic, record.key(), "aboba"));
+                        case "javascript" -> javascriptTester.test(test.test, test.code, onResult);
+                        default -> onResult.accept("aboba exception: unknown language");
+                    };
                 });
             }
         }
