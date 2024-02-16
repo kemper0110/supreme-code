@@ -1,0 +1,15 @@
+{
+  "name": "js-test-container",
+  "version": "1.0.0",
+  "description": "Project to test js code",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "test": "jest --config ./jest.config.js"
+  },
+  "devDependencies": {
+    "jest": "29.0.0",
+    "jest-junit": "16.0.0"
+  }
+}

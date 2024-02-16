@@ -1,7 +1,7 @@
-## Для запуска требуется скачать контейнеры
+## Для запуска требуется собрать образы тестовых контейнеров
 
-`bash
-docker pull gcc:13.2.0
-docker pull amazoncorretto:21-alpine
-docker pull node:20-alpine
-`r
+```powershell
+docker build -t sc-js-test-image .\test-runner\js-test-image\
+docker build -t sc-cpp-test-image .\test-runner\cpp-test-image\
+docker build -t sc-java-test-image .\test-runner\java-test-image\
+```
