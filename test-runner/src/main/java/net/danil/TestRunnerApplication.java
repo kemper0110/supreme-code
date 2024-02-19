@@ -55,8 +55,7 @@ public class TestRunnerApplication {
         System.out.println("Test runner initialized");
 
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-//                .withDockerHost("unix:///var/run/docker.sock")
-                .withDockerHost("tcp://localhost:2375")
+                .withDockerHost(System.getProperty("os.name").startsWith("Windows") ? "tcp://localhost:2375" : "unix:///var/run/docker.sock")
                 .build();
 
         Supplier<DockerHttpClient> httpClientProvider = () -> new ApacheDockerHttpClient.Builder()
