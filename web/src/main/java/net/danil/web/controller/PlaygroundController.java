@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import net.danil.web.service.TaskRunnerChannelService;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.messaging.MessageHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +16,7 @@ import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
-public class CodePageController {
+public class PlaygroundController {
     final private KafkaTemplate<String, String> kafka;
     final private TaskRunnerChannelService taskRunnerChannelService;
 
