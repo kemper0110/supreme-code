@@ -1,5 +1,5 @@
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
-import React, {useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {editor} from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
 import {Link, RichTextEditor} from '@mantine/tiptap';
@@ -11,25 +11,61 @@ import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import {IconGripHorizontal, IconGripVertical} from "@tabler/icons-react";
-import {Button, Flex, Stepper, Title} from "@mantine/core";
+import {Button, Flex, Loader, Pill, PillGroup, SegmentedControl, Stack, Stepper, Title} from "@mantine/core";
 import {useParams} from "react-router-dom";
 import {useMutation, useQuery} from "@tanstack/react-query";
-import ICodeEditor = editor.ICodeEditor;
 import axios from "axios";
+import {LanguageValue} from "../types/LanguageValue.tsx";
+import {CppView, JavaView, NodeView} from "../components/LanguageView.tsx";
+import ICodeEditor = editor.ICodeEditor;
+
+type Language = {
+  id: number
+  language: LanguageValue
+  template: string
+}
+
+type ProblemData = {
+  id: number
+  name: string
+  active: boolean
+  description: string
+  difficulty: 'Easy' | 'Normal' | 'Hard'
+  languages: Language[]
+}
+
+type TestResultData = {
+  tests: number
+  failures: number
+  errors: number
+  time: number
+  xml: string
+  logs: string
+}
 
 export default function Problem() {
   const {id} = useParams()
-  const {data} = useQuery({queryKey: ['problem', id]})
-  const {name, description, languages, difficulty} = data
+  const {data} = useQuery<ProblemData>({queryKey: ['problem', id]})
+  const {name, description, languages} = data!
 
-  const {template, language} = languages[0]
+  const languageSelectorData =
+    languages.map(l => ({
+      label: {Cpp: <CppView/>, Java: <JavaView/>, Javascript: <NodeView/>}[l.language],
+      value: l.language
+    }))
+
+  const [selectedLanguage, setSelectedLanguage] = useState(languages[0])
 
   const step = 0
 
   const editorRef = useRef<ICodeEditor>()
+  useEffect(() => editorRef.current?.setValue(selectedLanguage.template), [selectedLanguage.language])
 
   const testMutation = useMutation({
-    mutationFn: (code: string) => axios.post(`/api/problem/${encodeURIComponent(id!)}`, {language: "Javascript", code}),
+    mutationFn: (code: string) => axios.post<TestResultData>(`/api/problem/${encodeURIComponent(id!)}`, {
+      language: selectedLanguage.language,
+      code
+    }),
     onSuccess: response => {
       console.log(response.data)
     }
@@ -43,13 +79,14 @@ export default function Problem() {
       Superscript,
       SubScript,
       Highlight,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      TextAlign.configure({types: ['heading', 'paragraph']}),
     ],
     content: description,
     editable: false,
   });
 
   const onRunClick = () => {
+    // @ts-ignore
     testMutation.mutate(editorRef.current?.getValue())
   }
 
@@ -69,20 +106,58 @@ export default function Problem() {
         </PanelResizeHandle>
         <Panel>
           <PanelGroup autoSaveId={'problem:[code-test]'} direction={'vertical'}>
-            <Panel className={'pb-[40px]'} defaultSize={80}>
-              <Editor onMount={editor => editorRef.current = editor}
-                      height="100%" language={language.toLowerCase()} defaultValue={template}/>
-              <Flex justify={'end'} pr={20}>
-                <Button onClick={onRunClick}>
-                  Запустить
-                </Button>
-              </Flex>
+            <Panel className={'pb-[60px]'} defaultSize={80}>
+                <Editor onMount={editor => editorRef.current = editor}
+                        height="100%" language={selectedLanguage.language.toLowerCase()} defaultValue={selectedLanguage.template}/>
+                <Flex justify={'end'} gap={12} align={'center'} pr={20}>
+                  <SegmentedControl data={languageSelectorData} value={selectedLanguage.language} onChange={value => {
+                    setSelectedLanguage(languages.find(l => l.language === value)!)
+                  }}/>
+                  <Button onClick={onRunClick}>
+                    Запустить
+                  </Button>
+                </Flex>
             </Panel>
             <PanelResizeHandle className={'my-[10px] bg-slate-200 flex items-center justify-center'}>
               <IconGripHorizontal className={'h-[15px] text-slate-500'}/>
             </PanelResizeHandle>
             <Panel>
-              <Test step={step}/>
+              {/*<Test step={step}/>*/}
+              {
+                testMutation.isPending ? (
+                  <div className={'w-full h-full flex items-center justify-center'}>
+                    <Loader/>
+                  </div>
+                ) : null
+              }
+              {
+                testMutation.data ? (
+                  <Stack mah={'100%'}>
+                    <PillGroup>
+                      <Pill>
+                        {testMutation.data.data.tests} tests
+                      </Pill>
+                      <Pill>
+                        {testMutation.data.data.errors} errors
+                      </Pill>
+                      <Pill>
+                        {testMutation.data.data.failures} failures
+                      </Pill>
+                      <Pill>
+                        {testMutation.data.data.time}s time
+                      </Pill>
+                    </PillGroup>
+                    <Flex className={'shrink grow'} mah={'240px'}>
+                        <pre className={'w-1/2 overflow-auto border'}>
+                          {testMutation.data.data.logs}
+                        </pre>
+                      <pre className={'w-1/2 overflow-auto border'}>
+                          {testMutation.data.data.xml}
+                        </pre>
+                    </Flex>
+                  </Stack>
+                ) : null
+              }
             </Panel>
           </PanelGroup>
         </Panel>
@@ -91,7 +166,7 @@ export default function Problem() {
   )
 }
 
-const Test = ({step}) => {
+const Test = ({step}: { step: number }) => {
 
   return (
     <div className={'p-4'}>
