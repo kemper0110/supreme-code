@@ -103,7 +103,7 @@ public class TestRunnerApplication {
                     switch (test.language) {
 //                        case "c++" -> cppRunner.run(task.code);
 //                        case "java" -> javaRunner.run(task.code);
-                        case "javascript" -> javascriptTester.test(test.test, test.code, onResult);
+                        case "Javascript" -> javascriptTester.test(test.test, test.code, onResult);
                         default -> onResult.accept("aboba exception: unknown language");
                     };
                 });
