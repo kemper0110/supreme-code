@@ -6,19 +6,17 @@ import lombok.RequiredArgsConstructor;
 import net.danil.web.dto.DetailProblemProjection;
 import net.danil.web.model.Language;
 import net.danil.web.model.Problem;
+import net.danil.web.repository.ProblemLanguageRepository;
 import net.danil.web.repository.ProblemRepository;
+import net.danil.web.service.TestRunnerChannelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.integration.dsl.MessageChannels;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.SubscribableChannel;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,15 +24,11 @@ import java.util.List;
 public class ProblemController {
     Logger logger = LoggerFactory.getLogger(ProblemController.class);
     private final ProblemRepository problemRepository;
+    private final ProblemLanguageRepository problemLanguageRepository;
 
     final private KafkaTemplate<String, String> kafka;
-    private SubscribableChannel resultsChannel;
 
-    {
-        this.resultsChannel = MessageChannels
-                .publishSubscribe("TestResultsChannel")
-                .getObject();
-    }
+    final private TestRunnerChannelService testRunnerChannelService;
 
     @GetMapping
     List<Problem> index() {
@@ -49,27 +43,21 @@ public class ProblemController {
 
     @PostMapping("/{id}")
     Mono<Object> submit(@PathVariable Long id, @RequestBody TestRequest testRequest) {
-        final var problem = problemRepository.findById(id).get();
         logger.debug("submitted solution {}", testRequest);
         final var mapper = new ObjectMapper();
-        final var testMessage = new TestMessage(testRequest.code(), problem.getLanguages().get(0).getTest(), testRequest.language());
+        final var problemLanguage = problemLanguageRepository.findByProblemId(id).get();
+        final var testMessage = new TestMessage(testRequest.code(), problemLanguage.getTest(), testRequest.language());
         return Mono.create(sink -> {
+            final var taskId = UUID.randomUUID().toString();
             try {
-                kafka.send("test-topic", mapper.writeValueAsString(testMessage));
+                kafka.send("test-topic", taskId, mapper.writeValueAsString(testMessage));
             } catch (JsonProcessingException e) {
                 sink.error(new RuntimeException(e));
                 return;
             }
-            MessageHandler handler = message -> sink.success((String) message.getPayload());
-            sink.onDispose(() -> resultsChannel.unsubscribe(handler));
-            resultsChannel.subscribe(handler);
+            sink.onDispose(() -> testRunnerChannelService.unsubscribe(taskId));
+            testRunnerChannelService.subscribe(taskId, message -> sink.success(message.getPayload()));
         });
-    }
-
-    @KafkaListener(topics = "test-result-topic")
-    public void listen(String in) {
-        System.out.println("received result: " + in);
-        resultsChannel.send(new GenericMessage<>(in));
     }
 
     @GetMapping("/{id}")
