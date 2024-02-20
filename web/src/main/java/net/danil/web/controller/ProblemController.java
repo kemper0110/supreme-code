@@ -40,12 +40,14 @@ public class ProblemController {
 
     record TestMessage(String code, String test, Language language) {
     }
+    public record TestResult(int tests, int failures, int errors, double time, String xml, String logs) {
+    }
 
     @PostMapping("/{id}")
     Mono<Object> submit(@PathVariable Long id, @RequestBody TestRequest testRequest) {
         logger.debug("submitted solution {}", testRequest);
         final var mapper = new ObjectMapper();
-        final var problemLanguage = problemLanguageRepository.findByProblemId(id).get();
+        final var problemLanguage = problemLanguageRepository.findByProblemIdAndLanguage(id, testRequest.language()).get();
         final var testMessage = new TestMessage(testRequest.code(), problemLanguage.getTest(), testRequest.language());
         return Mono.create(sink -> {
             final var taskId = UUID.randomUUID().toString();
@@ -56,7 +58,14 @@ public class ProblemController {
                 return;
             }
             sink.onDispose(() -> testRunnerChannelService.unsubscribe(taskId));
-            testRunnerChannelService.subscribe(taskId, message -> sink.success(message.getPayload()));
+            testRunnerChannelService.subscribe(taskId, message -> {
+                try {
+                    final TestResult result = mapper.readValue((String) message.getPayload(), TestResult.class);
+                    sink.success(result);
+                } catch (JsonProcessingException e) {
+                    sink.error(new RuntimeException(e));
+                }
+            });
         });
     }
 
