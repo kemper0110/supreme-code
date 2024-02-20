@@ -22,14 +22,14 @@ export default function Problem() {
   const {data} = useQuery({queryKey: ['problem', id]})
   const {name, description, languages, difficulty} = data
 
-  const {template, test, language} = languages[0]
+  const {template, language} = languages[0]
 
   const step = 0
 
   const editorRef = useRef<ICodeEditor>()
 
   const testMutation = useMutation({
-    mutationFn: (code: string) => axios.post(`/api/problem/${encodeURIComponent(id!)}`, {language: "Java", code}),
+    mutationFn: (code: string) => axios.post(`/api/problem/${encodeURIComponent(id!)}`, {language: "Javascript", code}),
     onSuccess: response => {
       console.log(response.data)
     }
