@@ -10,6 +10,7 @@
         <module name="web" />
         <module name="task-runner" />
         <module name="test-runner" />
+        <module name="content-repository" />
       </profile>
     </annotationProcessing>
   </component>

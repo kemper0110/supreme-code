@@ -12,6 +12,7 @@
         <module>task-runner</module>
         <module>web</module>
         <module>test-runner</module>
+        <module>content-repository</module>
     </modules>
 
     <properties>
