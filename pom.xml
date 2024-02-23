@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.danil</groupId>
     <artifactId>supreme-code</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>supreme-code</name>
 
     <packaging>pom</packaging>
