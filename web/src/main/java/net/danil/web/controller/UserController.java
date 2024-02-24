@@ -2,10 +2,17 @@ package net.danil.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.danil.web.dto.BasicUserDto;
+import net.danil.web.dto.BasicUserProjection;
 import net.danil.web.model.User;
 import net.danil.web.repository.UserRepository;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
@@ -13,20 +20,26 @@ import java.util.stream.Stream;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserRepository userRepository;
+    private final ProjectionFactory pf = new SpelAwareProxyProjectionFactory();
 
     @GetMapping
-    Stream<BasicUserDto> index() {
-        return userRepository.findAll().stream().map(BasicUserDto::fromUser);
+    List<BasicUserProjection> index() {
+        return userRepository.findAllPreview();
+    }
+
+    @GetMapping("/{id}")
+    BasicUserProjection view(@PathVariable Long id) {
+        return userRepository.findById(id).map(u -> pf.createProjection(BasicUserProjection.class, u)).get();
     }
 
     @PostMapping
-    BasicUserDto store(User user) {
-        return BasicUserDto.fromUser(userRepository.save(user));
+    BasicUserProjection store(User user) {
+        return pf.createProjection(BasicUserProjection.class, userRepository.save(user));
     }
 
     @PutMapping("/{id}")
-    BasicUserDto update(User user) {
-        return BasicUserDto.fromUser(userRepository.save(user));
+    BasicUserProjection update(@PathVariable Long id, User user) {
+        return pf.createProjection(BasicUserProjection.class, userRepository.save(user));
     }
 
     @DeleteMapping("/{id}")

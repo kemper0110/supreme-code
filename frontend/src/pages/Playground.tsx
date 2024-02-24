@@ -98,7 +98,7 @@ int main() {
           </Flex>
         </Flex>
         <Editor onMount={editor => editorRef.current = editor}
-                height="100%" language={language} defaultValue={cppCode}/>
+                height="100%" language={language == 'c++' ? 'cpp' : language} defaultValue={cppCode}/>
       </Stack>
     )} right={
       <Stack className={'grow bg-slate-100'} gap={0}>

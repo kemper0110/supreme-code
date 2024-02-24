@@ -7,7 +7,7 @@ import {MantineProvider} from "@mantine/core";
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import {QueryClientProvider} from "@tanstack/react-query";
-import {queryClient} from "./queryClient.tsx";
+import {queryClient} from "./queryClient.ts";
 
 const router = createBrowserRouter(routes)
 

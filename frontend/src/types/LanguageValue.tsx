@@ -1,1 +1,1 @@
-export type LanguageValue = 'c++' | 'javascript' | 'java'
+export type LanguageValue = "Java" | "Javascript" | "Cpp"
