@@ -13,13 +13,13 @@ public class TemplateRepository {
     @Value("${supreme-code.content-repository.problem.path}")
     private String problemRoot;
 
-    String getBySlug(String slug, Language language) {
+    String getBySlugAndLanguage(String slug, Language language) {
         // TODO: sanitize slug
         final var problemPath = problemRoot + "/" + slug + "/" + language.toString();
         final var templatePath = switch (language) {
-            case Cpp -> problemPath + "/main.cpp";
-            case Java -> problemPath + "/src/main/java/org/danil/Main.java";
-            case Javascript -> problemPath + "/main.js";
+            case Cpp -> problemPath + "/solution.hpp";
+            case Java -> problemPath + "/src/main/java/org/example/Solution.java";
+            case Javascript -> problemPath + "/solution.js";
         };
         try {
             return IOUtils.resourceToString(templatePath, StandardCharsets.UTF_8);
