@@ -1,0 +1,5 @@
+supreme-code:
+  content-repository:
+    path: /supreme-code-content/content
+    problem:
+      path: /supreme-code-content/content/problems
