@@ -16,12 +16,15 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.function.Supplier;
 
+@SpringBootApplication
 public class TestRunnerApplication {
 
     static String testTopic = "test-topic";
@@ -52,6 +55,7 @@ public class TestRunnerApplication {
     }
 
     public static void main(String... args) {
+        SpringApplication.run(TestRunnerApplication.class, args);
         System.out.println("Test runner initialized");
 
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
