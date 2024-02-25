@@ -15,7 +15,7 @@ public class ProblemRepository {
     @Value("${supreme-code.content-repository.problem.path}")
     private String problemRoot;
     private final YamlObjectMapper objectMapper;
-    Problem getBySlug(String slug) {
+    public Problem getBySlug(String slug) {
         // TODO: sanitize slug
         final var path = problemRoot + "/" + slug + "/manifest.yaml";
         try {

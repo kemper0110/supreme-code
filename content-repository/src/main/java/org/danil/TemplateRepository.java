@@ -13,7 +13,7 @@ public class TemplateRepository {
     @Value("${supreme-code.content-repository.problem.path}")
     private String problemRoot;
 
-    String getBySlugAndLanguage(String slug, Language language) {
+    public String getBySlugAndLanguage(String slug, Language language) {
         // TODO: sanitize slug
         final var problemPath = problemRoot + "/" + slug + "/" + language.toString();
         final var templatePath = switch (language) {

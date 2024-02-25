@@ -15,7 +15,7 @@ public class ContentRepository {
     @Value("${supreme-code.content-repository.path}")
     private String contentRoot;
     private final YamlObjectMapper objectMapper;
-    Content get() {
+    public Content get() {
         final var path = contentRoot + "/manifest.yaml";
         try {
             final var content = IOUtils.resourceToString(path, StandardCharsets.UTF_8);
