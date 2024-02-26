@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
@@ -19,12 +20,12 @@ public abstract class Tester {
     private final Logger logger = LoggerFactory.getLogger(Tester.class);
     protected final DockerClient dockerClient;
 
-    protected abstract byte[] createArchive(String test, String code);
+    protected abstract byte[] createArchive(Path test, String code);
     protected abstract CreateContainerResponse createContainer();
     protected abstract String copyReport(String containerId);
     protected abstract TestResult parseReport(String xmlReport, String logs);
 
-    void test(String test, String code, Consumer<Object> resultCallback) {
+    void test(Path test, String code, Consumer<Object> resultCallback) {
         final var container = createContainer();
         final var archive = createArchive(test, code);
 

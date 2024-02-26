@@ -1,5 +1,11 @@
 supreme-code:
   content-repository:
-    path: /supreme-code-content/content
+    path: supreme-code-content/content
     problem:
-      path: /supreme-code-content/content/problems
+      path: supreme-code-content/content/problems
+logging:
+  level:
+    net:
+      danil: debug
+    org:
+      danil: debug

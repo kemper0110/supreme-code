@@ -9,41 +9,55 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 public class JavascriptTester extends Tester {
+    private final Logger logger = LoggerFactory.getLogger(JavascriptTester.class);
     public JavascriptTester(DockerClient dockerClient) {
         super(dockerClient);
     }
 
     @Override
-    protected byte[] createArchive(String test, String code) {
-        try (InputStream codeInputStream = IOUtils.toInputStream(code, "UTF-8");
-             InputStream testInputStream = IOUtils.toInputStream(test, "UTF-8");
-             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-             TarArchiveOutputStream tarArchiveOutputStream = new TarArchiveOutputStream(byteArrayOutputStream)) {
+    protected byte[] createArchive(Path test, String code) {
+        try (
+                InputStream codeInputStream = IOUtils.toInputStream(code, "UTF-8");
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                TarArchiveOutputStream tarOutput = new TarArchiveOutputStream(byteArrayOutputStream);
+                var files = Files.walk(test, FileVisitOption.FOLLOW_LINKS);
+        ) {
+            files.forEach(filePath -> {
+                if (Files.isRegularFile(filePath)) {
+                    try {
+                        TarArchiveEntry entry = new TarArchiveEntry(filePath.toFile(), test.relativize(filePath).toString());
+                        tarOutput.putArchiveEntry(entry);
+                        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(filePath.toFile()))) {
+                            IOUtils.copy(bis, tarOutput);
+                            tarOutput.closeArchiveEntry();
+                        }
+                    } catch (IOException e) {
+                        logger.error("test repository copy fail: {}", e.getMessage());
+                    }
+                }
+            });
 
-            TarArchiveEntry codeTarEntry = new TarArchiveEntry("index.js");
+            TarArchiveEntry codeTarEntry = new TarArchiveEntry("/solution.js");
             codeTarEntry.setSize(codeInputStream.available());
-            tarArchiveOutputStream.putArchiveEntry(codeTarEntry);
-            IOUtils.copy(codeInputStream, tarArchiveOutputStream);
-            tarArchiveOutputStream.closeArchiveEntry();
+            tarOutput.putArchiveEntry(codeTarEntry);
+            IOUtils.copy(codeInputStream, tarOutput);
+            tarOutput.closeArchiveEntry();
 
-            TarArchiveEntry testTarEntry = new TarArchiveEntry("test.js");
-            testTarEntry.setSize(testInputStream.available());
-            tarArchiveOutputStream.putArchiveEntry(testTarEntry);
-            IOUtils.copy(testInputStream, tarArchiveOutputStream);
-            tarArchiveOutputStream.closeArchiveEntry();
-
-            tarArchiveOutputStream.finish();
+            tarOutput.finish();
             return byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.danil.DirectoryRepository;
+import org.danil.model.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,8 +20,9 @@ public class Listener {
     static String resultTopic = "test-result-topic";
     final private KafkaTemplate<String, String> kafka;
     final private JavascriptTester javascriptTester;
+    final private DirectoryRepository directoryRepository;
 
-    record Test(String code, String test, String language) {
+    record Test(String code, String testSlug, Language language) {
 
     }
 
@@ -39,9 +42,12 @@ public class Listener {
 
         logger.debug("Parsed record with key: {}, value: {}", record.key(), test);
 
+        final var path = directoryRepository.getBySlugAndLanguage(test.testSlug(), test.language());
+        logger.debug("Path: {}", path);
+
         java.util.function.Consumer<Object> onResult = result -> {
             final var runnerEnd = System.currentTimeMillis();
-            logger.info("Tests for id {} finished after {}ms", runnerEnd - runnerStart);
+            logger.info("Tests for id {} finished after {}ms", record.key(), runnerEnd - runnerStart);
             try {
                 kafka.send(resultTopic, record.key(), mapper.writeValueAsString(result));
             } catch (JsonProcessingException e) {
@@ -50,7 +56,7 @@ public class Listener {
         };
 
         switch (test.language) {
-            case "Javascript" -> javascriptTester.test(test.test, test.code, onResult);
+            case Javascript -> javascriptTester.test(path, test.code, onResult);
             default -> onResult.accept("aboba exception: unknown language");
         }
     }
