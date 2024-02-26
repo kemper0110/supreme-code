@@ -3,8 +3,11 @@ package net.danil.web.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.danil.model.Language;
 import net.danil.web.service.TestRunnerChannelService;
+import org.danil.ProblemRepository;
+import org.danil.TemplateRepository;
+import org.danil.model.Language;
+import org.danil.model.Problem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -24,9 +27,12 @@ public class ProblemController {
 
     final private TestRunnerChannelService testRunnerChannelService;
 
+    final private TemplateRepository templateRepository;
+    final private ProblemRepository problemRepository;
+
     @GetMapping
-    List<Object> index() {
-        return null;
+    List<Problem> index() {
+        return problemRepository.getAll();
     }
 
     record TestRequest(String code, Language language) {
@@ -34,6 +40,7 @@ public class ProblemController {
 
     record TestMessage(String code, String test, Language language) {
     }
+
     public record TestResult(int tests, int failures, int errors, double time, String xml, String logs) {
     }
 
@@ -62,8 +69,38 @@ public class ProblemController {
         });
     }
 
-    @GetMapping("/{id}")
-    Object view(@PathVariable Long id) {
-        return null;
+
+    record LanguageTemplate(
+            Language language,
+            String template
+    ) {
+
     }
+
+    record ProblemView(
+            String id,
+            String name,
+            String description,
+            Problem.Difficulty difficulty,
+            List<LanguageTemplate> languages
+    ) {
+
+    }
+
+    @GetMapping("/{slug}")
+    ProblemView view(@PathVariable String slug) {
+        final var problem = problemRepository.getBySlug(slug);
+        return new ProblemView(
+                problem.getId(),
+                problem.getName(),
+                problem.getDescription(),
+                problem.getDifficulty(),
+                problem.getLanguages().stream().map(lang ->
+                                new LanguageTemplate(lang,
+                                        templateRepository.getBySlugAndLanguage(slug, lang)))
+                        .toList()
+        );
+    }
+    //        return problemRepository.findDetailedById(id).get();
+//        return templateRepository.getBySlugAndLanguage("TwoSum", org.danil.model.Language.Java);
 }
