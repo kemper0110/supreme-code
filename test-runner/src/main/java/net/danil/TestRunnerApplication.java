@@ -1,117 +1,72 @@
 package net.danil;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.core.DockerClientImpl;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
-import com.github.dockerjava.transport.DockerHttpClient;
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.Duration;
-import java.util.Collections;
-import java.util.Properties;
-import java.util.function.Supplier;
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootApplication
 public class TestRunnerApplication {
-
-    static String testTopic = "test-topic";
-    static String resultTopic = "test-result-topic";
-
-    record Test(String code, String test, String language) {
-
-    }
-
-
-    public static Consumer<String, String> makeConsumer() {
-        Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "test-group");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        Consumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Collections.singletonList(testTopic));
-        return consumer;
-    }
-
-    public static Producer<String, String> makeProducer() {
-        Properties props = new Properties();
+    @Bean
+    public Map<String, Object> producerConfigs() {
+        Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        return new KafkaProducer<>(props);
+        return props;
+    }
+
+    @Bean
+    public ProducerFactory<String, String> producerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public DockerClientConfig dockerClientConfig() {
+        return DefaultDockerClientConfig.createDefaultConfigBuilder()
+                .withDockerHost(System.getProperty("os.name").startsWith("Windows") ? "tcp://localhost:2375" : "unix:///var/run/docker.sock")
+                .build();
+    }
+
+    @Bean
+    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ApacheDockerHttpClient dockerHttpClient() {
+        return new ApacheDockerHttpClient.Builder()
+                .dockerHost(dockerClientConfig().getDockerHost())
+                .maxConnections(100)
+                .connectionTimeout(Duration.ofSeconds(30))
+                .responseTimeout(Duration.ofSeconds(45))
+                .build();
+    }
+
+    @Bean
+    public DockerClient dockerClient() {
+        return DockerClientImpl.getInstance(dockerClientConfig(), dockerHttpClient());
     }
 
     public static void main(String... args) {
         SpringApplication.run(TestRunnerApplication.class, args);
         System.out.println("Test runner initialized");
-
-        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost(System.getProperty("os.name").startsWith("Windows") ? "tcp://localhost:2375" : "unix:///var/run/docker.sock")
-                .build();
-
-        Supplier<DockerHttpClient> httpClientProvider = () -> new ApacheDockerHttpClient.Builder()
-                .dockerHost(config.getDockerHost())
-                .maxConnections(100)
-                .connectionTimeout(Duration.ofSeconds(30))
-                .responseTimeout(Duration.ofSeconds(45))
-                .build();
-
-        final var javascriptTester = new JavascriptTester(config, httpClientProvider.get());
-
-        try (Consumer<String, String> consumer = makeConsumer();
-             Producer<String, String> producer = makeProducer()
-        ) {
-            System.out.println("Kafka initialized, started consuming");
-            int i = 0;
-            while (true) {
-                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
-                System.out.println("Consume timeout " + i++);
-                records.forEach(record -> {
-                    System.out.printf("Consumed record with key %s and value %s%n", record.key(), record.value());
-
-                    final var runnerStart = System.currentTimeMillis();
-
-                    final var mapper = new ObjectMapper();
-                    final Test test;
-                    try {
-                        test = mapper.readValue(record.value(), Test.class);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    System.out.println("received " + test);
-
-                    java.util.function.Consumer<Object> onResult = result -> {
-                        final var runnerEnd = System.currentTimeMillis();
-                        System.out.println("Runner finished after " + (runnerEnd - runnerStart) + " ms");
-                        try {
-                            producer.send(new ProducerRecord<>(resultTopic, record.key(), mapper.writeValueAsString(result)));
-                        } catch (JsonProcessingException e) {
-                            System.out.println(e.getMessage());
-                        }
-                    };
-
-                    switch (test.language) {
-//                        case "c++" -> cppRunner.run(task.code);
-//                        case "java" -> javaRunner.run(task.code);
-                        case "Javascript" -> javascriptTester.test(test.test, test.code, onResult);
-                        default -> onResult.accept("aboba exception: unknown language");
-                    };
-                });
-            }
-        }
     }
 }

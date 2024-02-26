@@ -1,25 +1,25 @@
 package net.danil;
 
+import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.core.DockerClientConfig;
-import com.github.dockerjava.transport.DockerHttpClient;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
 import net.danil.generated.junit.Testsuites;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+@Service
 public class JavascriptTester extends Tester {
-    public JavascriptTester(DockerClientConfig clientConfig, DockerHttpClient httpClient) {
-        super(clientConfig, httpClient);
+    public JavascriptTester(DockerClient dockerClient) {
+        super(dockerClient);
     }
 
     @Override

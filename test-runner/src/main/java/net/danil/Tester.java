@@ -5,25 +5,16 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.WaitResponse;
-import com.github.dockerjava.core.DockerClientConfig;
-import com.github.dockerjava.core.DockerClientImpl;
-import com.github.dockerjava.transport.DockerHttpClient;
+import lombok.RequiredArgsConstructor;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+@RequiredArgsConstructor
 public abstract class Tester {
-    protected final DockerClientConfig clientConfig;
-    protected final DockerHttpClient httpClient;
     protected final DockerClient dockerClient;
-
-    public Tester(DockerClientConfig clientConfig, DockerHttpClient httpClient) {
-        this.clientConfig = clientConfig;
-        this.httpClient = httpClient;
-        this.dockerClient = DockerClientImpl.getInstance(clientConfig, httpClient);
-    }
 
     protected abstract byte[] createArchive(String test, String code);
     protected abstract CreateContainerResponse createContainer();
