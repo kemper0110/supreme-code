@@ -25,7 +25,7 @@ public class Listener {
 
     @KafkaListener(topics = "test-topic", groupId = "test-group")
     protected void listen(ConsumerRecord<String, String> record) {
-        System.out.printf("Consumed record with key %s and value %s%n", record.key(), record.value());
+        logger.info("Consumed record with key: {}", record.key());
 
         final var runnerStart = System.currentTimeMillis();
 
@@ -37,15 +37,15 @@ public class Listener {
             throw new RuntimeException(e);
         }
 
-        System.out.println("received " + test);
+        logger.debug("Parsed record with key: {}, value: {}", record.key(), test);
 
         java.util.function.Consumer<Object> onResult = result -> {
             final var runnerEnd = System.currentTimeMillis();
-            System.out.println("Runner finished after " + (runnerEnd - runnerStart) + " ms");
+            logger.info("Tests for id {} finished after {}ms", runnerEnd - runnerStart);
             try {
                 kafka.send(resultTopic, record.key(), mapper.writeValueAsString(result));
             } catch (JsonProcessingException e) {
-                System.out.println(e.getMessage());
+                logger.error("listener error={}", e.getMessage());
             }
         };
 

@@ -5,6 +5,8 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientImpl;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +25,7 @@ import java.util.Map;
 
 @SpringBootApplication(scanBasePackages = {"org.danil", "net.danil"})
 public class TestRunnerApplication {
+    private static final Logger logger = LoggerFactory.getLogger(TestRunnerApplication.class);
     @Bean
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
@@ -67,6 +70,6 @@ public class TestRunnerApplication {
 
     public static void main(String... args) {
         SpringApplication.run(TestRunnerApplication.class, args);
-        System.out.println("Test runner initialized");
+        logger.info("Test runner initialized");
     }
 }

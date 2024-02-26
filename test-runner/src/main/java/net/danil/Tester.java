@@ -6,6 +6,8 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.WaitResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -14,6 +16,7 @@ import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 public abstract class Tester {
+    private final Logger logger = LoggerFactory.getLogger(Tester.class);
     protected final DockerClient dockerClient;
 
     protected abstract byte[] createArchive(String test, String code);
@@ -41,7 +44,7 @@ public abstract class Tester {
                 .exec(new ResultCallback<Frame>() {
                     @Override
                     public void onStart(Closeable closeable) {
-                        System.out.println("start logging");
+                        logger.debug("container({})-logging: started", container.getId());
                     }
 
                     @Override
@@ -51,12 +54,12 @@ public abstract class Tester {
 
                     @Override
                     public void onError(Throwable throwable) {
-                        System.out.println(throwable.getMessage());
+                        logger.error("container({})-logging: error {}", container.getId(), throwable.getMessage());
                     }
 
                     @Override
                     public void onComplete() {
-                        System.out.println("complete logging");
+                        logger.debug("container({})-logging: completed", container.getId());
                     }
 
                     @Override
@@ -69,7 +72,7 @@ public abstract class Tester {
         dockerClient.waitContainerCmd(container.getId()).exec(new ResultCallback<WaitResponse>() {
             @Override
             public void onComplete() {
-                System.out.println("Wait completed");
+                logger.debug("container({})-wait: complete", container.getId());
                 try {
                     final var report = copyReport(container.getId());
                     final var result = parseReport(report, builder.toString());
@@ -78,8 +81,7 @@ public abstract class Tester {
                     resultCallback.accept(TestResult.builder().logs(builder.toString()).build());
                 } finally {
                     dockerClient.removeContainerCmd(container.getId()).exec();
-                    System.out.println("Removed container");
-                    System.out.println("Tester is exiting " + container.getId());
+                    logger.debug("container({})-wait: removed container, exiting", container.getId());
                 }
             }
             @Override
@@ -89,12 +91,12 @@ public abstract class Tester {
 
             @Override
             public void onNext(WaitResponse waitResponse) {
-                System.out.println(waitResponse.toString());
+                logger.info("container({})-wait: response={}", container.getId(), waitResponse.toString());
             }
 
             @Override
             public void onError(Throwable throwable) {
-                System.out.println(throwable);
+                logger.error("container({})-wait: error {}", container.getId(), throwable.getMessage());
             }
             @Override
             public void close() throws IOException {
