@@ -1,19 +1,14 @@
 package net.danil.web.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.danil.web.dto.BasicUserDto;
 import net.danil.web.dto.BasicUserProjection;
 import net.danil.web.model.User;
 import net.danil.web.repository.UserRepository;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
-import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
