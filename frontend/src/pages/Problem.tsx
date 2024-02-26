@@ -2,14 +2,6 @@ import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import {useEffect, useRef, useState} from "react";
 import {editor} from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
-import {Link, RichTextEditor} from '@mantine/tiptap';
-import {useEditor} from '@tiptap/react';
-import Highlight from '@tiptap/extension-highlight';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import TextAlign from '@tiptap/extension-text-align';
-import Superscript from '@tiptap/extension-superscript';
-import SubScript from '@tiptap/extension-subscript';
 import {IconGripHorizontal, IconGripVertical} from "@tabler/icons-react";
 import {Button, Flex, Loader, Pill, PillGroup, SegmentedControl, Stack, Stepper, Title} from "@mantine/core";
 import {useParams} from "react-router-dom";
@@ -18,6 +10,8 @@ import axios from "axios";
 import {LanguageValue} from "../types/LanguageValue.tsx";
 import {CppView, JavaView, NodeView} from "../components/LanguageView.tsx";
 import ICodeEditor = editor.ICodeEditor;
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Language = {
   id: number
@@ -71,19 +65,6 @@ export default function Problem() {
     }
   })
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      Link,
-      Superscript,
-      SubScript,
-      Highlight,
-      TextAlign.configure({types: ['heading', 'paragraph']}),
-    ],
-    content: description,
-    editable: false,
-  });
 
   const onRunClick = () => {
     // @ts-ignore
@@ -94,12 +75,12 @@ export default function Problem() {
     <div className={'h-screen'}>
       <PanelGroup autoSaveId={'problem:[description-editor]'} direction={'horizontal'}>
         <Panel defaultSize={40}>
-          <Title>
+          <Title pl={16}>
             {name}
           </Title>
-          <RichTextEditor editor={editor}>
-            <RichTextEditor.Content className={'overflow-y-scroll max-h-screen'}/>
-          </RichTextEditor>
+          <Markdown remarkPlugins={[remarkGfm]} className={'p-4 pb-16 prose lg:prose-xl overflow-y-auto max-h-screen'}>
+            {description}
+          </Markdown>
         </Panel>
         <PanelResizeHandle className={'bg-slate-200 flex items-center justify-center'}>
           <IconGripVertical className={'w-[15px] text-slate-500'}/>
