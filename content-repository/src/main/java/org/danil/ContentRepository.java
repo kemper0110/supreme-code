@@ -1,5 +1,6 @@
 package org.danil;
 
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.danil.model.Content;
@@ -14,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class ContentRepository {
     @Value("${supreme-code.content-repository.path}")
     private String contentRoot;
-    private final YamlObjectMapper objectMapper;
+    private final YAMLMapper objectMapper;
     public Content get() {
         final var path = contentRoot + "/manifest.yaml";
         try {
