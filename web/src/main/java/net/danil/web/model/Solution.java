@@ -21,9 +21,6 @@ public class Solution {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ProblemLanguage problemLanguage;
-
     private String code;
 
     @OneToOne(mappedBy = "solution", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)

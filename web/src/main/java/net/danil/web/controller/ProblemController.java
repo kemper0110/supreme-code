@@ -3,11 +3,7 @@ package net.danil.web.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import net.danil.web.dto.DetailProblemProjection;
-import net.danil.web.model.Language;
-import net.danil.web.model.Problem;
-import net.danil.web.repository.ProblemLanguageRepository;
-import net.danil.web.repository.ProblemRepository;
+import org.danil.model.Language;
 import net.danil.web.service.TestRunnerChannelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,16 +19,14 @@ import java.util.UUID;
 @RequestMapping("/api/problem")
 public class ProblemController {
     Logger logger = LoggerFactory.getLogger(ProblemController.class);
-    private final ProblemRepository problemRepository;
-    private final ProblemLanguageRepository problemLanguageRepository;
 
     final private KafkaTemplate<String, String> kafka;
 
     final private TestRunnerChannelService testRunnerChannelService;
 
     @GetMapping
-    List<Problem> index() {
-        return problemRepository.findAll();
+    List<Object> index() {
+        return null;
     }
 
     record TestRequest(String code, Language language) {
@@ -47,8 +41,7 @@ public class ProblemController {
     Mono<Object> submit(@PathVariable Long id, @RequestBody TestRequest testRequest) {
         logger.debug("submitted solution {}", testRequest);
         final var mapper = new ObjectMapper();
-        final var problemLanguage = problemLanguageRepository.findByProblemIdAndLanguage(id, testRequest.language()).get();
-        final var testMessage = new TestMessage(testRequest.code(), problemLanguage.getTest(), testRequest.language());
+        final var testMessage = new TestMessage(testRequest.code(), "", testRequest.language());
         return Mono.create(sink -> {
             final var taskId = UUID.randomUUID().toString();
             try {
@@ -70,7 +63,7 @@ public class ProblemController {
     }
 
     @GetMapping("/{id}")
-    DetailProblemProjection view(@PathVariable Long id) {
-        return problemRepository.findDetailedById(id).get();
+    Object view(@PathVariable Long id) {
+        return null;
     }
 }
