@@ -78,7 +78,7 @@ export default function Problem() {
           <Title pl={16}>
             {name}
           </Title>
-          <Markdown remarkPlugins={[remarkGfm]} className={'p-4 pb-16 prose lg:prose-xl overflow-y-auto max-h-screen'}>
+          <Markdown remarkPlugins={[remarkGfm]} className={'p-4 pb-16 prose max-w-full overflow-y-auto max-h-screen'}>
             {description}
           </Markdown>
         </Panel>
