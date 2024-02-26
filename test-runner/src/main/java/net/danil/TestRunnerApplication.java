@@ -21,7 +21,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"org.danil", "net.danil"})
 public class TestRunnerApplication {
     @Bean
     public Map<String, Object> producerConfigs() {

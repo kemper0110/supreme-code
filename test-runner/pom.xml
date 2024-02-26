@@ -96,6 +96,12 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>4.0.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.danil</groupId>
+            <artifactId>content-repository</artifactId>
+            <version>3.2.2</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
