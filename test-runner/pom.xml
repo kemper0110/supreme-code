@@ -91,6 +91,11 @@
             <artifactId>httpclient5-fluent</artifactId>
             <version>5.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.1</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
