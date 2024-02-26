@@ -37,6 +37,11 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - '5432:5432'
+    healthcheck:
+      test: /usr/bin/pg_isready
+      interval: 10s
+      timeout: 3s
+      retries: 3
     volumes:
       - rdbms:/var/lib/postgresql/data
       - ./init-rdb:/docker-entrypoint-initdb.d
