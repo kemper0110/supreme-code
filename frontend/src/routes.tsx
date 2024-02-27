@@ -45,7 +45,7 @@ export const routes = [
             language: 'Java'
           },
         })).data,
-        staleTime: 1000
+        staleTime: 10000
       })
     }
   }
