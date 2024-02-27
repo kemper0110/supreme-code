@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import net.danil.web.service.TestRunnerChannelService;
+import org.danil.ContentRepository;
 import org.danil.ProblemRepository;
 import org.danil.TemplateRepository;
 import org.danil.model.Language;
@@ -29,10 +30,16 @@ public class ProblemController {
 
     final private TemplateRepository templateRepository;
     final private ProblemRepository problemRepository;
+    final private ContentRepository contentRepository;
+
+    record ProblemEntry(String slug, Problem problem) {
+
+    }
 
     @GetMapping
-    List<Problem> index() {
-        return problemRepository.getAll();
+    List<ProblemEntry> index() {
+        final var problemSlugs = contentRepository.get().getProblems();
+        return problemSlugs.stream().map(slug -> new ProblemEntry(slug, problemRepository.getBySlug(slug))).toList();
     }
 
     record TestRequest(String code, Language language) {
@@ -41,7 +48,8 @@ public class ProblemController {
     record TestMessage(String code, String testSlug, Language language) {
     }
 
-    public record TestResult(int tests, int failures, int errors, int statusCode, double time, String xml, String logs) {
+    public record TestResult(int tests, int failures, int errors, int statusCode, double time, String xml,
+                             String logs) {
     }
 
     @PostMapping("/{slug}")
