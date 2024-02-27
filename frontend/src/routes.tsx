@@ -1,4 +1,4 @@
-import {RouteObject,} from "react-router-dom";
+import {defer, RouteObject,} from "react-router-dom";
 import "./index.css";
 import axios from "axios";
 import {queryClient} from "./queryClient.ts";
@@ -53,13 +53,17 @@ export const routes = [
   {
     path: "/problem",
     element: <Problems/>,
-    loader: async () => {
+    loader: () => {
       const queryKey = ['problem']
-      return queryClient.getQueryData(queryKey) ?? await queryClient.fetchQuery({
+      const problems = queryClient.getQueryData(queryKey)
+      if(problems)
+        console.log("data available")
+      const problemsPromise = problems ? Promise.resolve(problems) : queryClient.fetchQuery({
         queryKey,
         queryFn: async () => (await axios.get(`/api/problem`)).data,
         staleTime: 10000
       })
+      return defer({problemsPromise})
     }
   }
 ] as RouteObject[];

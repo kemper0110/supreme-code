@@ -1,10 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
 import cx from 'clsx';
-import {Table, ScrollArea} from '@mantine/core';
+import {Table, ScrollArea, Skeleton} from '@mantine/core';
 import classes from './Problems.module.css';
-import {useState} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import {LanguageValue} from "../../types/LanguageValue.tsx";
-import {useNavigate} from "react-router-dom";
+import {Await, useLoaderData, useNavigate} from "react-router-dom";
 
 type ProblemData = {
   id: number
@@ -23,14 +23,57 @@ type ProblemWithSlug = {
 type ProblemsData = ProblemWithSlug[]
 
 export default function Problems() {
-  const {data} = useQuery<ProblemsData>({queryKey: ['problem']})
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate()
-  console.log({data})
+  const {problemsPromise} = useLoaderData()
   const onRowClick = (slug: string) => {
     navigate(`/problem/${slug}`, {
       replace: false
     })
+  }
+
+  const Rows = () => {
+    const {data} = useQuery<ProblemsData>({queryKey: ['problem']})
+    return data?.map(problemEntry => (
+      <Table.Tr key={problemEntry.slug} className={'hover:bg-slate-100 transition-colors cursor-pointer'}
+                onClick={() => onRowClick(problemEntry.slug)}
+      >
+        <Table.Td>{problemEntry.problem.name}</Table.Td>
+        <Table.Td>{problemEntry.problem.difficulty}</Table.Td>
+        <Table.Td className={'flex gap-2'}>
+          {
+            problemEntry.problem.languages.map(lang => (
+              <span key={lang}>
+                          {lang}
+                        </span>
+            ))
+          }
+        </Table.Td>
+      </Table.Tr>
+    ))
+  }
+
+  const Fallback = () => {
+    const [show, setShow] = useState(false)
+    useEffect(() => {
+      let timeout = setTimeout(() => setShow(true), 300)
+      return () => {
+        clearTimeout(timeout)
+      }
+    }, [])
+    if (show)
+      return Array.from({length: 5}).map((_v, i) => (
+        <Table.Tr key={i} className={'hover:bg-slate-100 transition-colors cursor-pointer'}>
+          {
+            Array.from({length: 3}).map((_v, i) => (
+              <Table.Td key={i}>
+                <Skeleton width={'80%'} height={14}/>
+              </Table.Td>
+            ))
+          }
+        </Table.Tr>
+      ))
+    return null
   }
 
   return (
@@ -45,25 +88,11 @@ export default function Problems() {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {
-              data?.map(problemEntry => (
-                <Table.Tr key={problemEntry.slug} className={'hover:bg-slate-100 transition-colors cursor-pointer'}
-                          onClick={() => onRowClick(problemEntry.slug)}
-                >
-                  <Table.Td>{problemEntry.problem.name}</Table.Td>
-                  <Table.Td>{problemEntry.problem.difficulty}</Table.Td>
-                  <Table.Td className={'flex gap-2'}>
-                    {
-                      problemEntry.problem.languages.map(lang => (
-                        <span key={lang}>
-                          {lang}
-                        </span>
-                      ))
-                    }
-                  </Table.Td>
-                </Table.Tr>
-              ))
-            }
+            <Suspense fallback={<Fallback/>}>
+              <Await resolve={problemsPromise}>
+                <Rows/>
+              </Await>
+            </Suspense>
           </Table.Tbody>
         </Table>
       </ScrollArea>
