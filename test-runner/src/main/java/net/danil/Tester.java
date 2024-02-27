@@ -23,7 +23,7 @@ public abstract class Tester {
     protected abstract byte[] createArchive(Path test, String code);
     protected abstract CreateContainerResponse createContainer();
     protected abstract String copyReport(String containerId);
-    protected abstract TestResult parseReport(String xmlReport, String logs);
+    protected abstract TestResult.TestResultBuilder parseReport(String xmlReport);
 
     void test(Path test, String code, Consumer<Object> resultCallback) {
         final var container = createContainer();
@@ -71,15 +71,17 @@ public abstract class Tester {
 
 
         dockerClient.waitContainerCmd(container.getId()).exec(new ResultCallback<WaitResponse>() {
+            int statusCode = 0;
             @Override
             public void onComplete() {
                 logger.debug("container({})-wait: complete", container.getId());
+                String logs = builder.toString();
                 try {
                     final var report = copyReport(container.getId());
-                    final var result = parseReport(report, builder.toString());
+                    final var result = parseReport(report).logs(logs).statusCode(statusCode).build();
                     resultCallback.accept(result);
                 } catch (Exception e) {
-                    resultCallback.accept(TestResult.builder().logs(builder.toString()).build());
+                    resultCallback.accept(TestResult.builder().logs(logs).statusCode(statusCode).build());
                 } finally {
                     dockerClient.removeContainerCmd(container.getId()).exec();
                     logger.debug("container({})-wait: removed container, exiting", container.getId());
@@ -92,7 +94,8 @@ public abstract class Tester {
 
             @Override
             public void onNext(WaitResponse waitResponse) {
-                logger.info("container({})-wait: response={}", container.getId(), waitResponse.toString());
+                statusCode = waitResponse.getStatusCode();
+                logger.info("container({})-wait: status-code={}", container.getId(), waitResponse.getStatusCode());
             }
 
             @Override

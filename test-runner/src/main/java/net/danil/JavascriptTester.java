@@ -83,7 +83,7 @@ public class JavascriptTester extends Tester {
     }
 
     @Override
-    protected TestResult parseReport(String xmlReport, String logs) {
+    protected TestResult.TestResultBuilder parseReport(String xmlReport) {
         try {
             var jaxbContext = JAXBContext.newInstance("net.danil.generated.junit");
             var unmarshaller = jaxbContext.createUnmarshaller();
@@ -94,9 +94,7 @@ public class JavascriptTester extends Tester {
                     .failures(Integer.parseInt(testsuites.getFailures()))
                     .errors(Integer.parseInt(testsuites.getErrors()))
                     .time(Double.parseDouble(testsuites.getTime()))
-                    .xml(xmlReport)
-                    .logs(logs)
-                    .build();
+                    .xml(xmlReport);
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }

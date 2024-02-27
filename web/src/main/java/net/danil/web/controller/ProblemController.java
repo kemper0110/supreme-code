@@ -38,17 +38,17 @@ public class ProblemController {
     record TestRequest(String code, Language language) {
     }
 
-    record TestMessage(String code, String test, Language language) {
+    record TestMessage(String code, String testSlug, Language language) {
     }
 
-    public record TestResult(int tests, int failures, int errors, double time, String xml, String logs) {
+    public record TestResult(int tests, int failures, int errors, int statusCode, double time, String xml, String logs) {
     }
 
-    @PostMapping("/{id}")
-    Mono<Object> submit(@PathVariable Long id, @RequestBody TestRequest testRequest) {
-        logger.debug("submitted solution {}", testRequest);
+    @PostMapping("/{slug}")
+    Mono<Object> submit(@PathVariable String slug, @RequestBody TestRequest testRequest) {
+        logger.debug("submitted solution for {} with {}", slug, testRequest);
         final var mapper = new ObjectMapper();
-        final var testMessage = new TestMessage(testRequest.code(), "", testRequest.language());
+        final var testMessage = new TestMessage(testRequest.code(), slug, testRequest.language());
         return Mono.create(sink -> {
             final var taskId = UUID.randomUUID().toString();
             try {

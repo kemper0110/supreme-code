@@ -35,6 +35,7 @@ type TestResultData = {
   time: number
   xml: string
   logs: string
+  statusCode: number
 }
 
 export default function Problem() {
@@ -88,21 +89,22 @@ export default function Problem() {
         <Panel>
           <PanelGroup autoSaveId={'problem:[code-test]'} direction={'vertical'}>
             <Panel className={'pb-[60px]'} defaultSize={80}>
-                <Editor onMount={editor => editorRef.current = editor}
-                        height="100%" language={selectedLanguage.language.toLowerCase()} defaultValue={selectedLanguage.template}/>
-                <Flex justify={'end'} gap={12} align={'center'} pr={20}>
-                  <SegmentedControl data={languageSelectorData} value={selectedLanguage.language} onChange={value => {
-                    setSelectedLanguage(languages.find(l => l.language === value)!)
-                  }}/>
-                  <Button onClick={onRunClick}>
-                    Запустить
-                  </Button>
-                </Flex>
+              <Editor onMount={editor => editorRef.current = editor}
+                      height="100%" language={selectedLanguage.language.toLowerCase()}
+                      defaultValue={selectedLanguage.template}/>
+              <Flex justify={'end'} gap={12} align={'center'} pr={20}>
+                <SegmentedControl size={'xs'} data={languageSelectorData} value={selectedLanguage.language} onChange={value => {
+                  setSelectedLanguage(languages.find(l => l.language === value)!)
+                }}/>
+                <Button onClick={onRunClick}>
+                  Запустить
+                </Button>
+              </Flex>
             </Panel>
-            <PanelResizeHandle className={'my-[10px] bg-slate-200 flex items-center justify-center'}>
+            <PanelResizeHandle className={' bg-slate-200 flex items-center justify-center'}>
               <IconGripHorizontal className={'h-[15px] text-slate-500'}/>
             </PanelResizeHandle>
-            <Panel>
+            <Panel className={'!overflow-auto'}>
               {/*<Test step={step}/>*/}
               {
                 testMutation.isPending ? (
@@ -113,8 +115,11 @@ export default function Problem() {
               }
               {
                 testMutation.data ? (
-                  <Stack mah={'100%'}>
+                  <Stack className={'h-full'} p={8}>
                     <PillGroup>
+                      <Pill>
+                        status {testMutation.data.data.statusCode}
+                      </Pill>
                       <Pill>
                         {testMutation.data.data.tests} tests
                       </Pill>
@@ -125,16 +130,16 @@ export default function Problem() {
                         {testMutation.data.data.failures} failures
                       </Pill>
                       <Pill>
-                        {testMutation.data.data.time}s time
+                        time {testMutation.data.data.time}s
                       </Pill>
                     </PillGroup>
-                    <Flex className={'shrink grow'} mah={'240px'}>
-                        <pre className={'w-1/2 overflow-auto border'}>
-                          {testMutation.data.data.logs}
-                        </pre>
-                      <pre className={'w-1/2 overflow-auto border'}>
-                          {testMutation.data.data.xml}
-                        </pre>
+                    <Flex className={'shrink grow gap-2'}>
+                      <pre className={'w-1/2 overflow-auto rounded-lg border-2 border-slate-200 shadow-md shadow-slate-200 p-2'}>
+                        {testMutation.data.data.logs}
+                      </pre>
+                      <pre className={'w-1/2 overflow-auto rounded-lg border-2 border-slate-200 shadow-md shadow-slate-200 p-2'}>
+                        {testMutation.data.data.xml}
+                      </pre>
                     </Flex>
                   </Stack>
                 ) : null
