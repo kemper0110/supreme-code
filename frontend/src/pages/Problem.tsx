@@ -7,11 +7,11 @@ import {Button, Flex, Loader, Pill, PillGroup, SegmentedControl, Stack, Stepper,
 import {useParams} from "react-router-dom";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import axios from "axios";
-import {LanguageValue} from "../types/LanguageValue.tsx";
 import {CppView, JavaView, NodeView} from "../components/LanguageView.tsx";
-import ICodeEditor = editor.ICodeEditor;
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import ICodeEditor = editor.ICodeEditor;
+import {LanguageValue} from "../types/LanguageValue.tsx";
 
 type Language = {
   id: number
@@ -39,8 +39,8 @@ type TestResultData = {
 }
 
 export default function Problem() {
-  const {id} = useParams()
-  const {data} = useQuery<ProblemData>({queryKey: ['problem', id]})
+  const {slug} = useParams()
+  const {data} = useQuery<ProblemData>({queryKey: ['problem', slug]})
   const {name, description, languages} = data!
 
   const languageSelectorData =
@@ -57,7 +57,7 @@ export default function Problem() {
   useEffect(() => editorRef.current?.setValue(selectedLanguage.template), [selectedLanguage.language])
 
   const testMutation = useMutation({
-    mutationFn: (code: string) => axios.post<TestResultData>(`/api/problem/${encodeURIComponent(id!)}`, {
+    mutationFn: (code: string) => axios.post<TestResultData>(`/api/problem/${encodeURIComponent(slug!)}`, {
       language: selectedLanguage.language,
       code
     }),

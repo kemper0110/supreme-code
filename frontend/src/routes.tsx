@@ -32,15 +32,15 @@ export const routes = [
     element: <Auth/>
   },
   {
-    path: "/problem/:id",
+    path: "/problem/:slug",
     element: <Problem/>,
     loader: async (params) => {
-      const id = params.params.id
-      const queryKey = ['problem', id]
+      const slug = params.params.slug
+      const queryKey = ['problem', slug]
       console.log({queryKey, params})
-      return queryClient.fetchQuery({
+      return queryClient.getQueryData(queryKey) ?? await queryClient.fetchQuery({
         queryKey,
-        queryFn: async () => (await axios.get(`/api/problem/${encodeURIComponent(id!)}`, {
+        queryFn: async () => (await axios.get(`/api/problem/${encodeURIComponent(slug!)}`, {
           params: {
             language: 'Java'
           },
