@@ -8,6 +8,7 @@ import Problem from "./pages/Problem.tsx";
 import Page404 from "./pages/Page404";
 import Page500 from "./pages/Page500";
 import Auth from "./pages/Auth.tsx";
+import Problems from "./pages/Problems/Problems.tsx";
 
 
 export const routes = [
@@ -45,6 +46,18 @@ export const routes = [
             language: 'Java'
           },
         })).data,
+        staleTime: 10000
+      })
+    },
+  },
+  {
+    path: "/problem",
+    element: <Problems/>,
+    loader: async () => {
+      const queryKey = ['problem']
+      return queryClient.getQueryData(queryKey) ?? await queryClient.fetchQuery({
+        queryKey,
+        queryFn: async () => (await axios.get(`/api/problem`)).data,
         staleTime: 10000
       })
     }
