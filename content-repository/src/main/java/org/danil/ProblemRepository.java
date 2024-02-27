@@ -17,7 +17,6 @@ public class ProblemRepository {
     @Value("${supreme-code.content-repository.problem.path}")
     private String problemRoot;
     private final YAMLMapper objectMapper;
-    private final ContentRepository contentRepository;
     public Problem getBySlug(String slug) {
         // TODO: sanitize slug
         final var path = problemRoot + "/" + slug + "/manifest.yaml";
@@ -27,9 +26,5 @@ public class ProblemRepository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-    public List<Problem> getAll() {
-        final var problemSlugs = contentRepository.get().getProblems();
-        return problemSlugs.stream().map(this::getBySlug).toList();
     }
 }
