@@ -22,7 +22,7 @@ public class Listener {
     final private JavascriptTester javascriptTester;
     final private DirectoryRepository directoryRepository;
 
-    record Test(String code, String testSlug, Language language) {
+    record Test(Long solutionId, String code, String testSlug, Language language) {
 
     }
 
@@ -45,9 +45,12 @@ public class Listener {
         final var path = directoryRepository.getBySlugAndLanguage(test.testSlug(), test.language());
         logger.debug("Path: {}", path);
 
-        java.util.function.Consumer<Object> onResult = result -> {
+        java.util.function.Consumer<TestResult.TestResultBuilder> onResult = resultBuilder -> {
             final var runnerEnd = System.currentTimeMillis();
             logger.info("Tests for id {} finished after {}ms", record.key(), runnerEnd - runnerStart);
+            final var result = resultBuilder
+                    .solutionId(test.solutionId())
+                    .build();
             try {
                 kafka.send(resultTopic, record.key(), mapper.writeValueAsString(result));
             } catch (JsonProcessingException e) {
@@ -57,7 +60,7 @@ public class Listener {
 
         switch (test.language) {
             case Javascript -> javascriptTester.test(path, test.code, onResult);
-            default -> onResult.accept("aboba exception: unknown language");
+            default -> onResult.accept(new TestResult.TestResultBuilder().logs("the language is not supported"));
         }
     }
 }

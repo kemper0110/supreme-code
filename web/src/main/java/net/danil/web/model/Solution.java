@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.danil.model.Language;
 
-import java.io.Serializable;
 
 @Entity
 @Getter
@@ -21,8 +21,16 @@ public class Solution {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @Column(nullable = false)
     private String code;
 
-    @OneToOne(mappedBy = "solution", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+    @Column(nullable = false)
+    private String problemSlug;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Language language;
+
+    @OneToOne(mappedBy = "solution", cascade = CascadeType.ALL)
     private SolutionResult solutionResult;
 }

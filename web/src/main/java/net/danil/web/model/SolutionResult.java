@@ -16,9 +16,25 @@ public class SolutionResult {
     @Id
     private Long id;
 
-    // TODO: think about compile error, test error, test success
-    private String result;
-    private Boolean isBuildError;
+    @Column(nullable = false)
+    private Integer tests;
+
+    @Column(nullable = false)
+    private Integer failures;
+
+    @Column(nullable = false)
+    private Integer errors;
+
+    @Column(nullable = false)
+    private Integer statusCode;
+
+    @Column(nullable = false)
+    private Float time;
+
+    @Column(nullable = false)
+    private String logs;
+
+    private String junitXml;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId

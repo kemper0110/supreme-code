@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SolutionRepository extends JpaRepository<Solution, Long> {
+    Solution findFirstByProblemSlugAndUserIdOrderByIdDesc(String slug, Long userId);
 }

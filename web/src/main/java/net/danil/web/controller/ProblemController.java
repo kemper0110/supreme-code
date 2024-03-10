@@ -1,9 +1,10 @@
 package net.danil.web.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import net.danil.web.model.Solution;
+import net.danil.web.repository.SolutionRepository;
 import net.danil.web.service.TestRunnerChannelService;
+import net.danil.web.service.TestRunnerSenderService;
 import org.danil.ContentRepository;
 import org.danil.ProblemRepository;
 import org.danil.TemplateRepository;
@@ -11,26 +12,26 @@ import org.danil.model.Language;
 import org.danil.model.Problem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/problem")
 public class ProblemController {
+    // todo: remove mocked user id
+    final Long MOCKEDUSERID = 1L;
     Logger logger = LoggerFactory.getLogger(ProblemController.class);
-
-    final private KafkaTemplate<String, String> kafka;
 
     final private TestRunnerChannelService testRunnerChannelService;
 
     final private TemplateRepository templateRepository;
     final private ProblemRepository problemRepository;
     final private ContentRepository contentRepository;
+    final private TestRunnerSenderService testRunnerSenderService;
+    private final SolutionRepository solutionRepository;
 
     record ProblemEntry(String slug, Problem problem) {
 
@@ -42,38 +43,34 @@ public class ProblemController {
         return problemSlugs.stream().map(slug -> new ProblemEntry(slug, problemRepository.getBySlug(slug))).toList();
     }
 
-    record TestRequest(String code, Language language) {
+    public record TestRequest(String code, Language language) {
     }
 
-    record TestMessage(String code, String testSlug, Language language) {
-    }
-
-    public record TestResult(int tests, int failures, int errors, int statusCode, double time, String xml,
+    public record TestResult(Long solutionId, int tests, int failures, int errors,
+                             int statusCode, float time, String xml,
                              String logs) {
     }
 
     @PostMapping("/{slug}")
     Mono<Object> submit(@PathVariable String slug, @RequestBody TestRequest testRequest) {
         logger.debug("submitted solution for {} with {}", slug, testRequest);
-        final var mapper = new ObjectMapper();
-        final var testMessage = new TestMessage(testRequest.code(), slug, testRequest.language());
         return Mono.create(sink -> {
-            final var taskId = UUID.randomUUID().toString();
             try {
-                kafka.send("test-topic", taskId, mapper.writeValueAsString(testMessage));
-            } catch (JsonProcessingException e) {
-                sink.error(new RuntimeException(e));
-                return;
+                final var taskId = testRunnerSenderService.send(MOCKEDUSERID, testRequest.code(), slug, testRequest.language());
+                sink.onDispose(() -> testRunnerChannelService.unsubscribe(taskId));
+
+                testRunnerChannelService.subscribe(taskId, (message) -> {
+                    if (message.getHeaders().containsKey("exception")) {
+                        final var exception = message.getHeaders().get("exception");
+                        sink.error(new RuntimeException((String) message.getPayload(), (Throwable) exception));
+                    } else {
+                        final TestResult result = (TestResult) message.getPayload();
+                        sink.success(result);
+                    }
+                });
+            } catch (Exception e) {
+                sink.error(e);
             }
-            sink.onDispose(() -> testRunnerChannelService.unsubscribe(taskId));
-            testRunnerChannelService.subscribe(taskId, message -> {
-                try {
-                    final TestResult result = mapper.readValue((String) message.getPayload(), TestResult.class);
-                    sink.success(result);
-                } catch (JsonProcessingException e) {
-                    sink.error(new RuntimeException(e));
-                }
-            });
         });
     }
 
@@ -90,7 +87,8 @@ public class ProblemController {
             String name,
             String description,
             Problem.Difficulty difficulty,
-            List<LanguageTemplate> languages
+            List<LanguageTemplate> languages,
+            TestResult result
     ) {
 
     }
@@ -98,6 +96,13 @@ public class ProblemController {
     @GetMapping("/{slug}")
     ProblemView view(@PathVariable String slug) {
         final var problem = problemRepository.getBySlug(slug);
+        final var solution = solutionRepository.findFirstByProblemSlugAndUserIdOrderByIdDesc(slug, MOCKEDUSERID);
+        TestResult testResult = null;
+        if(solution != null) {
+            final var solutionResult = solution.getSolutionResult();
+            testResult = new TestResult(solution.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(),
+                    solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getJunitXml(), solutionResult.getLogs());
+        }
         return new ProblemView(
                 problem.getId(),
                 problem.getName(),
@@ -106,9 +111,8 @@ public class ProblemController {
                 problem.getLanguages().stream().map(lang ->
                                 new LanguageTemplate(lang,
                                         templateRepository.getBySlugAndLanguage(slug, lang)))
-                        .toList()
+                        .toList(),
+                testResult
         );
     }
-    //        return problemRepository.findDetailedById(id).get();
-//        return templateRepository.getBySlugAndLanguage("TwoSum", org.danil.model.Language.Java);
 }

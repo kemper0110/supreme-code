@@ -25,7 +25,7 @@ public abstract class Tester {
     protected abstract String copyReport(String containerId);
     protected abstract TestResult.TestResultBuilder parseReport(String xmlReport);
 
-    void test(Path test, String code, Consumer<Object> resultCallback) {
+    void test(Path test, String code, Consumer<TestResult.TestResultBuilder> resultCallback) {
         final var container = createContainer();
         final var archive = createArchive(test, code);
 
@@ -78,10 +78,10 @@ public abstract class Tester {
                 String logs = builder.toString();
                 try {
                     final var report = copyReport(container.getId());
-                    final var result = parseReport(report).logs(logs).statusCode(statusCode).build();
+                    final var result = parseReport(report).logs(logs).statusCode(statusCode);
                     resultCallback.accept(result);
                 } catch (Exception e) {
-                    resultCallback.accept(TestResult.builder().logs(logs).statusCode(statusCode).build());
+                    resultCallback.accept(TestResult.builder().logs(logs).statusCode(statusCode));
                 } finally {
                     dockerClient.removeContainerCmd(container.getId()).exec();
                     logger.debug("container({})-wait: removed container, exiting", container.getId());
