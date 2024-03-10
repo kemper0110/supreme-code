@@ -3,9 +3,10 @@ package net.danil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import net.danil.dto.TestMessage;
+import net.danil.dto.TestResult;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.danil.DirectoryRepository;
-import org.danil.model.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -22,10 +23,6 @@ public class Listener {
     final private JavascriptTester javascriptTester;
     final private DirectoryRepository directoryRepository;
 
-    record Test(Long solutionId, String code, String testSlug, Language language) {
-
-    }
-
     @KafkaListener(topics = "test-topic", groupId = "test-group")
     protected void listen(ConsumerRecord<String, String> record) {
         logger.info("Consumed record with key: {}", record.key());
@@ -33,23 +30,23 @@ public class Listener {
         final var runnerStart = System.currentTimeMillis();
 
         final var mapper = new ObjectMapper();
-        final Test test;
+        final TestMessage testMessage;
         try {
-            test = mapper.readValue(record.value(), Test.class);
+            testMessage = mapper.readValue(record.value(), TestMessage.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
-        logger.debug("Parsed record with key: {}, value: {}", record.key(), test);
+        logger.debug("Parsed record with key: {}, value: {}", record.key(), testMessage);
 
-        final var path = directoryRepository.getBySlugAndLanguage(test.testSlug(), test.language());
+        final var path = directoryRepository.getBySlugAndLanguage(testMessage.testSlug(), testMessage.language());
         logger.debug("Path: {}", path);
 
         java.util.function.Consumer<TestResult.TestResultBuilder> onResult = resultBuilder -> {
             final var runnerEnd = System.currentTimeMillis();
             logger.info("Tests for id {} finished after {}ms", record.key(), runnerEnd - runnerStart);
             final var result = resultBuilder
-                    .solutionId(test.solutionId())
+                    .solutionId(testMessage.solutionId())
                     .build();
             try {
                 kafka.send(resultTopic, record.key(), mapper.writeValueAsString(result));
@@ -58,9 +55,9 @@ public class Listener {
             }
         };
 
-        switch (test.language) {
-            case Javascript -> javascriptTester.test(path, test.code, onResult);
-            default -> onResult.accept(new TestResult.TestResultBuilder().logs("the language is not supported"));
+        switch (testMessage.language()) {
+            case Javascript -> javascriptTester.test(path, testMessage.code(), onResult);
+            default -> onResult.accept(TestResult.builder().logs("the language is not supported"));
         }
     }
 }

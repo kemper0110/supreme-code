@@ -4,7 +4,7 @@ import axios from "axios";
 import {queryClient} from "./queryClient.ts";
 import Root from "./pages/Root.tsx";
 import Playground from "./pages/Playground.tsx";
-import Problem from "./pages/Problem.tsx";
+import Problem from "./pages/Problem/Problem.tsx";
 import Page404 from "./pages/Page404";
 import Page500 from "./pages/Page500";
 import Auth from "./pages/Auth.tsx";

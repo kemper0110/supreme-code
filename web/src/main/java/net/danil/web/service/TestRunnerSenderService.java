@@ -3,6 +3,7 @@ package net.danil.web.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import net.danil.web.dto.TestMessage;
 import net.danil.web.model.Solution;
 import net.danil.web.repository.SolutionRepository;
 import net.danil.web.repository.UserRepository;
@@ -22,21 +23,16 @@ public class TestRunnerSenderService {
     final private ObjectMapper mapper = new ObjectMapper();
 
 
-    public record TestMessage(Long solutionId, String code, String testSlug, Language language) {
-    }
-
-    public String send(Long userId, String code, String slug, Language language) {
+    public Long send(Long userId, String code, String slug, Language language) {
         try {
-            final var taskId = UUID.randomUUID().toString();
-
             final var user = userRepository.getReferenceById(userId);
             final var solution = solutionRepository.save(new Solution(null, user, code, slug, language, null));
             final var solutionId = solution.getId();
-            kafka.send(TOPIC_NAME, taskId, mapper.writeValueAsString(new TestMessage(
+            kafka.send(TOPIC_NAME, solutionId.toString(), mapper.writeValueAsString(new TestMessage(
                     solutionId, solution.getCode(), solution.getProblemSlug(), solution.getLanguage()
             )));
 
-            return taskId;
+            return solutionId;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

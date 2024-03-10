@@ -8,6 +8,8 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 import {QueryClientProvider} from "@tanstack/react-query";
 import {queryClient} from "./queryClient.ts";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
 
 const router = createBrowserRouter(routes)
 
@@ -16,6 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <MantineProvider>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router}/>
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition={'bottom-left'}/>
       </QueryClientProvider>
     </MantineProvider>
   </React.StrictMode>,

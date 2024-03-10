@@ -1,4 +1,4 @@
-package net.danil;
+package net.danil.dto;
 
 import lombok.Builder;
 

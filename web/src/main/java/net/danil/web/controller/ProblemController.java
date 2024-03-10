@@ -1,7 +1,9 @@
 package net.danil.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.danil.web.dto.TestResult;
 import net.danil.web.model.Solution;
+import net.danil.web.model.SolutionResult;
 import net.danil.web.repository.SolutionRepository;
 import net.danil.web.service.TestRunnerChannelService;
 import net.danil.web.service.TestRunnerSenderService;
@@ -46,17 +48,12 @@ public class ProblemController {
     public record TestRequest(String code, Language language) {
     }
 
-    public record TestResult(Long solutionId, int tests, int failures, int errors,
-                             int statusCode, float time, String xml,
-                             String logs) {
-    }
-
     @PostMapping("/{slug}")
     Mono<Object> submit(@PathVariable String slug, @RequestBody TestRequest testRequest) {
         logger.debug("submitted solution for {} with {}", slug, testRequest);
         return Mono.create(sink -> {
             try {
-                final var taskId = testRunnerSenderService.send(MOCKEDUSERID, testRequest.code(), slug, testRequest.language());
+                final var taskId = testRunnerSenderService.send(MOCKEDUSERID, testRequest.code(), slug, testRequest.language()).toString();
                 sink.onDispose(() -> testRunnerChannelService.unsubscribe(taskId));
 
                 testRunnerChannelService.subscribe(taskId, (message) -> {
@@ -64,8 +61,9 @@ public class ProblemController {
                         final var exception = message.getHeaders().get("exception");
                         sink.error(new RuntimeException((String) message.getPayload(), (Throwable) exception));
                     } else {
-                        final TestResult result = (TestResult) message.getPayload();
-                        sink.success(result);
+                        final var solution = (Solution) message.getPayload();
+                        final var solutionResult = solution.getSolutionResult();
+                        sink.success(new SolutionView(solution.getId(), solution.getCode(), solution.getProblemSlug(), solution.getLanguage(), solutionResult == null ? null : new SolutionResultView(solutionResult.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(), solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getLogs(), solutionResult.getJunitXml())));
                     }
                 });
             } catch (Exception e) {
@@ -75,44 +73,30 @@ public class ProblemController {
     }
 
 
-    record LanguageTemplate(
-            Language language,
-            String template
-    ) {
+    record LanguageTemplate(Language language, String template) {
 
     }
 
-    record ProblemView(
-            String id,
-            String name,
-            String description,
-            Problem.Difficulty difficulty,
-            List<LanguageTemplate> languages,
-            TestResult result
-    ) {
+    record SolutionResultView(Long id, Integer tests, Integer failures, Integer errors, Integer statusCode, Float time,
+                              String logs, String junitXml) {
+    }
+
+    record SolutionView(Long id, String code, String problemSlug, Language language,
+                        SolutionResultView solutionResult) {
+    }
+
+    record ProblemView(String id, String name, String description, Problem.Difficulty difficulty,
+                       List<LanguageTemplate> languages, List<SolutionView> solutions) {
 
     }
 
     @GetMapping("/{slug}")
     ProblemView view(@PathVariable String slug) {
         final var problem = problemRepository.getBySlug(slug);
-        final var solution = solutionRepository.findFirstByProblemSlugAndUserIdOrderByIdDesc(slug, MOCKEDUSERID);
-        TestResult testResult = null;
-        if(solution != null) {
-            final var solutionResult = solution.getSolutionResult();
-            testResult = new TestResult(solution.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(),
-                    solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getJunitXml(), solutionResult.getLogs());
-        }
-        return new ProblemView(
-                problem.getId(),
-                problem.getName(),
-                problem.getDescription(),
-                problem.getDifficulty(),
-                problem.getLanguages().stream().map(lang ->
-                                new LanguageTemplate(lang,
-                                        templateRepository.getBySlugAndLanguage(slug, lang)))
-                        .toList(),
-                testResult
-        );
+        final var solutions = solutionRepository.findByProblemSlugAndUserIdOrderByIdDesc(slug, MOCKEDUSERID).stream();
+        return new ProblemView(problem.getId(), problem.getName(), problem.getDescription(), problem.getDifficulty(), problem.getLanguages().stream().map(lang -> new LanguageTemplate(lang, templateRepository.getBySlugAndLanguage(slug, lang))).toList(), solutions.map(s -> {
+            final var solutionResult = s.getSolutionResult();
+            return new SolutionView(s.getId(), s.getCode(), s.getProblemSlug(), s.getLanguage(), solutionResult == null ? null : new SolutionResultView(solutionResult.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(), solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getLogs(), solutionResult.getJunitXml()));
+        }).toList());
     }
 }

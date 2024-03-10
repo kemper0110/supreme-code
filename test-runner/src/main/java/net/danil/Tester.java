@@ -6,6 +6,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.WaitResponse;
 import lombok.RequiredArgsConstructor;
+import net.danil.dto.TestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

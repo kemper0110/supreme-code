@@ -3,7 +3,7 @@ package net.danil.web.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import net.danil.web.controller.ProblemController;
+import net.danil.web.dto.TestResult;
 import net.danil.web.model.SolutionResult;
 import net.danil.web.repository.SolutionRepository;
 import net.danil.web.repository.SolutionResultRepository;
@@ -45,14 +45,15 @@ public class TestRunnerChannelService {
             return;
         }
         try {
-            final var testResult = mapper.readValue(in, ProblemController.TestResult.class);
+            final var testResult = mapper.readValue(in, TestResult.class);
             final var solution = solutionRepository.findById(testResult.solutionId()).get();
 
-            solutionResultRepository.save(
-              new SolutionResult(solution.getId(), testResult.tests(), testResult.failures(), testResult.errors(), testResult.statusCode(), testResult.time(),
-                      testResult.logs(), testResult.xml(), solution)
-            );
-            handler.handleMessage(new GenericMessage<>(testResult));
+            SolutionResult solutionResult = new SolutionResult(solution.getId(), testResult.tests(), testResult.failures(), testResult.errors(), testResult.statusCode(), testResult.time(),
+                    testResult.logs(), testResult.xml(), solution);
+            solutionResultRepository.save(solutionResult);
+            solution.setSolutionResult(solutionResult);
+
+            handler.handleMessage(new GenericMessage<>(solution));
         } catch (JsonProcessingException e) {
             handler.handleMessage(new GenericMessage<>(in, Map.of("exception", e)));
             throw new RuntimeException(e);
