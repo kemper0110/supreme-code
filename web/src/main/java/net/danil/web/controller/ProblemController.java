@@ -63,7 +63,7 @@ public class ProblemController {
                     } else {
                         final var solution = (Solution) message.getPayload();
                         final var solutionResult = solution.getSolutionResult();
-                        sink.success(new SolutionView(solution.getId(), solution.getCode(), solution.getProblemSlug(), solution.getLanguage(), solutionResult == null ? null : new SolutionResultView(solutionResult.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(), solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getLogs(), solutionResult.getJunitXml())));
+                        sink.success(new SolutionView(solution.getId(), solution.getCode(), solution.getProblemSlug(), solution.getLanguage(), solutionResult == null ? null : new SolutionResultView(solutionResult.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(), solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getLogs(), solutionResult.getJunitXml(), solutionResult.getSolved())));
                     }
                 });
             } catch (Exception e) {
@@ -78,7 +78,7 @@ public class ProblemController {
     }
 
     record SolutionResultView(Long id, Integer tests, Integer failures, Integer errors, Integer statusCode, Float time,
-                              String logs, String junitXml) {
+                              String logs, String junitXml, Boolean solved) {
     }
 
     record SolutionView(Long id, String code, String problemSlug, Language language,
@@ -96,7 +96,7 @@ public class ProblemController {
         final var solutions = solutionRepository.findByProblemSlugAndUserIdOrderByIdDesc(slug, MOCKEDUSERID).stream();
         return new ProblemView(problem.getId(), problem.getName(), problem.getDescription(), problem.getDifficulty(), problem.getLanguages().stream().map(lang -> new LanguageTemplate(lang, templateRepository.getBySlugAndLanguage(slug, lang))).toList(), solutions.map(s -> {
             final var solutionResult = s.getSolutionResult();
-            return new SolutionView(s.getId(), s.getCode(), s.getProblemSlug(), s.getLanguage(), solutionResult == null ? null : new SolutionResultView(solutionResult.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(), solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getLogs(), solutionResult.getJunitXml()));
+            return new SolutionView(s.getId(), s.getCode(), s.getProblemSlug(), s.getLanguage(), solutionResult == null ? null : new SolutionResultView(solutionResult.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(), solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getLogs(), solutionResult.getJunitXml(), solutionResult.getSolved()));
         }).toList());
     }
 }

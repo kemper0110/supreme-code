@@ -36,6 +36,9 @@ public class SolutionResult {
 
     private String junitXml;
 
+    @Column(nullable = false)
+    private Boolean solved;
+
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private Solution solution;

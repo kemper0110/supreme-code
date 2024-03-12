@@ -2,7 +2,7 @@ import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import React, {createContext, ReactNode, useContext, useEffect, useReducer, useRef, useState} from "react";
 import {editor} from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
-import {IconFileDescription, IconGripHorizontal, IconGripVertical, IconReport} from "@tabler/icons-react";
+import {IconCheck, IconFileDescription, IconGripHorizontal, IconGripVertical, IconReport} from "@tabler/icons-react";
 import {
   Button,
   Flex,
@@ -59,6 +59,7 @@ type SolutionResult = {
   junitXml: string
   logs: string
   statusCode: number
+  solved: boolean
 }
 
 const SelectedSolutionContext = createContext<[Solution | null, React.Dispatch<React.SetStateAction<Solution | null>>]>([null, () => {
@@ -129,9 +130,18 @@ export default function Problem() {
       <div className={'h-screen'}>
         <PanelGroup autoSaveId={'problem:[description-editor]'} direction={'horizontal'}>
           <Panel defaultSize={40}>
-            <Title pl={16}>
-              {name}
-            </Title>
+            <Flex pt={12} pb={4} gap={16} align={'center'}>
+              <Title pl={16} pb={4}>
+                {name}
+              </Title>
+              {
+                solutions.some(solution => solution.solutionResult?.solved) ? (
+                  <span className={'rounded-full bg-green-200 p-2'}>
+                    <IconCheck className={'text-green-600'} size={36}/>
+                  </span>
+                ) : null
+              }
+            </Flex>
             {/* @ts-ignore */}
             <Tabs value={activeTab} onChange={setActiveTab}>
               <Tabs.List>
@@ -255,19 +265,22 @@ const ResultPills = ({solutionResult}: { solutionResult: SolutionResult }) => {
   return (
     <PillGroup>
       <Pill>
-        status {solutionResult.statusCode}
+        статус код {solutionResult.statusCode}
       </Pill>
       <Pill>
-        {solutionResult.tests} tests
+        {solutionResult.tests} тестов
       </Pill>
       <Pill>
-        {solutionResult.errors} errors
+        {solutionResult.errors} ошибок
       </Pill>
       <Pill>
-        {solutionResult.failures} failures
+        {solutionResult.failures} сбоев
       </Pill>
       <Pill>
-        time {solutionResult.time}s
+        время {solutionResult.time}с
+      </Pill>
+      <Pill fw={'bold'} className={solutionResult.solved ? '!text-green-700' : '!text-red-700'}>
+        {solutionResult.solved ? 'Решена' : 'Не решена'}
       </Pill>
     </PillGroup>
   )

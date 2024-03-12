@@ -30,6 +30,7 @@ public class TestRunnerChannelService {
     private final Logger logger = LoggerFactory.getLogger(TestRunnerChannelService.class);
     private final SolutionResultRepository solutionResultRepository;
     private final SolutionRepository solutionRepository;
+    private final TestResultAnalyzerService testResultAnalyzerService;
     final ObjectMapper mapper = new ObjectMapper();
 
     @KafkaListener(topics = TOPIC_NAME)
@@ -46,10 +47,11 @@ public class TestRunnerChannelService {
         }
         try {
             final var testResult = mapper.readValue(in, TestResult.class);
+            final var verdict = testResultAnalyzerService.judgeResults(testResult);
             final var solution = solutionRepository.findById(testResult.solutionId()).get();
 
             SolutionResult solutionResult = new SolutionResult(solution.getId(), testResult.tests(), testResult.failures(), testResult.errors(), testResult.statusCode(), testResult.time(),
-                    testResult.logs(), testResult.xml(), solution);
+                    testResult.logs(), testResult.xml(), verdict.solved(), solution);
             solutionResultRepository.save(solutionResult);
             solution.setSolutionResult(solutionResult);
 

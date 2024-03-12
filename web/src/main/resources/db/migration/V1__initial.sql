@@ -18,11 +18,12 @@ create table solution
 create table solution_result
 (
     solution_id bigint primary key references solution (id),
-    tests       int   not null,
-    failures    int   not null,
-    errors      int   not null,
-    status_code int   not null,
-    time        float not null,
-    logs        text  not null,
-    junit_xml   text
+    tests       int     not null,
+    failures    int     not null,
+    errors      int     not null,
+    status_code int     not null,
+    time        float   not null,
+    logs        text    not null,
+    junit_xml   text,
+    solved      boolean not null
 );
