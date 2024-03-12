@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-@Controller
+//@Controller
 @RequiredArgsConstructor
 public class PlaygroundController {
     final private KafkaTemplate<String, String> kafka;

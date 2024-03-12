@@ -1,7 +1,5 @@
 package net.danil.web.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import net.danil.web.dto.TestResult;
 import net.danil.web.model.SolutionResult;
@@ -31,22 +29,20 @@ public class TestRunnerChannelService {
     private final SolutionResultRepository solutionResultRepository;
     private final SolutionRepository solutionRepository;
     private final TestResultAnalyzerService testResultAnalyzerService;
-    final ObjectMapper mapper = new ObjectMapper();
 
     @KafkaListener(topics = TOPIC_NAME)
-    protected void listen(@Payload String in, @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String messageId) {
+    protected void listen(@Payload TestResult testResult, @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String messageId) {
         if (messageId == null) {
             logger.error("received null message id");
             return;
         }
-        logger.info("received result forId({}): {}", messageId, in);
+        logger.info("received result forId({}): {}", messageId, testResult);
         final var handler = messageHandlers.get(messageId);
         if (handler == null) {
             logger.error("null handler detected forId({})", messageId);
             return;
         }
         try {
-            final var testResult = mapper.readValue(in, TestResult.class);
             final var verdict = testResultAnalyzerService.judgeResults(testResult);
             final var solution = solutionRepository.findById(testResult.solutionId()).get();
 
@@ -56,8 +52,8 @@ public class TestRunnerChannelService {
             solution.setSolutionResult(solutionResult);
 
             handler.handleMessage(new GenericMessage<>(solution));
-        } catch (JsonProcessingException e) {
-            handler.handleMessage(new GenericMessage<>(in, Map.of("exception", e)));
+        } catch (Exception e) {
+            handler.handleMessage(new GenericMessage<>(testResult, Map.of("exception", e)));
             throw new RuntimeException(e);
         }
     }
