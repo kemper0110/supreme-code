@@ -2,7 +2,14 @@ import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import React, {createContext, ReactNode, useContext, useEffect, useReducer, useRef, useState} from "react";
 import {editor} from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
-import {IconCheck, IconFileDescription, IconGripHorizontal, IconGripVertical, IconReport} from "@tabler/icons-react";
+import {
+  IconArrowAutofitLeft,
+  IconCheck,
+  IconFileDescription,
+  IconGripHorizontal,
+  IconGripVertical,
+  IconReport
+} from "@tabler/icons-react";
 import {
   Button,
   Flex,
@@ -16,7 +23,7 @@ import {
   Tabs,
   Title
 } from "@mantine/core";
-import {useParams} from "react-router-dom";
+import {Link, useLocation, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import axios from "axios";
 import {CppView, JavaView, NodeView} from "../../components/LanguageView.tsx";
@@ -26,6 +33,7 @@ import {LanguageValue} from "../../types/LanguageValue.tsx";
 import cx from "clsx";
 import classes from "../Problems/Problems.module.css";
 import ICodeEditor = editor.ICodeEditor;
+import {useTabs} from "../../store/useTabs.tsx";
 
 type Language = {
   id: number
@@ -71,6 +79,13 @@ export default function Problem() {
   const problemQueryKey = ['problem', slug]
   const {data} = useQuery<ProblemData>({queryKey: problemQueryKey})
   const {name, description, languages, solutions} = data!
+
+  const location = useLocation()
+  const pushTab = useTabs(state => state.push)
+  pushTab({
+    href: location.pathname,
+    label: name
+  })
 
   const selectedSolutionState = useState<Solution | null>(
     solutions && solutions.length > 0 ? solutions[0] : null
@@ -131,7 +146,10 @@ export default function Problem() {
         <PanelGroup autoSaveId={'problem:[description-editor]'} direction={'horizontal'}>
           <Panel defaultSize={40}>
             <Flex pt={12} pb={4} gap={16} align={'center'}>
-              <Title pl={16} pb={4}>
+              <Link to={'/'}>
+                <IconArrowAutofitLeft className={'ml-4'} size={32}/>
+              </Link>
+              <Title pb={4}>
                 {name}
               </Title>
               {

@@ -1,10 +1,11 @@
 import {useQuery} from "@tanstack/react-query";
 import cx from 'clsx';
-import {Table, ScrollArea, Skeleton} from '@mantine/core';
+import {Container, ScrollArea, Skeleton, Table} from '@mantine/core';
 import classes from './Problems.module.css';
-import React, {Suspense, useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {LanguageValue} from "../../types/LanguageValue.tsx";
 import {Await, useLoaderData, useNavigate} from "react-router-dom";
+import {DotBackground} from "../../components/Background.tsx";
 
 type ProblemData = {
   id: number
@@ -25,7 +26,7 @@ type ProblemsData = ProblemWithSlug[]
 export default function Problems() {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate()
-  const {problemsPromise} = useLoaderData()
+  const {problemsPromise} = useLoaderData() as { problemsPromise: Promise<unknown> }
   const onRowClick = (slug: string) => {
     navigate(`/problem/${slug}`, {
       replace: false
@@ -77,25 +78,27 @@ export default function Problems() {
   }
 
   return (
-    <div>
-      <ScrollArea h={300} onScrollPositionChange={({y}) => setScrolled(y !== 0)}>
-        <Table miw={700}>
-          <Table.Thead className={cx(classes.header, {[classes.scrolled]: scrolled})}>
-            <Table.Tr>
-              <Table.Th>Name</Table.Th>
-              <Table.Th>Difficulty</Table.Th>
-              <Table.Th>Languages</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            <Suspense fallback={<Fallback/>}>
-              <Await resolve={problemsPromise}>
-                <Rows/>
-              </Await>
-            </Suspense>
-          </Table.Tbody>
-        </Table>
-      </ScrollArea>
-    </div>
+    <DotBackground className={'pt-8 h-[calc(100dvh-99px)]'}>
+      <Container size="md">
+        <ScrollArea h={300} onScrollPositionChange={({y}) => setScrolled(y !== 0)} classNames={{viewport: 'px-3'}}>
+          <Table miw={700}  className={'bg-white shadow-lg'}>
+            <Table.Thead className={cx(classes.header, {[classes.scrolled]: scrolled})}>
+              <Table.Tr>
+                <Table.Th>Название</Table.Th>
+                <Table.Th>Сложность</Table.Th>
+                <Table.Th>Языки</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              <Suspense fallback={<Fallback/>}>
+                <Await resolve={problemsPromise}>
+                  <Rows/>
+                </Await>
+              </Suspense>
+            </Table.Tbody>
+          </Table>
+        </ScrollArea>
+      </Container>
+    </DotBackground>
   )
 }
