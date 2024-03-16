@@ -1,7 +1,7 @@
 create table users
 (
     id       bigserial primary key,
-    username varchar(50) not null,
+    username varchar(50) not null unique,
     password varchar(50) not null,
     image    varchar(255)
 );

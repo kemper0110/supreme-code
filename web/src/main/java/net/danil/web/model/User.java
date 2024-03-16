@@ -11,7 +11,7 @@ import java.util.List;
 @Entity(name = "users")
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -20,11 +20,9 @@ public class User {
     private Long id;
 
     @NotBlank
-    @Size(min = 4, max = 30)
     private String username;
 
     @NotBlank
-    @Size(max = 50)
     private String password;
 
     private String image;

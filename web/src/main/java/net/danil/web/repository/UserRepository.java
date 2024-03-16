@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from users u")
     List<BasicUserProjection> findAllPreview();
+
+    User findByUsername(String username);
 }

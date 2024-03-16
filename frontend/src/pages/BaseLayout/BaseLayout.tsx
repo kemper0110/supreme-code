@@ -25,13 +25,9 @@ import cx from "clsx";
 import {useDisclosure} from "@mantine/hooks";
 import {useState} from "react";
 import {useTabs} from "../../store/useTabs.tsx";
+import {useUser} from "../../store/useUser.tsx";
 
 
-const user = {
-  name: 'Jane Spoonfighter',
-  email: 'janspoon@fighter.dev',
-  image: 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png',
-};
 
 
 export const BaseLayout = () => {
@@ -49,7 +45,20 @@ export const BaseLayout = () => {
   const customTabs = useTabs(state => state.tabs)
   const removeTab = useTabs(state => state.remove)
 
-  const logged = false
+  const user = useUser(state => state.user)
+  const invalidateUser = useUser(state => state.invalidateUser)
+  console.log({user})
+  const logged = !!user
+
+  const onLogout = () => {
+    invalidateUser()
+    navigate("/")
+  }
+
+  const onChangeAccount = () => {
+    invalidateUser()
+    navigate("/auth")
+  }
 
   return (
     <div className={'min-h-dvh'}>
@@ -80,9 +89,9 @@ export const BaseLayout = () => {
                       className={cx(classes.user, {[classes.userActive]: userMenuOpened})}
                     >
                       <Group gap={7}>
-                        <Avatar src={user.image} alt={user.name} radius="xl" size={20}/>
+                        <Avatar src={'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png'} alt={user.username} radius="xl" size={20}/>
                         <Text fw={500} size="sm" lh={1} mr={3}>
-                          {user.name}
+                          {user.username}
                         </Text>
                         <IconChevronDown style={{width: rem(12), height: rem(12)}} stroke={1.5}/>
                       </Group>
@@ -124,6 +133,7 @@ export const BaseLayout = () => {
                       leftSection={
                         <IconSwitchHorizontal style={{width: rem(16), height: rem(16)}} stroke={1.5}/>
                       }
+                      onClick={onChangeAccount}
                     >
                       Сменить аккаунт
                     </Menu.Item>
@@ -131,6 +141,7 @@ export const BaseLayout = () => {
                       leftSection={
                         <IconLogout style={{width: rem(16), height: rem(16)}} stroke={1.5}/>
                       }
+                      onClick={onLogout}
                     >
                       Выйти из аккаунта
                     </Menu.Item>
