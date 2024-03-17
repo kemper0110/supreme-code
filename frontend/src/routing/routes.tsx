@@ -10,6 +10,8 @@ import {BaseLayout} from "../pages/BaseLayout/BaseLayout.tsx";
 import {ProblemsLoader} from "../pages/Problems/Loader.tsx";
 import {ProblemLoader} from "../pages/Problem/Loader.tsx";
 import {Protected} from "./protection.tsx";
+import {Account} from "../pages/Account/Account.tsx";
+import {Support} from "../pages/Support/Support.tsx";
 
 export const routes = [
   {
@@ -37,6 +39,14 @@ export const routes = [
         element: <Problems/>,
         loader: ProblemsLoader
       }),
+      {
+        path: "/account",
+        element: <Account/>
+      },
+      {
+        path: "/support",
+        element: <Support/>
+      }
     ]
   },
   Protected(

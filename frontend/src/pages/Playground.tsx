@@ -1,5 +1,5 @@
 import {Editor} from "@monaco-editor/react";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Badge, Button, Flex, SegmentedControl, Stack, Text} from "@mantine/core";
 import axios from "axios";
 import {IconBrain, IconMoodCrazyHappy, IconPigMoney} from "@tabler/icons-react";
@@ -8,6 +8,7 @@ import {editor} from "monaco-editor";
 import {LanguageValue} from "../types/LanguageValue.tsx";
 import {SplitView} from "../components/SplitView.tsx";
 import ICodeEditor = editor.ICodeEditor;
+import {useNavigate} from "react-router-dom";
 
 type RunRequest = {
   code: string
@@ -45,6 +46,14 @@ const languages = [
 ] as { label: string, value: LanguageValue }[]
 
 export default function Playground() {
+  const navigate = useNavigate()
+  useEffect(() => {
+    navigate("/404")
+  }, [])
+
+  return null
+
+
   const [language, setLanguage] = useState<LanguageValue>(languages[0].value)
   const editorRef = useRef<ICodeEditor>()
 
