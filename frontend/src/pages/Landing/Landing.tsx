@@ -1,10 +1,21 @@
 import {Button, Container, Flex, Stack} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import {DotBackground} from "../../components/Background.tsx";
+import {useUser} from "../../store/useUser.tsx";
 
 
 function Landing() {
   const navigate = useNavigate()
+
+  const logged = useUser(state => !!state.user)
+
+  const onStart = () => {
+    if(logged) {
+      navigate('/problem')
+    } else {
+      navigate('/auth')
+    }
+  }
 
   return (
     <div>
@@ -20,7 +31,7 @@ function Landing() {
               <p className={'mt-4 text-[24px] text-slate-700 font-medium'}>
                 Совершенствуйте свои навыки программирования
               </p>
-              <Button mt={30} size={'xl'} onClick={() => navigate('/auth')}>Начать работу</Button>
+              <Button mt={30} size={'xl'} onClick={onStart}>Начать работу</Button>
             </Stack>
           </Flex>
         </Container>
