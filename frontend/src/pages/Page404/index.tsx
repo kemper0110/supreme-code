@@ -1,6 +1,7 @@
 import { Container, Title, Text, Button, Group } from '@mantine/core';
 import classes from './index.module.css';
 import React from "react";
+import {Link} from "react-router-dom";
 
 export default function index() {
   return (
@@ -8,13 +9,14 @@ export default function index() {
       <div className={classes.inner}>
         <Illustration className={classes.image} />
         <div className={classes.content}>
-          <Title className={classes.title}>Nothing to see here</Title>
+          <Title className={classes.title}>
+            Здесь нечего смотреть
+          </Title>
           <Text c="dimmed" size="lg" ta="center" className={classes.description}>
-            Page you are trying to open does not exist. You may have mistyped the address, or the
-            page has been moved to another URL. If you think this is an error contact support.
+            Страница, которую вы пытаетесь открыть, не существует. Возможно, вы неправильно ввели адрес или страница была перемещена по другому URL. Если вы считаете, что это ошибка, обратитесь в службу поддержки.
           </Text>
           <Group justify="center">
-            <Button size="md">Take me back to home page</Button>
+            <Button component={Link} to={'/'} size="md">На главную страницу</Button>
           </Group>
         </div>
       </div>
