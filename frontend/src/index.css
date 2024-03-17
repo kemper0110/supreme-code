@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* SCROLLBAR BEGIN */
+
+:root {
+    --sc-thumb-color: rgb(108, 158, 201);
+}
+
+html {
+    overflow-y: scroll; /* Всегда показывать вертикальный скроллбар */
+    scrollbar-width: thin; /* Задать фиксированную ширину скроллбара */
+    scrollbar-color: var(--sc-thumb-color) transparent;
+}
+
+html::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--sc-thumb-color);
+    border-radius: 6px;
+    border: 3px solid #fff;
+}
+
+/* SCROLLBAR END */
