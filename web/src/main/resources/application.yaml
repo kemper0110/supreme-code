@@ -1,13 +1,6 @@
-app:
-  security:
-    clientId: client
-
 spring:
   main:
     web-application-type: reactive
-  security:
-    oauth2:
-      resourceserver.jwt.issuer-uri: "http://localhost:8484/auth/realms/master"
   datasource:
     url: jdbc:postgresql://localhost/supreme_code
     username: supreme_user
@@ -50,11 +43,3 @@ jwt:
       keylength: 256
   secret: AMDXGbO7gGwf3hoFPpm6GwQvFrqoCsn2 #This Secret For JWT HS256 Signature Algorithm MUST Have 256 bits KeySize
   expiration: 28800 # token expiration in seconds
-
-keycloak:
-  auth-server-url: http://localhost:8484/auth
-  public-client: true
-  principal-attribute: preferred_username
-
-logging.level:
-  org.springframework.security: DEBUG
