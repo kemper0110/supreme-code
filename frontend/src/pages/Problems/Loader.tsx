@@ -4,6 +4,7 @@ import {defer} from "react-router-dom";
 import {api} from "../../api/api.ts";
 import {LanguageValue} from "../../types/LanguageValue.tsx";
 import {useQuery, UseQueryOptions} from "@tanstack/react-query";
+import {useUser} from "../../store/useUser.tsx";
 
 export type ProblemData = {
   id: number
@@ -23,10 +24,12 @@ export type ProblemsResponse = {
   problems: ProblemWithSlug[]
 }
 
-export const problemsQueryKey = ['problem'];
+export const problemsQueryKey = () => {
+  return ['problems', useUser.getState().user?.id];
+};
 
 export const ProblemsLoader = () => {
-  const queryKey = problemsQueryKey
+  const queryKey = problemsQueryKey()
   const problemsResponse = queryClient.getQueryData<ProblemsResponse>(queryKey)
   if (problemsResponse)
     console.log("data available")
@@ -41,4 +44,4 @@ export const ProblemsLoader = () => {
 }
 
 export const useProblemsQuery = (options?: UseQueryOptions<ProblemsResponse>) =>
-  useQuery<ProblemsResponse>({queryKey: problemsQueryKey, ...options})
+  useQuery<ProblemsResponse>({queryKey: problemsQueryKey(), ...options})

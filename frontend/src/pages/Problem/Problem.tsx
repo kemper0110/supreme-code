@@ -24,51 +24,16 @@ import {
   Title
 } from "@mantine/core";
 import {Link, useLocation, useParams} from "react-router-dom";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {CppView, JavaView, NodeView} from "../../components/LanguageView.tsx";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import {LanguageValue} from "../../types/LanguageValue.tsx";
 import cx from "clsx";
 import classes from "../Problems/Problems.module.css";
 import {useTabs} from "../../store/useTabs.tsx";
 import {api} from "../../api/api.ts";
+import {ProblemData, problemQueryKey, Solution, SolutionResult, useProblemQuery} from "./Loader.tsx";
 import ICodeEditor = editor.ICodeEditor;
-
-type Language = {
-  id: number
-  language: LanguageValue
-  template: string
-}
-
-type ProblemData = {
-  id: number
-  name: string
-  active: boolean
-  description: string
-  difficulty: 'Easy' | 'Normal' | 'Hard'
-  languages: Language[]
-  solutions: Solution[]
-}
-
-type Solution = {
-  id: number
-  code: string
-  problemSlug: string
-  language: string
-  solutionResult?: SolutionResult
-}
-type SolutionResult = {
-  id: number
-  tests: number
-  failures: number
-  errors: number
-  time: number
-  junitXml: string
-  logs: string
-  statusCode: number
-  solved: boolean
-}
 
 const SelectedSolutionContext = createContext<[Solution | null, React.Dispatch<React.SetStateAction<Solution | null>>]>([null, () => {
   throw new Error("SelectedSolutionContext.Provider not found")
@@ -76,8 +41,7 @@ const SelectedSolutionContext = createContext<[Solution | null, React.Dispatch<R
 
 export default function Problem() {
   const {slug} = useParams()
-  const problemQueryKey = ['problem', slug]
-  const {data} = useQuery<ProblemData>({queryKey: problemQueryKey})
+  const {data} = useProblemQuery(slug!)
   const {name, description, languages, solutions} = data!
 
   const location = useLocation()
@@ -94,12 +58,6 @@ export default function Problem() {
   useEffect(() => {
     console.log('array ref updated')
   }, [selectedSolutionState]);
-
-  const languageSelectorData =
-    languages.map(l => ({
-      label: {Cpp: <CppView/>, Java: <JavaView/>, Javascript: <NodeView/>}[l.language],
-      value: l.language
-    }))
 
   const [selectedLanguage, setSelectedLanguage] = useState(languages[0])
 
@@ -119,8 +77,9 @@ export default function Problem() {
       setActiveTab('solutions')
     },
     onSuccess: response => {
-      const data = queryClient.getQueryData<ProblemData>(problemQueryKey)!
-      queryClient.setQueryData(problemQueryKey, () => {
+      const key = problemQueryKey(slug!)
+      const data = queryClient.getQueryData<ProblemData>(key)!
+      queryClient.setQueryData(key, () => {
         return {
           ...data,
           solutions: [
@@ -193,7 +152,12 @@ export default function Problem() {
                         height="100%" language={selectedLanguage.language.toLowerCase()}
                         defaultValue={selectedLanguage.template}/>
                 <Flex justify={'end'} gap={12} align={'center'} pr={20}>
-                  <SegmentedControl size={'xs'} data={languageSelectorData} value={selectedLanguage.language}
+                  <SegmentedControl size={'xs'} data={
+                    languages.map(l => ({
+                      label: {Cpp: <CppView/>, Java: <JavaView/>, Javascript: <NodeView/>}[l.language],
+                      value: l.language
+                    }))
+                  } value={selectedLanguage.language}
                                     onChange={value => {
                                       setSelectedLanguage(languages.find(l => l.language === value)!)
                                     }}/>
@@ -227,7 +191,10 @@ export default function Problem() {
   )
 }
 
-const TestResultLoader = ({messages = ['Тестируем ваш код', 'Результат без перезагрузки страницы', 'Пожалуйста, подождите'], timeout = 1000}: {
+const TestResultLoader = ({
+                            messages = ['Тестируем ваш код', 'Результат без перезагрузки страницы', 'Пожалуйста, подождите'],
+                            timeout = 1000
+                          }: {
   messages?: ReactNode[]
   timeout?: number
 }) => {
