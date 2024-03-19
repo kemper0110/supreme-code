@@ -1,6 +1,6 @@
 import {RouteObject,} from "react-router-dom";
 import Landing from "../pages/Landing/Landing.tsx";
-import Playground from "../pages/Playground.tsx";
+import Playground from "../pages/Playground/Playground.tsx";
 import Problem from "../pages/Problem/Problem.tsx";
 import Page404 from "../pages/Page404";
 import Page500 from "../pages/Page500";
@@ -12,6 +12,7 @@ import {ProblemLoader} from "../pages/Problem/Loader.tsx";
 import {Protected} from "./protection.tsx";
 import {Account} from "../pages/Account/Account.tsx";
 import {Support} from "../pages/Support/Support.tsx";
+import {NotImplemented} from "./not-implemented.tsx";
 
 export const routes = [
   {
@@ -43,10 +44,12 @@ export const routes = [
           }),
           {
             path: "/account",
+            loader: NotImplemented,
             element: <Account/>
           },
           {
             path: "/support",
+            loader: NotImplemented,
             element: <Support/>
           }
         ]
@@ -59,6 +62,7 @@ export const routes = [
         },
         {
           path: "/playground",
+          loader: NotImplemented,
           element: <Playground/>
         }
       )
