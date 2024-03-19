@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {isAxiosError} from "axios";
 import {useUser} from "../store/useUser.tsx";
 
 
@@ -7,12 +7,10 @@ export const api = axios.create({
 })
 
 
-api.interceptors.response.use((response) => {
-  if(response.status == 401) {
-    console.info("401 response")
+api.interceptors.response.use(undefined, (error) => {
+  if(isAxiosError(error) && error.response?.status == 401) {
+    console.info("401 error")
     useUser.getState().invalidateUser()
   }
-  return response
-}, (error) => {
-  return error
+  return Promise.reject(error)
 })
