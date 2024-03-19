@@ -1,27 +1,11 @@
-import {useQuery} from "@tanstack/react-query";
 import cx from 'clsx';
 import {Container, ScrollArea, Skeleton, Table} from '@mantine/core';
 import classes from './Problems.module.css';
 import {Suspense, useEffect, useState} from 'react';
-import {LanguageValue} from "../../types/LanguageValue.tsx";
 import {Await, useLoaderData, useNavigate} from "react-router-dom";
 import {DotBackground} from "../../components/Background.tsx";
+import {useProblemsQuery} from "./Loader.tsx";
 
-type ProblemData = {
-  id: number
-  name: string
-  active: boolean
-  description: string
-  difficulty: 'Easy' | 'Normal' | 'Hard'
-  languages: LanguageValue[]
-}
-
-type ProblemWithSlug = {
-  slug: string
-  problem: ProblemData
-}
-
-type ProblemsData = ProblemWithSlug[]
 
 export default function Problems() {
   const [scrolled, setScrolled] = useState(false);
@@ -34,8 +18,8 @@ export default function Problems() {
   }
 
   const Rows = () => {
-    const {data} = useQuery<ProblemsData>({queryKey: ['problem']})
-    return data?.map(problemEntry => (
+    const {data} = useProblemsQuery()
+    return data?.problems.map(problemEntry => (
       <Table.Tr key={problemEntry.slug} className={'hover:bg-slate-100 transition-colors cursor-pointer'}
                 onClick={() => onRowClick(problemEntry.slug)}
       >
