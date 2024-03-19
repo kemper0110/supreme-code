@@ -28,26 +28,42 @@ public class AuthController {
     private final SecurityService securityService;
     private final AuthService authService;
 
+    record LoggedUserResponse(Long id, String username, Long maxAge) {
+
+    }
 
     @PostMapping(value = "/login")
     public Mono<ResponseEntity<Object>> login(@RequestBody UserLoginDto dto) {
         return authService.login(dto)
-                .map(loggedUser -> ResponseEntity.ok()
-                        .header("Set-Cookie", securityService.makeJwtCookie(loggedUser.getTokenInfo()))
-                        .body(Map.of(
-                                "user", loggedUser.getUserInfo()
-                        ))
+                .map(loggedUser -> {
+                            var userInfo = loggedUser.getUserInfo();
+                            var tokenInfo = loggedUser.getTokenInfo();
+                            return ResponseEntity.ok()
+                                    .header("Set-Cookie", securityService.makeJwtCookie(tokenInfo))
+                                    .body(Map.of(
+                                            "user", new LoggedUserResponse(userInfo.getId(), userInfo.getUsername(),
+                                                    tokenInfo.getExpiresAt().getTime() - tokenInfo.getIssuedAt().getTime()
+                                            )
+                                    ));
+                        }
                 );
+
     }
 
     @PostMapping("/register")
     public Mono<ResponseEntity<Object>> register(@RequestBody UserRegisterDto dto) {
         return authService.register(dto)
-                .map(loggedUser -> ResponseEntity.ok()
-                        .header("Set-Cookie", securityService.makeJwtCookie(loggedUser.getTokenInfo()))
-                        .body(Map.of(
-                                "user", loggedUser.getUserInfo()
-                        ))
+                .map(loggedUser -> {
+                            var userInfo = loggedUser.getUserInfo();
+                            var tokenInfo = loggedUser.getTokenInfo();
+                            return ResponseEntity.ok()
+                                    .header("Set-Cookie", securityService.makeJwtCookie(tokenInfo))
+                                    .body(Map.of(
+                                            "user", new LoggedUserResponse(userInfo.getId(), userInfo.getUsername(),
+                                                    tokenInfo.getExpiresAt().getTime() - tokenInfo.getIssuedAt().getTime()
+                                            )
+                                    ));
+                        }
                 );
     }
 
