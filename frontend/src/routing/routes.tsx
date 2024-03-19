@@ -15,49 +15,53 @@ import {Support} from "../pages/Support/Support.tsx";
 
 export const routes = [
   {
-    path: "/",
-    element: <BaseLayout/>,
+    // errorElement: <ProtectedErrorBoundary/>,
     children: [
       {
-        path: "/",
-        element: <Landing/>
+        element: <BaseLayout/>,
+        children: [
+          {
+            path: "/",
+            element: <Landing/>
+          },
+          {
+            path: "/auth",
+            element: <Auth/>
+          },
+          {
+            path: "/404",
+            element: <Page404/>
+          },
+          {
+            path: "/500",
+            element: <Page500/>
+          },
+          Protected({
+            path: "/problem",
+            element: <Problems/>,
+            loader: ProblemsLoader
+          }),
+          {
+            path: "/account",
+            element: <Account/>
+          },
+          {
+            path: "/support",
+            element: <Support/>
+          }
+        ]
       },
-      {
-        path: "/auth",
-        element: <Auth/>
-      },
-      {
-        path: "/404",
-        element: <Page404/>
-      },
-      {
-        path: "/500",
-        element: <Page500/>
-      },
-      Protected({
-        path: "/problem",
-        element: <Problems/>,
-        loader: ProblemsLoader
-      }),
-      {
-        path: "/account",
-        element: <Account/>
-      },
-      {
-        path: "/support",
-        element: <Support/>
-      }
+      Protected(
+        {
+          path: "/problem/:slug",
+          element: <Problem/>,
+          loader: ProblemLoader
+        },
+        {
+          path: "/playground",
+          element: <Playground/>
+        }
+      )
     ]
   },
-  Protected(
-    {
-      path: "/problem/:slug",
-      element: <Problem/>,
-      loader: ProblemLoader
-    },
-    {
-      path: "/playground",
-      element: <Playground/>
-    }
-  )
 ] as RouteObject[];

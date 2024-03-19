@@ -2,16 +2,43 @@ import {queryClient} from "../../queryClient.ts";
 import {debouncedPromise} from "../../utils/DebouncedPromise.ts";
 import {defer} from "react-router-dom";
 import {api} from "../../api/api.ts";
+import {LanguageValue} from "../../types/LanguageValue.tsx";
+import {useQuery, UseQueryOptions} from "@tanstack/react-query";
+
+export type ProblemData = {
+  id: number
+  name: string
+  active: boolean
+  description: string
+  difficulty: 'Easy' | 'Normal' | 'Hard'
+  languages: LanguageValue[]
+}
+
+export type ProblemWithSlug = {
+  slug: string
+  problem: ProblemData
+}
+
+export type ProblemsResponse = {
+  problems: ProblemWithSlug[]
+}
+
+export const problemsQueryKey = ['problem'];
 
 export const ProblemsLoader = () => {
-  const queryKey = ['problem']
-  const problems = queryClient.getQueryData(queryKey)
-  if (problems)
+  const queryKey = problemsQueryKey
+  const problemsResponse = queryClient.getQueryData<ProblemsResponse>(queryKey)
+  if (problemsResponse)
     console.log("data available")
-  const problemsPromise = problems ? Promise.resolve(problems) : debouncedPromise(queryClient.fetchQuery({
+  const problemsPromise = problemsResponse ? Promise.resolve(problemsResponse) : debouncedPromise(queryClient.fetchQuery({
     queryKey,
-    queryFn: async () => (await api.get(`/api/problem`)).data,
-    staleTime: 10000
+    queryFn: async () => (await api.get<ProblemsResponse>(`/api/problem`)).data ?? null,
+    staleTime: 120000
   }), 300, 300)
-  return defer({problemsPromise})
+  return defer({
+    problemsPromise: problemsPromise
+  })
 }
+
+export const useProblemsQuery = (options?: UseQueryOptions<ProblemsResponse>) =>
+  useQuery<ProblemsResponse>({queryKey: problemsQueryKey, ...options})
