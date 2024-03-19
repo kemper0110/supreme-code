@@ -14,13 +14,16 @@ import org.danil.model.Language;
 import org.danil.model.Problem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("/api/problem")
 public class ProblemController {
     // todo: remove mocked user id
@@ -40,9 +43,11 @@ public class ProblemController {
     }
 
     @GetMapping
-    List<ProblemEntry> index() {
+    Mono<Map<String, ?>> index() {
         final var problemSlugs = contentRepository.get().getProblems();
-        return problemSlugs.stream().map(slug -> new ProblemEntry(slug, problemRepository.getBySlug(slug))).toList();
+        return Mono.just(Map.of(
+                "problems", problemSlugs.stream().map(slug -> new ProblemEntry(slug, problemRepository.getBySlug(slug))).toList()
+        ));
     }
 
     public record TestRequest(String code, Language language) {
@@ -91,12 +96,12 @@ public class ProblemController {
     }
 
     @GetMapping("/{slug}")
-    ProblemView view(@PathVariable String slug) {
+    Mono<ProblemView> view(@PathVariable String slug) {
         final var problem = problemRepository.getBySlug(slug);
         final var solutions = solutionRepository.findByProblemSlugAndUserIdOrderByIdDesc(slug, MOCKEDUSERID).stream();
-        return new ProblemView(problem.getId(), problem.getName(), problem.getDescription(), problem.getDifficulty(), problem.getLanguages().stream().map(lang -> new LanguageTemplate(lang, templateRepository.getBySlugAndLanguage(slug, lang))).toList(), solutions.map(s -> {
+        return Mono.just(new ProblemView(problem.getId(), problem.getName(), problem.getDescription(), problem.getDifficulty(), problem.getLanguages().stream().map(lang -> new LanguageTemplate(lang, templateRepository.getBySlugAndLanguage(slug, lang))).toList(), solutions.map(s -> {
             final var solutionResult = s.getSolutionResult();
             return new SolutionView(s.getId(), s.getCode(), s.getProblemSlug(), s.getLanguage(), solutionResult == null ? null : new SolutionResultView(solutionResult.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(), solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getLogs(), solutionResult.getJunitXml(), solutionResult.getSolved()));
-        }).toList());
+        }).toList()));
     }
 }
