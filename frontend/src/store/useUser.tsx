@@ -4,11 +4,13 @@ import {persist} from 'zustand/middleware'
 export type User = {
   id: number
   username: string
+  maxAge: number
 }
 
 type State = {
   user: User | null
-  setUser: (user: User) => void
+  issuedAt: number
+  setUser: (user: User, issuedAt: number) => void
   invalidateUser: () => void
 }
 
@@ -17,7 +19,8 @@ const initialUser = null
 export const useUser = create(persist<State>(
   set => ({
     user: initialUser,
-    setUser: (user) => set(() => ({user})),
+    issuedAt: 0,
+    setUser: (user, issuedAt) => set(() => ({user, issuedAt})),
     invalidateUser: () => {
       console.info("user has been invalidated")
       set(() => ({user: initialUser}))
@@ -27,3 +30,8 @@ export const useUser = create(persist<State>(
     name: "user-storage"
   }
 ))
+
+useUser.persist.onFinishHydration(state => {
+  if (state.user && state.issuedAt + state.user.maxAge < Date.now())
+    state.invalidateUser()
+})
