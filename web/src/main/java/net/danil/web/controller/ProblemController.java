@@ -53,25 +53,13 @@ public class ProblemController {
     @PostMapping("/{slug}")
     Mono<Object> submit(@PathVariable String slug, @RequestBody TestRequest testRequest, @AuthenticationPrincipal(expression = "id") Long userId) {
         logger.debug("submitted solution for {} with {}", slug, testRequest);
-        return Mono.create(sink -> {
-            try {
-                final var taskId = testRunnerSenderService.send(userId, testRequest.code(), slug, testRequest.language()).toString();
-                sink.onDispose(() -> testRunnerChannelService.unsubscribe(taskId));
-
-                testRunnerChannelService.subscribe(taskId, (message) -> {
-                    if (message.getHeaders().containsKey("exception")) {
-                        final var exception = message.getHeaders().get("exception");
-                        sink.error(new RuntimeException((String) message.getPayload(), (Throwable) exception));
-                    } else {
-                        final var solution = (Solution) message.getPayload();
-                        final var solutionResult = solution.getSolutionResult();
-                        sink.success(new SolutionView(solution.getId(), solution.getCode(), solution.getProblemSlug(), solution.getLanguage(), solutionResult == null ? null : new SolutionResultView(solutionResult.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(), solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getLogs(), solutionResult.getJunitXml(), solutionResult.getSolved())));
-                    }
+        final var taskId = testRunnerSenderService.send(userId, testRequest.code(), slug, testRequest.language()).toString();
+        return testRunnerChannelService.subscribe(taskId)
+                .map(message -> {
+                    final var solution = (Solution) message.getPayload();
+                    final var solutionResult = solution.getSolutionResult();
+                    return new SolutionView(solution.getId(), solution.getCode(), solution.getProblemSlug(), solution.getLanguage(), solutionResult == null ? null : new SolutionResultView(solutionResult.getId(), solutionResult.getTests(), solutionResult.getFailures(), solutionResult.getErrors(), solutionResult.getStatusCode(), solutionResult.getTime(), solutionResult.getLogs(), solutionResult.getJunitXml(), solutionResult.getSolved()));
                 });
-            } catch (Exception e) {
-                sink.error(e);
-            }
-        });
     }
 
 

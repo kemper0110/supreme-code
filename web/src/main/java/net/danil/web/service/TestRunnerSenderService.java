@@ -21,6 +21,7 @@ public class TestRunnerSenderService {
         final var user = userRepository.getReferenceById(userId);
         final var solution = solutionRepository.save(new Solution(null, user, code, slug, language, null));
         final var solutionId = solution.getId();
+        // TODO: make it async
         kafka.send(TOPIC_NAME, solutionId.toString(), new TestMessage(
                 solutionId, solution.getCode(), solution.getProblemSlug(), solution.getLanguage()
         ));

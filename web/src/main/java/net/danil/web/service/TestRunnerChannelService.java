@@ -9,13 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.MonoSink;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -23,8 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TestRunnerChannelService {
     public static final String TOPIC_NAME = "test-result-topic";
 
-    private final ConcurrentHashMap<String, MessageHandler> messageHandlers =
-            new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, MonoSink<Message<?>>> messageHandlers = new ConcurrentHashMap<>();
     private final Logger logger = LoggerFactory.getLogger(TestRunnerChannelService.class);
     private final SolutionResultRepository solutionResultRepository;
     private final SolutionRepository solutionRepository;
@@ -37,11 +37,7 @@ public class TestRunnerChannelService {
             return;
         }
         logger.info("received result forId({}): {}", messageId, testResult);
-        final var handler = messageHandlers.get(messageId);
-        if (handler == null) {
-            logger.error("null handler detected forId({})", messageId);
-            return;
-        }
+        final var sink = messageHandlers.get(messageId);
         try {
             final var verdict = testResultAnalyzerService.judgeResults(testResult);
             final var solution = solutionRepository.findById(testResult.solutionId()).get();
@@ -51,20 +47,13 @@ public class TestRunnerChannelService {
             solutionResultRepository.save(solutionResult);
             solution.setSolutionResult(solutionResult);
 
-            handler.handleMessage(new GenericMessage<>(solution));
+            sink.success(new GenericMessage<>(solution));
         } catch (Exception e) {
-            handler.handleMessage(new GenericMessage<>(testResult, Map.of("exception", e)));
-            throw new RuntimeException(e);
+            sink.error(new RuntimeException(testResult.toString(), e));
         }
     }
 
-    public void subscribe(String id, MessageHandler channel) {
-        logger.info("subscribed handler for " + id);
-        messageHandlers.put(id, channel);
-    }
-
-    public void unsubscribe(String id) {
-        logger.info("unsubscribed handler for " + id);
-        messageHandlers.remove(id);
+    public Mono<Message<?>> subscribe(String id) {
+        return Mono.create(sink -> messageHandlers.put(id, sink));
     }
 }
