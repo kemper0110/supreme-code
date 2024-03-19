@@ -69,7 +69,7 @@ export default function Auth() {
     },
     onSuccess: (response) => {
       console.log({response: response.data})
-      setUser(response.data.user)
+      setUser(response.data.user, Date.now())
       navigate('/')
     },
     onError: (error: Error | AxiosError) => {
