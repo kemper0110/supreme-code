@@ -3,9 +3,10 @@ import {upperFirst, useToggle} from '@mantine/hooks';
 import {TransformedValues, useForm} from "@mantine/form";
 import {GridBackground} from "../components/Background.tsx";
 import {useMutation} from "@tanstack/react-query";
-import axios, {AxiosError} from "axios";
+import {AxiosError} from "axios";
 import {useNavigate} from "react-router-dom";
 import {User, useUser} from "../store/useUser.tsx";
+import {api} from "../api/api.ts";
 
 type FormValues = LoginForm | RegisterForm
 
@@ -61,9 +62,9 @@ export default function Auth() {
     mutationFn: (values: TransformedValues<typeof form>) => {
       switch (values.type) {
         case 'login':
-          return axios.post<SuccessData>("/api/login", {username: values.username, password: values.password})
+          return api.post<SuccessData>("/api/login", {username: values.username, password: values.password})
         case 'register':
-          return axios.post<SuccessData>("/api/register", {username: values.username, password: values.password})
+          return api.post<SuccessData>("/api/register", {username: values.username, password: values.password})
       }
     },
     onSuccess: (response) => {

@@ -18,7 +18,10 @@ export const useUser = create(persist<State>(
   set => ({
     user: initialUser,
     setUser: (user) => set(() => ({user})),
-    invalidateUser: () => set(() => ({user: initialUser}))
+    invalidateUser: () => {
+      console.info("user has been invalidated")
+      set(() => ({user: initialUser}))
+    }
   }),
   {
     name: "user-storage"

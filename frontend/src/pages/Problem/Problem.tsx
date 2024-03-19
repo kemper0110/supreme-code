@@ -25,15 +25,15 @@ import {
 } from "@mantine/core";
 import {Link, useLocation, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import axios from "axios";
 import {CppView, JavaView, NodeView} from "../../components/LanguageView.tsx";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {LanguageValue} from "../../types/LanguageValue.tsx";
 import cx from "clsx";
 import classes from "../Problems/Problems.module.css";
-import ICodeEditor = editor.ICodeEditor;
 import {useTabs} from "../../store/useTabs.tsx";
+import {api} from "../../api/api.ts";
+import ICodeEditor = editor.ICodeEditor;
 
 type Language = {
   id: number
@@ -111,7 +111,7 @@ export default function Problem() {
 
   const queryClient = useQueryClient()
   const testMutation = useMutation({
-    mutationFn: (code: string) => axios.post<Solution>(`/api/problem/${encodeURIComponent(slug!)}`, {
+    mutationFn: (code: string) => api.post<Solution>(`/api/problem/${encodeURIComponent(slug!)}`, {
       language: selectedLanguage.language,
       code
     }),

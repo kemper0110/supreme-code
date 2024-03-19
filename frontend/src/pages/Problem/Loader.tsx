@@ -1,6 +1,6 @@
 import {LoaderFunctionArgs} from "react-router-dom";
 import {queryClient} from "../../queryClient.ts";
-import axios from "axios";
+import {api} from "../../api/api.ts";
 
 export const ProblemLoader = async (params: LoaderFunctionArgs) => {
   const slug = params.params.slug
@@ -8,7 +8,7 @@ export const ProblemLoader = async (params: LoaderFunctionArgs) => {
   console.log({queryKey, params})
   return queryClient.getQueryData(queryKey) ?? await queryClient.fetchQuery({
     queryKey,
-    queryFn: async () => (await axios.get(`/api/problem/${encodeURIComponent(slug!)}`, {
+    queryFn: async () => (await api.get(`/api/problem/${encodeURIComponent(slug!)}`, {
       params: {
         language: 'Java'
       },

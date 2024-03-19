@@ -1,14 +1,14 @@
 import {Editor} from "@monaco-editor/react";
 import React, {useEffect, useRef, useState} from "react";
 import {Badge, Button, Flex, SegmentedControl, Stack, Text} from "@mantine/core";
-import axios from "axios";
 import {IconBrain, IconMoodCrazyHappy, IconPigMoney} from "@tabler/icons-react";
 import {useMutation} from "@tanstack/react-query";
 import {editor} from "monaco-editor";
 import {LanguageValue} from "../types/LanguageValue.tsx";
 import {SplitView} from "../components/SplitView.tsx";
-import ICodeEditor = editor.ICodeEditor;
 import {useNavigate} from "react-router-dom";
+import {api} from "../api/api.ts";
+import ICodeEditor = editor.ICodeEditor;
 
 type RunRequest = {
   code: string
@@ -60,7 +60,7 @@ export default function Playground() {
   const [result, setResult] = useState("")
 
   const runMutation = useMutation({
-    mutationFn: (code: string) => axios.post('/api/', {code, language} as RunRequest),
+    mutationFn: (code: string) => api.post('/api/', {code, language} as RunRequest),
     onSuccess: response => {
       setResult(response.data)
     }
