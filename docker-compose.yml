@@ -46,6 +46,24 @@ services:
       - rdbms:/var/lib/postgresql/data
       - ./init-rdb:/docker-entrypoint-initdb.d
 
+  keycloak:
+    image: bitnami/keycloak:23
+    container_name: sc-keycloak
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: rdbms
+      DB_DATABASE: keycloak_db
+      DB_USER: keycloak_user
+      DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8484:8080"
+    depends_on:
+      rdbms:
+        condition: service_healthy
+    links:
+      - "rdbms:rdbms"
 #  flyway:
 #    image: redgate/flyway:latest
 #    container_name: sc-flyway
