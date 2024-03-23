@@ -32,6 +32,6 @@ export const useUser = create(persist<State>(
 ))
 
 useUser.persist.onFinishHydration(state => {
-  if (state.user && state.issuedAt + state.user.maxAge < Date.now())
+  if (state.user && state.issuedAt + state.user.maxAge <= Date.now())
     state.invalidateUser()
 })

@@ -22,6 +22,6 @@ export const useTabs = create<State>((set) => ({
   })),
   remove: href => set(state => ({
     ...state,
-    tabs: state.tabs.filter(tab => tab.href != href)
+    tabs: state.tabs.filter(tab => tab.href !== href)
   }))
 }))
