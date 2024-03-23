@@ -1,8 +1,14 @@
-import {describe, it, expect} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vitest";
 import {useUser} from "../src/store/useUser";
 
 
 describe("useUser", () => {
+  beforeEach(() => {
+    vi.resetModules()
+    // user is persisted in localStorage
+    useUser.getState().invalidateUser()
+  })
+
   it("can set user", () => {
     expect(useUser.getState().user).toBeNull()
 

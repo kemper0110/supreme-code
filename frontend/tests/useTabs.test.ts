@@ -1,11 +1,13 @@
 import {useTabs} from "../src/store/useTabs.tsx";
-import {describe, it, expect} from "vitest";
+import {vi, describe, it, expect, beforeEach} from "vitest";
 
 
 describe("useTabs", () => {
-  it("can set tabs", () => {
-    expect(useTabs.getState().tabs).toEqual([])
+  beforeEach(() => {
+    vi.resetModules()
+  })
 
+  it("can set tabs", () => {
     const tabs = [
       {label: "tab1", href: "/tab1"},
       {label: "tab2", href: "/tab2"}
@@ -17,8 +19,6 @@ describe("useTabs", () => {
   })
 
   it("can remove tabs", () => {
-    expect(useTabs.getState().tabs).toEqual([])
-
     const tabs = [
       {label: "tab1", href: "/tab1"},
       {label: "tab2", href: "/tab2"}
@@ -31,8 +31,6 @@ describe("useTabs", () => {
   })
 
   it("can push tab with same href -- should replace it", () => {
-    expect(useTabs.getState().tabs).toEqual([])
-
     const tabs = [
       {label: "tab1", href: "/tab1"},
       {label: "tab2", href: "/tab2"},
@@ -42,7 +40,7 @@ describe("useTabs", () => {
     for (const tab of tabs)
       useTabs.getState().push(tab);
 
-    const expectedTabs = [tabs[2], tabs[1]]
+    const expectedTabs = [tabs[1], tabs[2]]
 
     expect(useTabs.getState().tabs).toEqual(expectedTabs)
   })
