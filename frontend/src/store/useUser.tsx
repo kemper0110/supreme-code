@@ -17,6 +17,8 @@ type State = {
 
 const initialUser = null
 
+const userStorageKey = "user-storage";
+
 export const useUser = create(persist<State>(
   set => ({
     user: initialUser,
@@ -29,11 +31,16 @@ export const useUser = create(persist<State>(
     reset: () => set(() => ({user: initialUser, issuedAt: 0}))
   }),
   {
-    name: "user-storage"
+    name: userStorageKey
   }
 ))
 
 useUser.persist.onFinishHydration(state => {
   if (state.user && state.issuedAt + state.user.maxAge <= Date.now())
     state.invalidateUser()
+})
+
+window.addEventListener("storage", evt => {
+  if(evt.key === userStorageKey)
+    useUser.persist.rehydrate()
 })

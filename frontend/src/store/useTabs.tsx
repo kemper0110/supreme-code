@@ -1,4 +1,5 @@
 import {create} from "zustand";
+import {persist} from "zustand/middleware";
 
 type Tab = {
   label: string
@@ -14,7 +15,9 @@ type State = {
 
 const initialTabs: Tab[] = []
 
-export const useTabs = create<State>((set) => ({
+const tabsStorageKey = "tabs-storage"
+
+export const useTabs = create(persist<State>((set) => ({
   tabs: [] as Tab[],
   push: tab => set(state => ({
     ...state,
@@ -28,4 +31,11 @@ export const useTabs = create<State>((set) => ({
     tabs: state.tabs.filter(tab => tab.href !== href)
   })),
   reset: () => set(() => ({tabs: initialTabs}))
+}), {
+  name: tabsStorageKey,
 }))
+
+window.addEventListener("storage", evt => {
+  if(evt.key === tabsStorageKey)
+    useTabs.persist.rehydrate()
+})
