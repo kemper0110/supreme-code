@@ -9,7 +9,10 @@ type State = {
   tabs: Tab[]
   push: (tab: Tab) => void
   remove: (href: string) => void
+  reset: () => void
 }
+
+const initialTabs: Tab[] = []
 
 export const useTabs = create<State>((set) => ({
   tabs: [] as Tab[],
@@ -23,5 +26,6 @@ export const useTabs = create<State>((set) => ({
   remove: href => set(state => ({
     ...state,
     tabs: state.tabs.filter(tab => tab.href !== href)
-  }))
+  })),
+  reset: () => set(() => ({tabs: initialTabs}))
 }))

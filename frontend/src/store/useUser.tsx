@@ -12,6 +12,7 @@ type State = {
   issuedAt: number
   setUser: (user: User, issuedAt: number) => void
   invalidateUser: () => void
+  reset: () => void
 }
 
 const initialUser = null
@@ -24,7 +25,8 @@ export const useUser = create(persist<State>(
     invalidateUser: () => {
       console.info("user has been invalidated")
       set(() => ({user: initialUser}))
-    }
+    },
+    reset: () => set(() => ({user: initialUser, issuedAt: 0}))
   }),
   {
     name: "user-storage"
