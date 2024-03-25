@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TwoSumTest {
+class JunitTest {
     static Stream<Arguments> basicTests() {
         return Stream.of(
                 Arguments.of(new int[]{1, 2, 3}, 4, new int[]{0, 2}),
