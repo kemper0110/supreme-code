@@ -8,4 +8,4 @@ RUN ./mvnw dependency:go-offline test
 COPY src src
 RUN ./mvnw package
 
-RUN ["./mvnw", "test", "--offline"]
+CMD ["./mvnw", "test", "--offline"]
