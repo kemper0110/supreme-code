@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(my_project)
+project(sc-cpp-test)
 
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 14)
@@ -16,14 +16,8 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(
-  hello_test
-  hello_test.cc
-)
-target_link_libraries(
-  hello_test
-  GTest::gtest_main
-)
+add_executable(sc_test sc_test.cc solution.hpp)
+target_link_libraries(sc_test GTest::gtest_main)
 
 include(GoogleTest)
-gtest_discover_tests(hello_test)
+gtest_discover_tests(sc_test)
