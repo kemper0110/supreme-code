@@ -65,7 +65,7 @@ public class JavascriptTester extends Tester {
 
     @Override
     protected CreateContainerResponse createContainer() {
-        return dockerClient.createContainerCmd("sc-js-test-image").exec();
+        return dockerClient.createContainerCmd("danil1digits0nly/sc-js-test:1.0").exec();
     }
 
     @Override
