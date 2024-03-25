@@ -27,76 +27,27 @@ public class JavaTester extends Tester {
     }
 
     @Override
-    protected byte[] createArchive(Path test, String code) {
-        try (
-                InputStream codeInputStream = IOUtils.toInputStream(code, "UTF-8");
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                TarArchiveOutputStream tarOutput = new TarArchiveOutputStream(byteArrayOutputStream);
-                var files = Files.walk(test, FileVisitOption.FOLLOW_LINKS);
-        ) {
-            files.forEach(filePath -> {
-                if (Files.isRegularFile(filePath)) {
-                    try {
-                        TarArchiveEntry entry = new TarArchiveEntry(filePath.toFile(), test.relativize(filePath).toString());
-                        tarOutput.putArchiveEntry(entry);
-                        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(filePath.toFile()))) {
-                            IOUtils.copy(bis, tarOutput);
-                            tarOutput.closeArchiveEntry();
-                        }
-                    } catch (IOException e) {
-                        log.error("test repository copy fail: {}", e.getMessage());
-                    }
-                }
-            });
-
-            TarArchiveEntry codeTarEntry = new TarArchiveEntry("/src/main/java/org/example/Solution.java");
-            codeTarEntry.setSize(codeInputStream.available());
-            tarOutput.putArchiveEntry(codeTarEntry);
-            IOUtils.copy(codeInputStream, tarOutput);
-            tarOutput.closeArchiveEntry();
-
-            tarOutput.finish();
-            return byteArrayOutputStream.toByteArray();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    protected String solutionFilename() {
+        return "/src/main/java/org/example/Solution.java";
     }
 
     @Override
-    protected CreateContainerResponse createContainer() {
-        return dockerClient.createContainerCmd("danil1digits0nly/sc-java-test:1.0").exec();
+    protected String containerName() {
+        return "danil1digits0nly/sc-java-test:1.0";
     }
 
     @Override
-    protected String copyReport(String containerId) {
-        try (
-                final var testResultXmlStream = dockerClient.copyArchiveFromContainerCmd(containerId, "/usr/app/target/surefire-reports/TEST-JunitTest.xml").exec();
-                final var tarArchiveInputStream = new TarArchiveInputStream(testResultXmlStream);
-                final var byteArrayOutputStream = new ByteArrayOutputStream();
-        ) {
-            tarArchiveInputStream.getNextTarEntry();
-            IOUtils.copy(tarArchiveInputStream, byteArrayOutputStream);
-            return byteArrayOutputStream.toString(StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    protected String reportPath() {
+        return "/usr/app/target/surefire-reports/TEST-JunitTest.xml";
     }
 
     @Override
-    protected TestResult.TestResultBuilder parseReport(String xmlReport) {
-        try {
-            var jaxbContext = JAXBContext.newInstance("net.danil.generated.junit");
-            var unmarshaller = jaxbContext.createUnmarshaller();
-            var testsuite = (Testsuite) unmarshaller.unmarshal(IOUtils.toInputStream(xmlReport, "UTF-8"));
-
-            return TestResult.builder()
-                    .tests(Integer.parseInt(testsuite.getTests()))
-                    .failures(Integer.parseInt(testsuite.getFailures()))
-                    .errors(Integer.parseInt(testsuite.getErrors()))
-                    .time(Double.parseDouble(testsuite.getTime()))
-                    .xml(xmlReport);
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
+    protected TestResult.TestResultBuilder normalizeReport(Object parsedReport) {
+        var testsuite = (Testsuite) parsedReport;
+        return TestResult.builder()
+                .tests(Integer.parseInt(testsuite.getTests()))
+                .failures(Integer.parseInt(testsuite.getFailures()))
+                .errors(Integer.parseInt(testsuite.getErrors()))
+                .time(Double.parseDouble(testsuite.getTime()));
     }
 }
