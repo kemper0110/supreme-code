@@ -105,7 +105,7 @@ export default function Problem() {
         <PanelGroup autoSaveId={'problem:[description-editor]'} direction={'horizontal'}>
           <Panel defaultSize={40}>
             <Flex pt={12} pb={4} gap={16} align={'center'}>
-              <Link to={'/'}>
+              <Link to={'/problem'}>
                 <IconArrowAutofitLeft className={'ml-4'} size={32}/>
               </Link>
               <Title pb={4}>
