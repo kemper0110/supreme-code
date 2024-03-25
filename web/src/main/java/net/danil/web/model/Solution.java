@@ -1,36 +1,25 @@
 package net.danil.web.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.danil.model.Language;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 
-@Entity
+@Table
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Solution {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-
-    @Column(nullable = false)
     private String code;
-
-    @Column(nullable = false)
     private String problemSlug;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Language language;
-
-    @OneToOne(mappedBy = "solution", cascade = CascadeType.ALL)
     private SolutionResult solutionResult;
 }

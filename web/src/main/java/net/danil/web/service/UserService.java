@@ -17,15 +17,16 @@ public class UserService {
 
     public Mono<User> createUser(User user) {
         final var u = user.toBuilder().password(passwordEncoder.encode(user.getPassword())).build();
-        final var uu = userRepository.save(u);
-        log.info("Created new user with ID = " + uu.getId());
-        return Mono.just(uu);
+        return userRepository.save(u).map(uu -> {
+            log.info("Created new user with ID = " + uu.getId());
+            return uu;
+        });
     }
 
     public Mono<User> getUser(Long userId) {
-        return Mono.justOrEmpty(userRepository.findById(userId));
+        return userRepository.findById(userId);
     }
     public Mono<User> getUserByUsername(String username) {
-        return Mono.justOrEmpty(userRepository.findByUsername(username));
+        return userRepository.findByUsername(username);
     }
 }
