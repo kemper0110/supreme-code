@@ -4,14 +4,13 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import lombok.extern.slf4j.Slf4j;
 import net.danil.dto.TestResult;
 import net.danil.generated.junit.Testsuites;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -21,8 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Service
+@Slf4j
 public class JavascriptTester extends Tester {
-    private final Logger logger = LoggerFactory.getLogger(JavascriptTester.class);
     public JavascriptTester(DockerClient dockerClient) {
         super(dockerClient);
     }
@@ -45,7 +44,7 @@ public class JavascriptTester extends Tester {
                             tarOutput.closeArchiveEntry();
                         }
                     } catch (IOException e) {
-                        logger.error("test repository copy fail: {}", e.getMessage());
+                        log.error("test repository copy fail: {}", e.getMessage());
                     }
                 }
             });
