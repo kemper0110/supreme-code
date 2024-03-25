@@ -53,8 +53,8 @@ public class ProblemController {
     @PostMapping("/{slug}")
     Mono<Object> submit(@PathVariable String slug, @RequestBody TestRequest testRequest, @AuthenticationPrincipal(expression = "id") Long userId) {
         logger.debug("submitted solution for {} with {}", slug, testRequest);
-        final var taskId = testRunnerSenderService.send(userId, testRequest.code(), slug, testRequest.language()).toString();
-        return testRunnerChannelService.subscribe(taskId)
+        return testRunnerSenderService.send(userId, testRequest.code(), slug, testRequest.language())
+                .flatMap(taskId -> testRunnerChannelService.subscribe(taskId.toString()))
                 .map(message -> {
                     final var solution = (Solution) message.getPayload();
                     final var solutionResult = solution.getSolutionResult();

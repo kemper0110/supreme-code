@@ -3,18 +3,18 @@ package net.danil.web;
 import net.danil.web.dto.TestMessage;
 import net.danil.web.dto.TestResult;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.*;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
+import reactor.kafka.sender.SenderOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,24 +27,17 @@ public class WebApplication {
 		SpringApplication.run(WebApplication.class, args);
 	}
 
+
 	@Bean
-	public ProducerFactory<String, TestMessage> producerFactory() {
-		return new DefaultKafkaProducerFactory<>(producerConfigs());
+	public SenderOptions<String, TestMessage> senderOptions(KafkaProperties kafkaProperties) {
+		return SenderOptions.create(kafkaProperties.buildProducerProperties(null));
 	}
 
 	@Bean
-	public Map<String, Object> producerConfigs() {
-		Map<String, Object> props = new HashMap<>();
-		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-
-		return props;
-	}
-
-	@Bean
-	public KafkaTemplate<String, TestMessage> kafkaTemplate() {
-		return new KafkaTemplate<>(producerFactory());
+	public ReactiveKafkaProducerTemplate<String, TestMessage> reactiveKafkaProducerTemplate(
+			SenderOptions<String, TestMessage> senderOptions
+	) {
+		return new ReactiveKafkaProducerTemplate<>(senderOptions);
 	}
 
 
