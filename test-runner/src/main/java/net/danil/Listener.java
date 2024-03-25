@@ -20,6 +20,7 @@ public class Listener {
     final private KafkaTemplate<String, TestResult> kafka;
     final private JavascriptTester javascriptTester;
     final private CppTester cppTester;
+    final private JavaTester javaTester;
     final private DirectoryRepository directoryRepository;
 
     @KafkaListener(topics = "test-topic", groupId = "test-group")
@@ -45,6 +46,7 @@ public class Listener {
         switch (testMessage.language()) {
             case Javascript -> javascriptTester.test(path, testMessage.code(), onResult);
             case Cpp -> cppTester.test(path, testMessage.code(), onResult);
+            case Java -> javaTester.test(path, testMessage.code(), onResult);
             default -> onResult.accept(TestResult.builder().logs("the language is not supported"));
         }
     }
