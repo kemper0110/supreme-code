@@ -2,10 +2,18 @@ import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import {useEffect, useRef, useState} from "react";
 import {editor} from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
-import {IconArrowAutofitLeft, IconCheck, IconGripHorizontal, IconGripVertical} from "@tabler/icons-react";
-import {Button, CopyButton, Flex, HoverCard, SegmentedControl, Stack, Title} from "@mantine/core";
+import {
+  IconArrowAutofitLeft,
+  IconBrain,
+  IconCheck,
+  IconGripHorizontal,
+  IconGripVertical,
+  IconMoodCrazyHappy,
+  IconPigMoney,
+  IconRestore
+} from "@tabler/icons-react";
+import {ActionIcon, Button, CopyButton, Flex, HoverCard, SegmentedControl, Stack, Text, Title} from "@mantine/core";
 import {Link, useParams} from "react-router-dom";
-import {CppView, JavaView, NodeView} from "../../components/LanguageView.tsx";
 import {Language, Solution, useProblemQuery, useTestMutation} from "./Loader.tsx";
 import {ResultPills} from "./components/components.tsx";
 import {SelectedSolutionContext} from "./SelectedSolutionContext.tsx";
@@ -86,7 +94,7 @@ const useOnline = (initialOnline: boolean, slug: string, userId: number) => {
   }
 }
 
-export default function Problem({ host, initialOnline }: { host: boolean, initialOnline: boolean }) {
+export default function Problem({host, initialOnline}: { host: boolean, initialOnline: boolean }) {
   // @ts-ignore
   console.log({host})
 
@@ -133,7 +141,7 @@ export default function Problem({ host, initialOnline }: { host: boolean, initia
   const editorOnMount = (editor: ICodeEditor) => {
     console.log('editor initialized', editor)
     setEditorRef(editor)
-    if(editor) {
+    if (editor) {
       // @ts-ignore
       monacoBinding.current = new MonacoBinding(ydocumentTextType, editor.getModel(), new Set([editor]), webrtcProvider.awareness)
 
@@ -179,7 +187,7 @@ export default function Problem({ host, initialOnline }: { host: boolean, initia
                       <HoverCard.Dropdown>
                         <CopyButton value={`${window.location.origin}/problem/${slug}/${userId}`}>
                           {
-                            ({copied, copy} ) => (
+                            ({copied, copy}) => (
                               <Button variant={'outline'} color={copied ? 'teal' : 'blue'} onClick={copy}>
                                 {copied ? 'Скопирован' : 'Скопировать url'}
                               </Button>
@@ -212,7 +220,29 @@ export default function Problem({ host, initialOnline }: { host: boolean, initia
                 <Flex justify={'end'} gap={12} align={'center'} pr={20}>
                   <SegmentedControl size={'xs'} data={
                     languages.map(l => ({
-                      label: {Cpp: <CppView/>, Java: <JavaView/>, Javascript: <NodeView/>}[l.language],
+                      label: <HoverCard position={'top'}>
+                        <HoverCard.Target>
+                          <Flex align={'center'} gap={4}>
+                            {
+                              {
+                                Cpp: <><IconBrain/><Text size={'lg'}>C++17 gcc:13.2.0</Text></>,
+                                Java: <><IconPigMoney/><Text size={'lg'}>java 21 corretto</Text></>,
+                                Javascript: <><IconMoodCrazyHappy/><Text size={'lg'}>node.js 20</Text></>
+                              }[l.language]
+                            }
+                          </Flex>
+                        </HoverCard.Target>
+                        {
+                          selectedLanguage.language == l.language && editorRef?.getValue() !== selectedLanguage.template ? (
+                            <HoverCard.Dropdown>
+                              <ActionIcon variant={'light'} color={'gray'}
+                                          onClick={() => editorRef?.setValue(selectedLanguage.template)}>
+                                <IconRestore/>
+                              </ActionIcon>
+                            </HoverCard.Dropdown>
+                          ) : null
+                        }
+                      </HoverCard>,
                       value: l.language
                     }))
                   }
