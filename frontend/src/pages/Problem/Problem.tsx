@@ -1,5 +1,5 @@
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
-import {useEffect, useRef, useState} from "react";
+import {MutableRefObject, useEffect, useRef, useState} from "react";
 import {editor} from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
 import {
@@ -67,30 +67,42 @@ const useSharedSelectedLanguage: LanguageStoreProvider = (languages: Language[])
   ] as LanguageStore
 }
 
-const useOnline = (initialOnline: boolean, slug: string, userId: number) => {
+const useWebrtcProvider = (online: boolean, slug: string, userId: number) => {
   const webrtcProvider = useRef<WebrtcProvider>();
-  const onSetOnline = (o: boolean) => {
-    if (o) {
+
+  useEffect(() => {
+    if (online) {
       const topic = `sync-problem-${slug}:${userId}`
       console.log('connecting to topic', topic)
       webrtcProvider.current = new WebrtcProvider(topic, doc, {
         signaling: ["ws://localhost:4444"],
       });
-    } else {
+    }
+    return () => {
       webrtcProvider.current?.disconnect();
       webrtcProvider.current = undefined;
     }
-    return o
-  }
-
-  const [online, setOnline] = useState(() => onSetOnline(initialOnline));
-  const _setOnline = (o: boolean) => {
-    setOnline(onSetOnline(o));
-  }
+  }, [online]);
 
   return {
-    online, setOnline: _setOnline,
     webrtcProvider
+  }
+}
+
+const useMonacoBinding = (editorRef: editor.ICodeEditor | null, webrtcProvider: MutableRefObject<WebrtcProvider | undefined>)=> {
+  const monacoBinding = useRef<MonacoBinding>()
+  useEffect(() => {
+    if (editorRef && webrtcProvider.current) {
+      // @ts-ignore
+      monacoBinding.current = new MonacoBinding(ydocumentTextType, editorRef.getModel(), new Set([editorRef]), webrtcProvider.current?.awareness)
+    }
+    return () => {
+      monacoBinding.current?.destroy()
+      monacoBinding.current = undefined
+    }
+  }, [editorRef, webrtcProvider.current]);
+  return {
+    monacoBinding
   }
 }
 
@@ -103,7 +115,8 @@ export default function Problem({host, initialOnline}: { host: boolean, initialO
 
   const {slug} = useParams()
   const userId = host ? useUser(state => state.user?.id) : Number.parseInt(useParams().userId!)
-  const {online, setOnline, webrtcProvider} = useOnline(initialOnline, slug!, userId!)
+  const [online, setOnline] = useState(initialOnline);
+  const {webrtcProvider} = useWebrtcProvider(online, slug!, userId!)
 
   const {data} = useProblemQuery(slug!)
   const {name, description, languages, solutions} = data!
@@ -118,8 +131,7 @@ export default function Problem({host, initialOnline}: { host: boolean, initialO
   const [selectedSolution, setSelectedSolution] = selectedSolutionState
 
   const [editorRef, setEditorRef] = useState<ICodeEditor | null>(null)
-  const monacoBinding = useRef<MonacoBinding>()
-
+  useMonacoBinding(editorRef, webrtcProvider);
 
   const [activeTab, setActiveTab] = useState<'description' | 'solutions' | null>('description')
 
@@ -142,15 +154,9 @@ export default function Problem({host, initialOnline}: { host: boolean, initialO
     console.log('editor initialized', editor)
     setEditorRef(editor)
     if (editor) {
-      // @ts-ignore
-      monacoBinding.current = new MonacoBinding(ydocumentTextType, editor.getModel(), new Set([editor]), webrtcProvider.awareness)
-
       if (host) {
         editor.setValue(selectedLanguage.template)
       }
-    } else {
-      monacoBinding.current?.destroy()
-      monacoBinding.current = undefined
     }
   }
 
