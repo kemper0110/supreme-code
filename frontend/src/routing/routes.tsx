@@ -57,14 +57,19 @@ export const routes = [
       Protected(
         {
           path: "/problem/:slug",
-          element: <Problem/>,
+          element: <Problem host={true} initialOnline={false}/>,
           loader: ProblemLoader
         },
         {
           path: "/playground",
           loader: NotImplemented,
           element: <Playground/>
-        }
+        },
+        {
+          path: "/problem/:slug/:userId",
+          element: <Problem host={false} initialOnline={true}/>,
+          loader: ProblemLoader
+        },
       )
     ]
   },

@@ -3,7 +3,7 @@ import {useEffect, useRef, useState} from "react";
 import {editor} from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
 import {IconArrowAutofitLeft, IconCheck, IconGripHorizontal, IconGripVertical} from "@tabler/icons-react";
-import {Button, Flex, SegmentedControl, Stack, Title} from "@mantine/core";
+import {Button, CopyButton, Flex, HoverCard, SegmentedControl, Stack, Title} from "@mantine/core";
 import {Link, useParams} from "react-router-dom";
 import {CppView, JavaView, NodeView} from "../../components/LanguageView.tsx";
 import {Language, Solution, useProblemQuery, useTestMutation} from "./Loader.tsx";
@@ -18,6 +18,7 @@ import {WebrtcProvider} from "y-webrtc";
 import {useSyncedStore} from "@syncedstore/react";
 // @ts-ignore
 import {MonacoBinding} from 'y-monaco'
+import {useUser} from "../../store/useUser.tsx";
 import ICodeEditor = editor.ICodeEditor;
 
 
@@ -58,19 +59,25 @@ const useSharedSelectedLanguage: LanguageStoreProvider = (languages: Language[])
   ] as LanguageStore
 }
 
-const useOnline = () => {
-  const [online, setOnline] = useState(false);
+const useOnline = (initialOnline: boolean, slug: string, userId: number) => {
   const webrtcProvider = useRef<WebrtcProvider>();
-  const _setOnline = (o: boolean) => {
+  const onSetOnline = (o: boolean) => {
     if (o) {
-      webrtcProvider.current = new WebrtcProvider("sync-problem", doc, {
+      const topic = `sync-problem-${slug}:${userId}`
+      console.log('connecting to topic', topic)
+      webrtcProvider.current = new WebrtcProvider(topic, doc, {
         signaling: ["ws://localhost:4444"],
       });
     } else {
       webrtcProvider.current?.disconnect();
       webrtcProvider.current = undefined;
     }
-    setOnline(o);
+    return o
+  }
+
+  const [online, setOnline] = useState(() => onSetOnline(initialOnline));
+  const _setOnline = (o: boolean) => {
+    setOnline(onSetOnline(o));
   }
 
   return {
@@ -79,17 +86,17 @@ const useOnline = () => {
   }
 }
 
-export default function Problem() {
-  const {online, setOnline, webrtcProvider} = useOnline();
-
+export default function Problem({ host, initialOnline }: { host: boolean, initialOnline: boolean }) {
   // @ts-ignore
-  const host = window.navigator.userAgentData.brands[2].brand !== "Microsoft Edge"
   console.log({host})
 
   const state = useSyncedStore<typeof store>(store)
   console.log({state: JSON.stringify(state)})
 
   const {slug} = useParams()
+  const userId = host ? useUser(state => state.user?.id) : Number.parseInt(useParams().userId!)
+  const {online, setOnline, webrtcProvider} = useOnline(initialOnline, slug!, userId!)
+
   const {data} = useProblemQuery(slug!)
   const {name, description, languages, solutions} = data!
   const solved = solutions.some(solution => solution.solutionResult?.solved)
@@ -104,21 +111,7 @@ export default function Problem() {
 
   const [editorRef, setEditorRef] = useState<ICodeEditor | null>(null)
   const monacoBinding = useRef<MonacoBinding>()
-  useEffect(() => {
-    if (editorRef)
-      /* @ts-ignore */
-      monacoBinding.current = new MonacoBinding(ydocumentTextType, editorRef.getModel(), new Set([editorRef]), webrtcProvider.awareness)
-    return () => monacoBinding.current?.destroy()
-  }, [editorRef]);
 
-  if (host) {
-    useEffect(() => {
-      if (editorRef) {
-        console.log('set value!', editorRef)
-        editorRef.setValue(selectedLanguage.template)
-      }
-    }, [selectedLanguage, editorRef])
-  }
 
   const [activeTab, setActiveTab] = useState<'description' | 'solutions' | null>('description')
 
@@ -135,6 +128,22 @@ export default function Problem() {
   const onRunClick = () => {
     // @ts-ignore
     testMutation.mutate(editorRef.current?.getValue())
+  }
+
+  const editorOnMount = (editor: ICodeEditor) => {
+    console.log('editor initialized', editor)
+    setEditorRef(editor)
+    if(editor) {
+      // @ts-ignore
+      monacoBinding.current = new MonacoBinding(ydocumentTextType, editor.getModel(), new Set([editor]), webrtcProvider.awareness)
+
+      if (host) {
+        editor.setValue(selectedLanguage.template)
+      }
+    } else {
+      monacoBinding.current?.destroy()
+      monacoBinding.current = undefined
+    }
   }
 
   return (
@@ -160,9 +169,26 @@ export default function Problem() {
               </Flex>
               {
                 online ? (
-                  <Button color={'teal'} onClick={() => setOnline(false)}>
-                    Онлайн
-                  </Button>
+                  <Flex gap={4}>
+                    <HoverCard>
+                      <HoverCard.Target>
+                        <Button color={'teal'} onClick={() => setOnline(false)}>
+                          Онлайн
+                        </Button>
+                      </HoverCard.Target>
+                      <HoverCard.Dropdown>
+                        <CopyButton value={`${window.location.origin}/problem/${slug}/${userId}`}>
+                          {
+                            ({copied, copy} ) => (
+                              <Button variant={'outline'} color={copied ? 'teal' : 'blue'} onClick={copy}>
+                                {copied ? 'Скопирован' : 'Скопировать url'}
+                              </Button>
+                            )
+                          }
+                        </CopyButton>
+                      </HoverCard.Dropdown>
+                    </HoverCard>
+                  </Flex>
                 ) : (
                   <Button color={'gray'} onClick={() => setOnline(true)}>
                     Оффлайн
@@ -179,10 +205,7 @@ export default function Problem() {
           <Panel>
             <PanelGroup autoSaveId={'problem:[code-test]'} direction={'vertical'}>
               <Panel className={'pb-[60px]'} defaultSize={80}>
-                <Editor onMount={editor => {
-                  setEditorRef(editor)
-                  console.log('editor initialized', editor)
-                }}
+                <Editor onMount={editorOnMount}
                         height="100%"
                         language={selectedLanguage.language.toLowerCase()}
                 />
