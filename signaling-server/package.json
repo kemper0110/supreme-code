@@ -1,0 +1,17 @@
+{
+  "name": "signaling-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "signal-server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node signal-server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lib0": "^0.2.93",
+    "ws": "^8.16.0"
+  }
+}
