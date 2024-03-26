@@ -1,98 +1,136 @@
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
-import React, {createContext, ReactNode, useContext, useEffect, useReducer, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {editor} from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
-import {
-  IconArrowAutofitLeft,
-  IconCheck,
-  IconFileDescription,
-  IconGripHorizontal,
-  IconGripVertical,
-  IconReport
-} from "@tabler/icons-react";
-import {
-  Button,
-  Flex,
-  Loader,
-  Pill,
-  PillGroup,
-  ScrollArea,
-  SegmentedControl,
-  Stack,
-  Table,
-  Tabs,
-  Title
-} from "@mantine/core";
-import {Link, useLocation, useParams} from "react-router-dom";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {IconArrowAutofitLeft, IconCheck, IconGripHorizontal, IconGripVertical} from "@tabler/icons-react";
+import {Button, Flex, SegmentedControl, Stack, Title} from "@mantine/core";
+import {Link, useParams} from "react-router-dom";
 import {CppView, JavaView, NodeView} from "../../components/LanguageView.tsx";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import cx from "clsx";
-import classes from "../Problems/Problems.module.css";
-import {useTabs} from "../../store/useTabs.tsx";
-import {api} from "../../api/api.ts";
-import {ProblemData, problemQueryKey, Solution, SolutionResult, useProblemQuery} from "./Loader.tsx";
+import {Language, Solution, useProblemQuery, useTestMutation} from "./Loader.tsx";
+import {ResultPills} from "./components/components.tsx";
+import {SelectedSolutionContext} from "./SelectedSolutionContext.tsx";
+import {ProblemTabs} from "./Tabs/ProblemTabs.tsx";
+import {TestResultLoader} from "./components/TestResultLoader.tsx";
+import {useTabSpyLocation} from "./hooks/useTabSpyLocation.tsx";
+import {LanguageValue} from "../../types/LanguageValue.tsx";
+import {getYjsDoc, syncedStore} from "@syncedstore/core";
+import {WebrtcProvider} from "y-webrtc";
+import {useSyncedStore} from "@syncedstore/react";
+// @ts-ignore
+import {MonacoBinding} from 'y-monaco'
 import ICodeEditor = editor.ICodeEditor;
 
-const SelectedSolutionContext = createContext<[Solution | null, React.Dispatch<React.SetStateAction<Solution | null>>]>([null, () => {
-  throw new Error("SelectedSolutionContext.Provider not found")
-}])
+
+type State = {
+  language: {
+    value: LanguageValue | undefined
+  }
+}
+
+const store = syncedStore({
+  language: {}
+} as State);
+
+const doc = getYjsDoc(store);
+const ydocumentTextType = doc.getText('monaco')
+
+
+type LanguageStore = [
+  language: Language,
+  setSelectedLanguage: (language: Language) => void
+]
+
+type LanguageStoreProvider = (languages: Language[]) => LanguageStore
+
+const useSharedSelectedLanguage: LanguageStoreProvider = (languages: Language[]) => {
+  const state = useSyncedStore(store)
+  useEffect(() => {
+    if (state.language.value === undefined) {
+      state.language.value = languages[0].language
+    }
+  }, []);
+  const setSelectedLanguage = (language: Language) => {
+    state.language.value = language.language
+  }
+  return [
+    languages.find(language => language.language === state.language.value) ?? languages[0],
+    setSelectedLanguage
+  ] as LanguageStore
+}
+
+const useOnline = () => {
+  const [online, setOnline] = useState(false);
+  const webrtcProvider = useRef<WebrtcProvider>();
+  const _setOnline = (o: boolean) => {
+    if (o) {
+      webrtcProvider.current = new WebrtcProvider("sync-problem", doc, {
+        signaling: ["ws://localhost:4444"],
+      });
+    } else {
+      webrtcProvider.current?.disconnect();
+      webrtcProvider.current = undefined;
+    }
+    setOnline(o);
+  }
+
+  return {
+    online, setOnline: _setOnline,
+    webrtcProvider
+  }
+}
 
 export default function Problem() {
+  const {online, setOnline, webrtcProvider} = useOnline();
+
+  // @ts-ignore
+  const host = window.navigator.userAgentData.brands[2].brand !== "Microsoft Edge"
+  console.log({host})
+
+  const state = useSyncedStore<typeof store>(store)
+  console.log({state: JSON.stringify(state)})
+
   const {slug} = useParams()
   const {data} = useProblemQuery(slug!)
   const {name, description, languages, solutions} = data!
+  const solved = solutions.some(solution => solution.solutionResult?.solved)
+  useTabSpyLocation(name)
 
-  const location = useLocation()
-  const pushTab = useTabs(state => state.push)
-  pushTab({
-    href: location.pathname,
-    label: name
-  })
+  const [selectedLanguage, setSelectedLanguage] = useSharedSelectedLanguage(languages)
 
   const selectedSolutionState = useState<Solution | null>(
     solutions && solutions.length > 0 ? solutions[0] : null
   )
   const [selectedSolution, setSelectedSolution] = selectedSolutionState
+
+  const [editorRef, setEditorRef] = useState<ICodeEditor | null>(null)
+  const monacoBinding = useRef<MonacoBinding>()
   useEffect(() => {
-    console.log('array ref updated')
-  }, [selectedSolutionState]);
+    if (editorRef)
+      /* @ts-ignore */
+      monacoBinding.current = new MonacoBinding(ydocumentTextType, editorRef.getModel(), new Set([editorRef]), webrtcProvider.awareness)
+    return () => monacoBinding.current?.destroy()
+  }, [editorRef]);
 
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0])
-
-
-  const editorRef = useRef<ICodeEditor>()
-  useEffect(() => editorRef.current?.setValue(selectedLanguage.template), [selectedLanguage.language])
+  if (host) {
+    useEffect(() => {
+      if (editorRef) {
+        console.log('set value!', editorRef)
+        editorRef.setValue(selectedLanguage.template)
+      }
+    }, [selectedLanguage, editorRef])
+  }
 
   const [activeTab, setActiveTab] = useState<'description' | 'solutions' | null>('description')
 
-  const queryClient = useQueryClient()
-  const testMutation = useMutation({
-    mutationFn: (code: string) => api.post<Solution>(`/api/problem/${encodeURIComponent(slug!)}`, {
-      language: selectedLanguage.language,
-      code
-    }),
+  const testMutation = useTestMutation(slug!, selectedLanguage, {
     onMutate: () => {
       setActiveTab('solutions')
     },
-    onSuccess: response => {
-      const key = problemQueryKey(slug!)
-      const data = queryClient.getQueryData<ProblemData>(key)!
-      queryClient.setQueryData(key, () => {
-        return {
-          ...data,
-          solutions: [
-            response.data,
-            ...data.solutions
-          ]
-        }
-      })
+    onSuccess: (response) => {
       setSelectedSolution(response.data)
       console.log(response.data)
     }
   })
-
 
   const onRunClick = () => {
     // @ts-ignore
@@ -104,43 +142,36 @@ export default function Problem() {
       <div className={'h-screen'}>
         <PanelGroup autoSaveId={'problem:[description-editor]'} direction={'horizontal'}>
           <Panel defaultSize={40}>
-            <Flex pt={12} pb={4} gap={16} align={'center'}>
-              <Link to={'/problem'}>
-                <IconArrowAutofitLeft className={'ml-4'} size={32}/>
-              </Link>
-              <Title pb={4}>
-                {name}
-              </Title>
-              {
-                solutions.some(solution => solution.solutionResult?.solved) ? (
-                  <span className={'rounded-full bg-green-200 p-2'}>
+            <Flex px={16} pt={12} pb={4} align={'center'} justify={'space-between'}>
+              <Flex gap={16} align={'center'}>
+                <Link to={'/problem'}>
+                  <IconArrowAutofitLeft size={32}/>
+                </Link>
+                <Title pb={4}>
+                  {name}
+                </Title>
+                {
+                  solved ? (
+                    <span className={'rounded-full bg-green-200 p-2'}>
                     <IconCheck className={'text-green-600'} size={36}/>
                   </span>
-                ) : null
+                  ) : null
+                }
+              </Flex>
+              {
+                online ? (
+                  <Button color={'teal'} onClick={() => setOnline(false)}>
+                    Онлайн
+                  </Button>
+                ) : (
+                  <Button color={'gray'} onClick={() => setOnline(true)}>
+                    Оффлайн
+                  </Button>
+                )
               }
             </Flex>
-            {/* @ts-ignore */}
-            <Tabs value={activeTab} onChange={setActiveTab}>
-              <Tabs.List>
-                <Tabs.Tab value="description" leftSection={<IconFileDescription/>}>
-                  Описание
-                </Tabs.Tab>
-                <Tabs.Tab value="solutions" leftSection={<IconReport/>}>
-                  Решения
-                </Tabs.Tab>
-              </Tabs.List>
-
-              <Tabs.Panel value="description">
-                <Markdown remarkPlugins={[remarkGfm]}
-                          className={'p-4 pb-16 prose max-w-full overflow-y-auto max-h-screen'}>
-                  {description}
-                </Markdown>
-              </Tabs.Panel>
-
-              <Tabs.Panel value="solutions">
-                <SolutionsTable solutions={solutions}/>
-              </Tabs.Panel>
-            </Tabs>
+            <ProblemTabs solutions={solutions} activeTab={activeTab} setActiveTab={setActiveTab}
+                         description={description}/>
           </Panel>
           <PanelResizeHandle className={'bg-slate-200 flex items-center justify-center'}>
             <IconGripVertical className={'w-[15px] text-slate-500'}/>
@@ -148,19 +179,22 @@ export default function Problem() {
           <Panel>
             <PanelGroup autoSaveId={'problem:[code-test]'} direction={'vertical'}>
               <Panel className={'pb-[60px]'} defaultSize={80}>
-                <Editor onMount={editor => editorRef.current = editor}
-                        height="100%" language={selectedLanguage.language.toLowerCase()}
-                        defaultValue={selectedLanguage.template}/>
+                <Editor onMount={editor => {
+                  setEditorRef(editor)
+                  console.log('editor initialized', editor)
+                }}
+                        height="100%"
+                        language={selectedLanguage.language.toLowerCase()}
+                />
                 <Flex justify={'end'} gap={12} align={'center'} pr={20}>
                   <SegmentedControl size={'xs'} data={
                     languages.map(l => ({
                       label: {Cpp: <CppView/>, Java: <JavaView/>, Javascript: <NodeView/>}[l.language],
                       value: l.language
                     }))
-                  } value={selectedLanguage.language}
-                                    onChange={value => {
-                                      setSelectedLanguage(languages.find(l => l.language === value)!)
-                                    }}/>
+                  }
+                                    value={selectedLanguage.language}
+                                    onChange={value => setSelectedLanguage(languages.find(l => l.language === value)!)}/>
                   <Button onClick={onRunClick}>
                     Запустить
                   </Button>
@@ -188,28 +222,6 @@ export default function Problem() {
         </PanelGroup>
       </div>
     </SelectedSolutionContext.Provider>
-  )
-}
-
-const TestResultLoader = ({
-                            messages = ['Тестируем ваш код', 'Результат без перезагрузки страницы', 'Пожалуйста, подождите'],
-                            timeout = 1000
-                          }: {
-  messages?: ReactNode[]
-  timeout?: number
-}) => {
-  const [messageId, nextMessage] = useReducer((state: number) => (state + 1) % messages.length, 0)
-  const message = messages[messageId]
-
-  useEffect(() => {
-    const id = setInterval(nextMessage, timeout)
-    return () => clearInterval(id)
-  }, []);
-  return (
-    <div className={'flex flex-col gap-2 items-center'}>
-      <Loader/>
-      <span className={'font-medium text-slate-800'}>{message}</span>
-    </div>
   )
 }
 
@@ -243,68 +255,5 @@ const SolutionPanel = ({solution}: { solution: Solution }) => {
                       </pre>
       </Flex>
     </Stack>
-  )
-}
-
-const ResultPills = ({solutionResult}: { solutionResult: SolutionResult }) => {
-  return (
-    <PillGroup>
-      <Pill>
-        статус код {solutionResult.statusCode}
-      </Pill>
-      <Pill>
-        {solutionResult.tests} тестов
-      </Pill>
-      <Pill>
-        {solutionResult.errors} ошибок
-      </Pill>
-      <Pill>
-        {solutionResult.failures} сбоев
-      </Pill>
-      <Pill>
-        время {solutionResult.time}с
-      </Pill>
-      <Pill fw={'bold'} className={solutionResult.solved ? '!text-green-700' : '!text-red-700'}>
-        {solutionResult.solved ? 'Решена' : 'Не решена'}
-      </Pill>
-    </PillGroup>
-  )
-}
-
-const SolutionsTable = ({solutions}: { solutions: Solution[] }) => {
-  const [scrolled, setScrolled] = useState(false);
-
-  function Row({solution}: { solution: Solution }) {
-    const setSelectedSolution = useContext(SelectedSolutionContext)[1]
-    return (
-      <Table.Tr key={solution.id} className={'hover:bg-slate-50 transition-colors cursor-pointer'}
-                onClick={() => setSelectedSolution(solution)}
-      >
-        <Table.Td>{solution.id}</Table.Td>
-        <Table.Td>{solution.language}</Table.Td>
-        <Table.Td>
-          {
-            solution.solutionResult ? <ResultPills solutionResult={solution.solutionResult}/> : <Pill>Pending</Pill>
-          }
-        </Table.Td>
-      </Table.Tr>
-    )
-  }
-
-  return (
-    <ScrollArea h={'100%'} onScrollPositionChange={({y}) => setScrolled(y !== 0)}>
-      <Table miw={700}>
-        <Table.Thead className={cx(classes.header, {[classes.scrolled]: scrolled})}>
-          <Table.Tr>
-            <Table.Th>#</Table.Th>
-            <Table.Th>Язык</Table.Th>
-            <Table.Th>Результат</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {solutions.map(solution => <Row key={solution.id} solution={solution}/>)}
-        </Table.Tbody>
-      </Table>
-    </ScrollArea>
   )
 }
