@@ -4,13 +4,14 @@ import com.github.dockerjava.api.DockerClient;
 import lombok.extern.slf4j.Slf4j;
 import net.danil.dto.TestResult;
 import net.danil.generated.junit.Testsuite;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class CppTester extends Tester {
-    public CppTester(DockerClient dockerClient) {
-        super(dockerClient);
+    public CppTester(DockerClient dockerClient, @Value("${supreme-code.test-runner.container.ttk}") int ttk) {
+        super(dockerClient, ttk);
     }
 
     @Override

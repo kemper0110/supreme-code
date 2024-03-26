@@ -3,6 +3,7 @@ package net.danil;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.WaitResponse;
 import jakarta.xml.bind.JAXBContext;
@@ -21,12 +22,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Consumer;
+import java.util.concurrent.*;
 
 @RequiredArgsConstructor
 @Slf4j
 public abstract class Tester {
     protected final DockerClient dockerClient;
+    protected final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    protected final int ttk;
 
     protected abstract String solutionFilename();
 
@@ -143,7 +146,7 @@ public abstract class Tester {
         int statusCode = 0;
         final protected String containerId;
         final protected StringBuilder builder;
-        final protected Consumer<TestResult.TestResultBuilder> resultCallback;
+        final protected CompletableFuture<TestResult.TestResultBuilder> resultFuture;
 
         @Override
         public void onComplete() {
@@ -152,9 +155,9 @@ public abstract class Tester {
             try {
                 final var report = copyReport(containerId);
                 final var result = parseReport(report).logs(logs).statusCode(statusCode);
-                resultCallback.accept(result);
+                resultFuture.complete(result);
             } catch (Exception e) {
-                resultCallback.accept(TestResult.builder().logs(logs).statusCode(statusCode));
+                resultFuture.complete(TestResult.builder().logs(logs).statusCode(statusCode));
             } finally {
                 dockerClient.removeContainerCmd(containerId).exec();
                 log.debug("container({})-wait: removed container, exiting", containerId);
@@ -183,11 +186,11 @@ public abstract class Tester {
         }
     }
 
-    protected WaitCallback waitCallback(String containerId, StringBuilder builder, Consumer<TestResult.TestResultBuilder> resultCallback) {
+    protected WaitCallback waitCallback(String containerId, StringBuilder builder, CompletableFuture<TestResult.TestResultBuilder> resultCallback) {
         return new WaitCallback(containerId, builder, resultCallback);
     }
 
-    public void test(Path test, String code, Consumer<TestResult.TestResultBuilder> resultCallback) {
+    public CompletableFuture<TestResult.TestResultBuilder> test(Path test, String code) {
         final var container = createContainer();
         final var containerId = container.getId();
 
@@ -208,7 +211,29 @@ public abstract class Tester {
                 .withFollowStream(true)
                 .exec(logCallback);
 
-        final var waitCallback = waitCallback(containerId, logCallback.builder, resultCallback);
-        dockerClient.waitContainerCmd(containerId).exec(waitCallback);
+
+        final var timeoutCF = new CompletableFuture<Void>();
+        scheduler.schedule(() -> timeoutCF.complete(null), ttk, TimeUnit.MILLISECONDS);
+
+        final var waitCF = new CompletableFuture<TestResult.TestResultBuilder>();
+        dockerClient.waitContainerCmd(containerId).exec(
+                waitCallback(containerId, logCallback.builder, waitCF)
+        );
+
+        return CompletableFuture.anyOf(timeoutCF, waitCF)
+                .thenApply(result -> {
+                    if (result == null) {
+                        try {
+                            dockerClient.killContainerCmd(containerId).exec();
+                            log.error("container({}): killed after timeout", containerId.substring(0, 8));
+                        } catch (NotFoundException e) {
+                            log.error("container({}): not found to kill {}", containerId.substring(0, 8), e.getMessage());
+                        }
+                    } else {
+                        timeoutCF.cancel(true);
+                    }
+                    return waitCF;
+                })
+                .thenCompose(completedFuture -> completedFuture);
     }
 }

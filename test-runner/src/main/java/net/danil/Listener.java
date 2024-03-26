@@ -34,20 +34,19 @@ public class Listener {
         final var path = directoryRepository.getBySlugAndLanguage(testMessage.testSlug(), testMessage.language());
         log.debug("Path: {}", path);
 
-        java.util.function.Consumer<TestResult.TestResultBuilder> onResult = resultBuilder -> {
+        final var resultBuilderCompletableFuture = switch (testMessage.language()) {
+            case Javascript -> javascriptTester.test(path, testMessage.code());
+            case Cpp -> cppTester.test(path, testMessage.code());
+            case Java -> javaTester.test(path, testMessage.code());
+        };
+
+        resultBuilderCompletableFuture.thenAccept(resultBuilder -> {
             final var runnerEnd = System.currentTimeMillis();
             log.info("Tests for id {} finished after {}ms", messageId, runnerEnd - runnerStart);
             final var result = resultBuilder
                     .solutionId(testMessage.solutionId())
                     .build();
             kafka.send(resultTopic, messageId, result);
-        };
-
-        switch (testMessage.language()) {
-            case Javascript -> javascriptTester.test(path, testMessage.code(), onResult);
-            case Cpp -> cppTester.test(path, testMessage.code(), onResult);
-            case Java -> javaTester.test(path, testMessage.code(), onResult);
-            default -> onResult.accept(TestResult.builder().logs("the language is not supported"));
-        }
+        });
     }
 }

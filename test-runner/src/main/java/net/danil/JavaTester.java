@@ -11,6 +11,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -22,8 +23,8 @@ import java.nio.file.Path;
 @Service
 @Slf4j
 public class JavaTester extends Tester {
-    public JavaTester(DockerClient dockerClient) {
-        super(dockerClient);
+    public JavaTester(DockerClient dockerClient, @Value("${supreme-code.test-runner.container.ttk}") int ttk) {
+        super(dockerClient, ttk);
     }
 
     @Override
