@@ -64,7 +64,7 @@ export default function Problems() {
   return (
     <DotBackground className={'pt-8 h-[calc(100dvh-99px)]'}>
       <Container size="md">
-        <ScrollArea h={300} onScrollPositionChange={({y}) => setScrolled(y !== 0)} classNames={{viewport: 'px-3'}}>
+        <ScrollArea h={'100%'} onScrollPositionChange={({y}) => setScrolled(y !== 0)} classNames={{viewport: 'px-3'}}>
           <Table miw={700}  className={'bg-white shadow-lg'}>
             <Table.Thead className={cx(classes.header, {[classes.scrolled]: scrolled})}>
               <Table.Tr>
