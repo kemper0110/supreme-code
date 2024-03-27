@@ -147,7 +147,7 @@ export default function Problem({host, initialOnline}: { host: boolean, initialO
 
   const onRunClick = () => {
     // @ts-ignore
-    testMutation.mutate(editorRef.current?.getValue())
+    testMutation.mutate(editorRef?.getValue())
   }
 
   const editorOnMount = (editor: ICodeEditor) => {
