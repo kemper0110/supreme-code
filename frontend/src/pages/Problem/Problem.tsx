@@ -1,5 +1,5 @@
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
-import {MutableRefObject, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {editor} from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
 import {
@@ -22,11 +22,12 @@ import {TestResultLoader} from "./components/TestResultLoader.tsx";
 import {useTabSpyLocation} from "./hooks/useTabSpyLocation.tsx";
 import {LanguageValue} from "../../types/LanguageValue.tsx";
 import {getYjsDoc, syncedStore} from "@syncedstore/core";
-import {WebrtcProvider} from "y-webrtc";
 import {useSyncedStore} from "@syncedstore/react";
 // @ts-ignore
 import {MonacoBinding} from 'y-monaco'
 import {useUser} from "../../store/useUser.tsx";
+import {WebsocketProvider} from "y-websocket";
+import {Awareness} from "y-protocols/awareness";
 import ICodeEditor = editor.ICodeEditor;
 
 
@@ -42,7 +43,6 @@ const store = syncedStore({
 
 const doc = getYjsDoc(store);
 const ydocumentTextType = doc.getText('monaco')
-
 
 type LanguageStore = [
   language: Language,
@@ -67,56 +67,80 @@ const useSharedSelectedLanguage: LanguageStoreProvider = (languages: Language[])
   ] as LanguageStore
 }
 
-const useWebrtcProvider = (online: boolean, slug: string, userId: number) => {
-  const webrtcProvider = useRef<WebrtcProvider>();
+const useRemoteProvider = (online: boolean, slug: string, userId: number) => {
+  // const webrtcProvider = useRef<WebrtcProvider>();
+  const websocketProvider = useRef<WebsocketProvider>();
 
   useEffect(() => {
     if (online) {
       const topic = `sync-problem-${slug}:${userId}`
       console.log('connecting to topic', topic)
-      webrtcProvider.current = new WebrtcProvider(topic, doc, {
-        signaling: ["ws://localhost:4444"],
-      });
+      // webrtcProvider.current = new WebrtcProvider(topic, doc, {
+      //   signaling: ["ws://localhost:4444"],
+      // });
+      websocketProvider.current = new WebsocketProvider('wss://demos.yjs.dev/ws', topic, doc)
+
+      websocketProvider.current?.on('status', (e: unknown) => {
+        console.log('ws status', e)
+      })
+      websocketProvider.current?.on('synced', (e: unknown) => {
+        console.log('ws synced', e)
+      })
     }
     return () => {
-      webrtcProvider.current?.disconnect();
-      webrtcProvider.current = undefined;
+      console.time('disconnect')
+      // webrtcProvider.current?.disconnect();
+      // webrtcProvider.current = undefined;
+
+      websocketProvider.current?.disconnect();
+      websocketProvider.current = undefined;
+      console.timeEnd('disconnect')
     }
   }, [online]);
 
   return {
-    webrtcProvider
+    provider: websocketProvider
+    // provider: webrtcProvider
   }
 }
 
-const useMonacoBinding = (editorRef: editor.ICodeEditor | null, webrtcProvider: MutableRefObject<WebrtcProvider | undefined>)=> {
+const useMonacoBinding = (editorRef: editor.ICodeEditor | null, awareness: Awareness | undefined)=> {
   const monacoBinding = useRef<MonacoBinding>()
   useEffect(() => {
-    if (editorRef && webrtcProvider.current) {
-      // @ts-ignore
-      monacoBinding.current = new MonacoBinding(ydocumentTextType, editorRef.getModel(), new Set([editorRef]), webrtcProvider.current?.awareness)
+    if (editorRef && awareness) {
+      monacoBinding.current = new MonacoBinding(ydocumentTextType, editorRef.getModel(), new Set([editorRef]), awareness)
     }
     return () => {
       monacoBinding.current?.destroy()
       monacoBinding.current = undefined
     }
-  }, [editorRef, webrtcProvider.current]);
+  }, [editorRef, awareness]);
   return {
     monacoBinding
   }
 }
 
 export default function Problem({host, initialOnline}: { host: boolean, initialOnline: boolean }) {
-  // @ts-ignore
-  console.log({host})
+  console.log({
+    isLoaded: doc.isLoaded,
+    isSynced: doc.isSynced,
+    meta: doc.meta,
+  })
 
-  const state = useSyncedStore<typeof store>(store)
-  console.log({state: JSON.stringify(state)})
+  // useEffect(() => {
+  //   doc.on('update', (update) => {
+  //     console.log('update', update)
+  //   })
+  // }, []);
+  // console.log({host})
+
+  // const state = useSyncedStore<typeof store>(store)
+  // console.log({state: JSON.stringify(state)})
 
   const {slug} = useParams()
   const userId = host ? useUser(state => state.user?.id) : Number.parseInt(useParams().userId!)
   const [online, setOnline] = useState(initialOnline);
-  const {webrtcProvider} = useWebrtcProvider(online, slug!, userId!)
+  const {provider} = useRemoteProvider(online, slug!, userId!)
 
   const {data} = useProblemQuery(slug!)
   const {name, description, languages, solutions} = data!
@@ -131,7 +155,7 @@ export default function Problem({host, initialOnline}: { host: boolean, initialO
   const [selectedSolution, setSelectedSolution] = selectedSolutionState
 
   const [editorRef, setEditorRef] = useState<ICodeEditor | null>(null)
-  useMonacoBinding(editorRef, webrtcProvider);
+  useMonacoBinding(editorRef, provider.current?.awareness);
 
   const [activeTab, setActiveTab] = useState<'description' | 'solutions' | null>('description')
 
@@ -151,7 +175,7 @@ export default function Problem({host, initialOnline}: { host: boolean, initialO
   }
 
   const editorOnMount = (editor: ICodeEditor) => {
-    console.log('editor initialized', editor)
+    console.warn('editor initialized', editor)
     setEditorRef(editor)
     if (editor) {
       if (host) {
