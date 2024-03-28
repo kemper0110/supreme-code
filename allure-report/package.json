@@ -1,0 +1,15 @@
+{
+  "name": "allure-report",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ../frontend && yarn test --run && cd ../ && .\\mvnw test -pl web -am",
+    "start": "npx allure-commandline serve"
+  },
+  "devDependencies": {
+    "allure-commandline": "^2.27.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

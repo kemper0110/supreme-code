@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import AllureReporter from "allure-vitest/reporter";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -29,5 +30,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     mockReset: true,
+    setupFiles: ["allure-vitest/setup"],
+    reporters: ["default", new AllureReporter({
+      resultsDir: "../allure-report/allure-results",
+    })],
   },
 })
