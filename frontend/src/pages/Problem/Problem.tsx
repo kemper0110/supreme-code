@@ -5,7 +5,8 @@ import {Editor} from "@monaco-editor/react";
 import {
   IconArrowAutofitLeft,
   IconBrain,
-  IconCheck, IconCode,
+  IconCheck,
+  IconCode,
   IconCoin,
   IconGripHorizontal,
   IconGripVertical,
@@ -20,7 +21,8 @@ import {
   Group,
   HoverCard,
   SegmentedControl,
-  Stack, Tabs,
+  Stack,
+  Tabs,
   Text,
   Title
 } from "@mantine/core";
@@ -248,32 +250,29 @@ export default function Problem({host, initialOnline}: { host: boolean, initialO
           </Group>
           <Flex p={'16px 16px 8px'} justify={'end'} gap={12} align={'center'} pr={20}>
             <SegmentedControl size={'xs'} data={
-              languages.map(l => ({
-                label: <HoverCard position={'top'}>
-                  <HoverCard.Target>
-                    <Flex align={'center'} gap={4}>
-                      {
+              languages.map(l =>
+                ({
+                  label: <HoverCard position={'top'} disabled={selectedLanguage.language !== l.language}>
+                    <HoverCard.Target>
+                      <Flex align={'center'} gap={4}>
                         {
-                          Cpp: <><IconBrain/><Text size={'lg'}>C++17 gcc:13.2.0</Text></>,
-                          Java: <><IconCoin/><Text size={'lg'}>Java 21 corretto</Text></>,
-                          Javascript: <><IconMoodCrazyHappy/><Text size={'lg'}>node.js 20</Text></>
-                        }[l.language]
-                      }
-                    </Flex>
-                  </HoverCard.Target>
-                  {
-                    selectedLanguage.language == l.language && editorRef?.getValue() !== selectedLanguage.template ? (
-                      <HoverCard.Dropdown>
-                        <ActionIcon variant={'light'} color={'gray'}
-                                    onClick={() => editorRef?.setValue(selectedLanguage.template)}>
-                          <IconRestore/>
-                        </ActionIcon>
-                      </HoverCard.Dropdown>
-                    ) : null
-                  }
-                </HoverCard>,
-                value: l.language
-              }))
+                          {
+                            Cpp: <><IconBrain/><Text size={'lg'}>C++17 gcc:13.2.0</Text></>,
+                            Java: <><IconCoin/><Text size={'lg'}>Java 21 corretto</Text></>,
+                            Javascript: <><IconMoodCrazyHappy/><Text size={'lg'}>node.js 20</Text></>
+                          }[l.language]
+                        }
+                      </Flex>
+                    </HoverCard.Target>
+                    <HoverCard.Dropdown>
+                      <ActionIcon variant={'light'} color={'gray'}
+                                  onClick={() => editorRef?.setValue(selectedLanguage.template)}>
+                        <IconRestore/>
+                      </ActionIcon>
+                    </HoverCard.Dropdown>
+                  </HoverCard>,
+                  value: l.language
+                }))
             }
                               value={selectedLanguage.language}
                               onChange={value => setSelectedLanguage(languages.find(l => l.language === value)!)}/>
@@ -281,7 +280,7 @@ export default function Problem({host, initialOnline}: { host: boolean, initialO
         </Flex>
         <PanelGroup autoSaveId={'problem:[description-editor]'} direction={'horizontal'}>
           <Panel defaultSize={30}>
-            <div className={'rounded-xl'}>
+            <div className={'rounded-xl h-full'}>
               <ProblemTabs solutions={solutions} activeTab={activeTab} setActiveTab={setActiveTab}
                            description={description}/>
             </div>

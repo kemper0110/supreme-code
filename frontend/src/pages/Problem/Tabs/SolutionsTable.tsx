@@ -28,7 +28,7 @@ export const SolutionsTable = ({solutions}: { solutions: Solution[] }) => {
 
   return (
     <ScrollArea h={'100%'} onScrollPositionChange={({y}) => setScrolled(y !== 0)}>
-      <Table miw={700}>
+      <Table>
         <Table.Thead className={cx(classes.header, {[classes.scrolled]: scrolled})}>
           <Table.Tr>
             <Table.Th>#</Table.Th>

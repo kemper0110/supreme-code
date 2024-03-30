@@ -12,7 +12,10 @@ export const ProblemTabs = ({activeTab, setActiveTab, description, solutions}: {
 }) => {
   return (
     // @ts-ignore
-    <Tabs value={activeTab} onChange={setActiveTab}>
+    <Tabs value={activeTab} onChange={setActiveTab} classNames={{
+      root: "h-full rounded-xl",
+      panel: "h-full bg-white"
+    }}>
       <Tabs.List className={'bg-gray-50 rounded-t-xl'}>
         <Tabs.Tab value="description" leftSection={<IconFileDescription/>}>
           Описание
