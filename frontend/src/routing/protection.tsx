@@ -1,7 +1,6 @@
 import {useUser} from "../store/useUser.tsx";
 import {redirect, RouteObject, useNavigate, useRouteError} from "react-router-dom";
 import {isAxiosError} from "axios";
-import {useEffect} from "react";
 
 export const protectionLoader = () => {
   const user = useUser.getState().user
