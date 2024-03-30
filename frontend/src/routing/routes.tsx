@@ -62,7 +62,6 @@ export const routes = [
         },
         {
           path: "/playground",
-          loader: NotImplemented,
           element: <Playground/>
         },
         {
