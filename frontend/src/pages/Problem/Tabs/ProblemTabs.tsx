@@ -13,7 +13,7 @@ export const ProblemTabs = ({activeTab, setActiveTab, description, solutions}: {
   return (
     // @ts-ignore
     <Tabs value={activeTab} onChange={setActiveTab}>
-      <Tabs.List>
+      <Tabs.List className={'bg-gray-50 rounded-t-xl'}>
         <Tabs.Tab value="description" leftSection={<IconFileDescription/>}>
           Описание
         </Tabs.Tab>
@@ -22,11 +22,11 @@ export const ProblemTabs = ({activeTab, setActiveTab, description, solutions}: {
         </Tabs.Tab>
       </Tabs.List>
 
-      <Tabs.Panel value="description">
+      <Tabs.Panel className={'bg-white rounded-b-xl'} value="description">
         <Description description={description}/>
       </Tabs.Panel>
 
-      <Tabs.Panel value="solutions">
+      <Tabs.Panel className={'bg-white rounded-b-xl'} value="solutions">
         <SolutionsTable solutions={solutions}/>
       </Tabs.Panel>
     </Tabs>
