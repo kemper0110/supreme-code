@@ -25,7 +25,7 @@ function Landing() {
             <Stack align={'center'} className={'text-center'} pb={130}>
               <h1 className={'text-[80px]'}>
               <span
-                className={'from-blue-600 via-green-500 to-indigo-400 font-medium bg-gradient-to-r bg-clip-text text-transparent'}>Достигайте мастерства</span>
+                className={'from-blue-600 via-green-500 to-indigo-400 font-medium bg-gradient-to-r bg-clip-text text-transparent print:text-black'}>Достигайте мастерства</span>
                 <span className={'font-medium text-slate-700'}> через вызов</span>
               </h1>
               <p className={'mt-4 text-[24px] text-slate-700 font-medium'}>
