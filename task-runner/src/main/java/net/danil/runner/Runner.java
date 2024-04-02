@@ -8,6 +8,9 @@ import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.WaitResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.danil.event.ErrorEvent;
+import net.danil.event.LogEvent;
+import net.danil.event.RunnerEvent;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
@@ -15,7 +18,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
 import java.io.*;
-import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +51,7 @@ public abstract class Runner {
 
     @RequiredArgsConstructor
     class WaitCallback implements ResultCallback<WaitResponse> {
-        protected final FluxSink<String> sink;
+        protected final FluxSink<RunnerEvent> sink;
         protected final String containerId;
         @Override
         public void onStart(Closeable closeable) {
@@ -63,13 +65,15 @@ public abstract class Runner {
 
         @Override
         public void onError(Throwable throwable) {
-            sink.error(throwable);
+            sink.next(new ErrorEvent(throwable.getMessage()));
+            sink.complete();
         }
 
         @Override
         public void onComplete() {
+            // todo: to slf4j
             System.out.println("Wait completed");
-            System.out.println("CppRunner is exiting");
+            System.out.println("Runner is exiting");
             sink.complete();
         }
 
@@ -79,7 +83,7 @@ public abstract class Runner {
         }
     }
 
-    public Flux<String> run(String code) {
+    public Flux<RunnerEvent> run(String code) {
         final var container = createContainer().exec();
         final var containerId = container.getId();
         final var archive = createArchive(code);
@@ -117,7 +121,7 @@ public abstract class Runner {
 
     @RequiredArgsConstructor
     class LogCallback implements ResultCallback<Frame> {
-        protected final FluxSink<String> sink;
+        protected final FluxSink<RunnerEvent> sink;
         protected final String containerId;
         @Override
         public void onStart(Closeable closeable) {
@@ -126,12 +130,14 @@ public abstract class Runner {
 
         @Override
         public void onNext(Frame frame) {
-            sink.next(new String(frame.getPayload()));
+            final var message = new String(frame.getPayload());
+            sink.next(new LogEvent(message));
         }
 
         @Override
         public void onError(Throwable throwable) {
-            sink.error(throwable);
+            sink.next(new ErrorEvent(throwable.getMessage()));
+            sink.complete();
         }
 
         @Override

@@ -1,6 +1,7 @@
 package net.danil;
 
 import lombok.RequiredArgsConstructor;
+import net.danil.event.RunnerEvent;
 import net.danil.runner.CppRunner;
 import net.danil.runner.JavaRunner;
 import net.danil.runner.JavascriptRunner;
@@ -14,7 +15,7 @@ public class RunnerService {
     private final JavaRunner javaRunner;
     private final JavascriptRunner javascriptRunner;
 
-    public Flux<String> run(RunnerRequest request) {
+    public Flux<RunnerEvent> run(RunnerRequest request) {
         final var runner = switch (request.language()) {
             case Cpp -> cppRunner;
             case Java -> javaRunner;
