@@ -10,28 +10,59 @@ import {IconArrowAutofitLeft, IconBrain, IconCoin, IconGripVertical, IconMoodCra
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import {Link} from "react-router-dom";
 import ICodeEditor = editor.ICodeEditor;
+import {SSE} from "sse.js";
+import sortBy from "sort-by";
 
 type RunRequest = {
   code: string
   language: string
 }
 
+type LogEvent = {
+  type: 'log'
+  message: string
+}
+type ErrorEvent = {
+  type: 'error'
+  message: string
+}
+type InfoEvent = {
+  type: 'info'
+  message: string
+}
+type RunnerEvent = LogEvent | ErrorEvent | InfoEvent
+
 export default function Playground() {
   const [language, setLanguage] = useState<LanguageValue>("Javascript")
   const editorRef = useRef<ICodeEditor>()
 
-  const [result, setResult] = useState("")
+  const [messages, setMessages] = useState<RunnerEvent[]>([])
+  const [running, setRunning] = useState(false)
 
-  const runMutation = useMutation({
-    mutationFn: (code: string) => api.post('/api/', {code, language} as RunRequest),
-    onSuccess: response => {
-      setResult(response.data)
-    }
-  })
-
-  const handleRun = () => {
+  const handleRun = async () => {
     const code = editorRef.current?.getValue() ?? ''
-    runMutation.mutate(code)
+    setMessages([])
+    setRunning(true)
+    const source = new SSE('/api/playground', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      payload: JSON.stringify({code, language} as RunRequest),
+      method: 'POST',
+    })
+    const handler = (event: MessageEvent, type: RunnerEvent['type']) => {
+      const message = event.data
+      console.log(message)
+      setMessages(messages => [...messages, {type, message}])
+    }
+    source.addEventListener('log', (e: MessageEvent) => handler(e, 'log'))
+    source.addEventListener('error', (e: MessageEvent) => handler(e, 'error'))
+    source.addEventListener('info', (e: MessageEvent) => handler(e, 'info'))
+    source.addEventListener('readystatechange', (e: CustomEvent) => {
+      if(e.readyState !== source.OPEN) {
+        setRunning(false)
+      }
+    })
   }
 
   const keyboardHandler = (e: React.KeyboardEvent) => {
@@ -62,7 +93,7 @@ export default function Playground() {
           </Button>
           <Text>
             {
-              runMutation.isPending ? (
+              running ? (
                 <Badge color={'blue'}>Выполняется</Badge>
               ) : (
                 <Badge color={'teal'}>Завершено</Badge>
@@ -91,7 +122,8 @@ export default function Playground() {
       </Flex>
       <PanelGroup className={'mt-1'} autoSaveId={'playground-panel-group'} direction={'horizontal'}>
         <Panel defaultSize={70} className={'pt-1 rounded-xl bg-white'}>
-          <Editor onMount={onEditorMount} height="100%" language={language.toLowerCase()} defaultValue={codeExamples[language]}
+          <Editor onMount={onEditorMount} height="100%" language={language.toLowerCase()}
+                  defaultValue={codeExamples[language]}
                   loading={
                     <Text>
                       Редактор кода загружается
@@ -104,7 +136,17 @@ export default function Playground() {
         </PanelResizeHandle>
         <Panel className={'rounded-xl bg-white'}>
           <pre className={'px-4 pt-4 overflow-auto h-full'}>
-            {result}
+            {
+              messages.map((message, id) => (
+                <span className={{
+                  log: 'text-slate-800',
+                  error: 'text-red-500',
+                  info: 'text-blue-600'
+                }[message.type]} key={id}>
+                  {message.message}
+                </span>
+              ))
+            }
           </pre>
         </Panel>
       </PanelGroup>

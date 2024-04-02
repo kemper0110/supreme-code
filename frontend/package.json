@@ -57,6 +57,7 @@
     "recharts": "2",
     "remark-gfm": "^4.0.0",
     "sort-by": "^1.2.0",
+    "sse.js": "^2.4.1",
     "tailwind-merge": "^2.2.1",
     "y-indexeddb": "^9.0.12",
     "y-monaco": "0.1.2",

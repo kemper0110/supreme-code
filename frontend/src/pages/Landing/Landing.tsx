@@ -2,6 +2,7 @@ import {Button, Container, Flex, Stack} from "@mantine/core";
 import {useNavigate} from "react-router-dom";
 import {DotBackground} from "../../components/Background.tsx";
 import {useUser} from "../../store/useUser.tsx";
+import playground from './assets/playground.webm'
 
 
 function Landing() {
@@ -51,6 +52,9 @@ function Landing() {
               <div className={'p-8 pr-0 w-1/2'}>
 
               </div>
+            </div>
+            <div className={'mt-8 flex justify-center'}>
+              <video src={playground} height={200} className={'h-[200px]'} autoPlay muted loop/>
             </div>
           </Stack>
         </Container>
