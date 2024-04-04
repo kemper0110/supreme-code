@@ -17,6 +17,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="content-repository" options="-parameters" />
+      <module name="task-runner" options="-parameters" />
       <module name="test-runner" options="-parameters" />
       <module name="web" options="-parameters" />
     </option>

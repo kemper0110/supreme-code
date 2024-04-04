@@ -12,7 +12,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 localStorage.log = 'true'
 
-const router = createBrowserRouter(routes)
+const router = createBrowserRouter(routes, {
+  basename: '/supreme-code',
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -4,9 +4,6 @@ import Page404 from "../pages/Page404";
 import Page500 from "../pages/Page500";
 import Auth from "../pages/Auth.tsx";
 import {BaseLayout} from "../pages/BaseLayout/BaseLayout.tsx";
-import {ProblemsLoader} from "../pages/Problems/Loader.tsx";
-import {ProblemLoader} from "../pages/Problem/Loader.tsx";
-import {Protected} from "./protection.tsx";
 import {Account} from "../pages/Account/Account.tsx";
 import {Support} from "../pages/Support/Support.tsx";
 import {NotImplemented} from "./not-implemented.tsx";
@@ -34,12 +31,10 @@ export const routes = [
             path: "/500",
             element: <Page500/>
           },
-          Protected({
+          {
             path: "/problem",
-            // @ts-ignore
-            lazy: () => import("../pages/Problems/Problems.tsx"),
-            loader: ProblemsLoader
-          }),
+            loader: NotImplemented,
+          },
           {
             path: "/account",
             loader: NotImplemented,
@@ -52,25 +47,18 @@ export const routes = [
           }
         ]
       },
-      Protected(
-        {
-          path: "/problem/:slug",
-          // @ts-ignore
-          lazy: () => import("../pages/Problem/Problem.tsx"),
-          loader: ProblemLoader
-        },
-        {
-          path: "/playground",
-          // @ts-ignore
-          lazy: () => import("../pages/Playground/Playground.tsx")
-        },
-        {
-          path: "/problem/:slug/:userId",
-          // @ts-ignore
-          lazy: () => import("../pages/Problem/Problem.tsx"),
-          loader: ProblemLoader
-        },
-      )
+      {
+        path: "/problem/:slug",
+        loader: NotImplemented,
+      },
+      {
+        path: "/playground",
+        loader: NotImplemented,
+      },
+      {
+        path: "/problem/:slug/:userId",
+        loader: NotImplemented,
+      },
     ]
   },
 ] as RouteObject[];
