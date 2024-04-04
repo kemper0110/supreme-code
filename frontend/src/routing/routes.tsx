@@ -2,10 +2,7 @@ import {RouteObject,} from "react-router-dom";
 import Landing from "../pages/Landing/Landing.tsx";
 import Page404 from "../pages/Page404";
 import Page500 from "../pages/Page500";
-import Auth from "../pages/Auth.tsx";
 import {BaseLayout} from "../pages/BaseLayout/BaseLayout.tsx";
-import {Account} from "../pages/Account/Account.tsx";
-import {Support} from "../pages/Support/Support.tsx";
 import {NotImplemented} from "./not-implemented.tsx";
 
 export const routes = [
@@ -21,7 +18,7 @@ export const routes = [
           },
           {
             path: "/auth",
-            element: <Auth/>
+            loader: NotImplemented
           },
           {
             path: "/404",
@@ -38,12 +35,10 @@ export const routes = [
           {
             path: "/account",
             loader: NotImplemented,
-            element: <Account/>
           },
           {
             path: "/support",
             loader: NotImplemented,
-            element: <Support/>
           }
         ]
       },
