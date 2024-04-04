@@ -1,11 +1,8 @@
 import {RouteObject,} from "react-router-dom";
 import Landing from "../pages/Landing/Landing.tsx";
-import Playground from "../pages/Playground/Playground.tsx";
-import Problem from "../pages/Problem/Problem.tsx";
 import Page404 from "../pages/Page404";
 import Page500 from "../pages/Page500";
 import Auth from "../pages/Auth.tsx";
-import Problems from "../pages/Problems/Problems.tsx";
 import {BaseLayout} from "../pages/BaseLayout/BaseLayout.tsx";
 import {ProblemsLoader} from "../pages/Problems/Loader.tsx";
 import {ProblemLoader} from "../pages/Problem/Loader.tsx";
@@ -39,7 +36,8 @@ export const routes = [
           },
           Protected({
             path: "/problem",
-            element: <Problems/>,
+            // @ts-ignore
+            lazy: () => import("../pages/Problems/Problems.tsx"),
             loader: ProblemsLoader
           }),
           {
@@ -57,16 +55,19 @@ export const routes = [
       Protected(
         {
           path: "/problem/:slug",
-          element: <Problem host={true} initialOnline={false}/>,
+          // @ts-ignore
+          lazy: () => import("../pages/Problem/Problem.tsx"),
           loader: ProblemLoader
         },
         {
           path: "/playground",
-          element: <Playground/>
+          // @ts-ignore
+          lazy: () => import("../pages/Playground/Playground.tsx")
         },
         {
           path: "/problem/:slug/:userId",
-          element: <Problem host={false} initialOnline={true}/>,
+          // @ts-ignore
+          lazy: () => import("../pages/Problem/Problem.tsx"),
           loader: ProblemLoader
         },
       )
