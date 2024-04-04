@@ -133,7 +133,7 @@ const useMonacoBinding = (editorRef: editor.ICodeEditor | null, awareness: Aware
   }
 }
 
-export default function Problem({host, initialOnline}: { host: boolean, initialOnline: boolean }) {
+export default function Problem({host = true, initialOnline = false}: { host: boolean, initialOnline: boolean }) {
   console.log({
     isLoaded: doc.isLoaded,
     isSynced: doc.isSynced,

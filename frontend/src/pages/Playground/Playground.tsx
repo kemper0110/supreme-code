@@ -55,7 +55,7 @@ export default function Playground() {
     source.addEventListener('log', (e: MessageEvent) => handler(e, 'log'))
     source.addEventListener('error', (e: MessageEvent) => handler(e, 'error'))
     source.addEventListener('info', (e: MessageEvent) => handler(e, 'info'))
-    source.addEventListener('readystatechange', (e: CustomEvent) => {
+    source.addEventListener('readystatechange', (e: {readyState: number}) => {
       if(e.readyState !== source.OPEN) {
         setRunning(false)
       }
