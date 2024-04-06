@@ -36,8 +36,9 @@ export const routes = [
           },
           Protected({
             path: "/problem",
-            // @ts-ignore
-            lazy: () => import("../pages/Problems/Problems.tsx"),
+            lazy: async () => ({
+              Component: (await import("../pages/Problems/Problems.tsx")).default
+            }),
             loader: ProblemsLoader
           }),
           {
@@ -56,18 +57,22 @@ export const routes = [
         {
           path: "/problem/:slug",
           // @ts-ignore
-          lazy: () => import("../pages/Problem/Problem.tsx"),
+          lazy: async () => ({
+            Component: (await import("../pages/Problem/Problem.tsx")).default
+          }),
           loader: ProblemLoader
         },
         {
           path: "/playground",
-          // @ts-ignore
-          lazy: () => import("../pages/Playground/Playground.tsx")
+          lazy: async () => ({
+            Component: (await import("../pages/Playground/Playground.tsx")).default
+          })
         },
         {
           path: "/problem/:slug/:userId",
-          // @ts-ignore
-          lazy: () => import("../pages/Problem/Problem.tsx"),
+          lazy: async () => ({
+            Component: (await import("../pages/Problem/Problem.tsx")).default
+          }),
           loader: ProblemLoader
         },
       )
