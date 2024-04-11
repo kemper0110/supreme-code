@@ -56,3 +56,8 @@ html::-webkit-scrollbar {
 }
 
 /* Y-JS SELECTION STYLES END */
+
+
+.react-flow__panel.react-flow__attribution {
+    display: none;
+}

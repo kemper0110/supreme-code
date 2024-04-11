@@ -81,6 +81,8 @@ const useSharedSelectedLanguage: LanguageStoreProvider = (languages: Language[])
 }
 
 const useRemoteProvider = (online: boolean, slug: string, userId: number) => {
+  const [status, setStatus] = useState<'connected' | 'connecting' | 'disconnected' | undefined>(undefined)
+  const [synced, setSynced] = useState(false)
   // const webrtcProvider = useRef<WebrtcProvider>();
   const websocketProvider = useRef<WebsocketProvider>();
 
@@ -91,13 +93,14 @@ const useRemoteProvider = (online: boolean, slug: string, userId: number) => {
       // webrtcProvider.current = new WebrtcProvider(topic, doc, {
       //   signaling: ["ws://localhost:4444"],
       // });
-      websocketProvider.current = new WebsocketProvider('wss://demos.yjs.dev/ws', topic, doc)
+      const websocketServer = 'ws://localhost:1234' //  'wss://demos.yjs.dev/ws'
+      websocketProvider.current = new WebsocketProvider(websocketServer, topic, doc)
 
-      websocketProvider.current?.on('status', (e: unknown) => {
-        console.log('ws status', e)
+      websocketProvider.current?.on('status', (e: any) => {
+        setStatus(e.status)
       })
-      websocketProvider.current?.on('synced', (e: unknown) => {
-        console.log('ws synced', e)
+      websocketProvider.current?.on('synced', (e: any) => {
+        setSynced(e)
       })
     }
     return () => {
@@ -112,7 +115,9 @@ const useRemoteProvider = (online: boolean, slug: string, userId: number) => {
   }, [online]);
 
   return {
-    provider: websocketProvider
+    provider: websocketProvider,
+    synced,
+    status
     // provider: webrtcProvider
   }
 }
@@ -134,12 +139,6 @@ const useMonacoBinding = (editorRef: editor.ICodeEditor | null, awareness: Aware
 }
 
 export default function Problem({host = true, initialOnline = false}: { host: boolean, initialOnline: boolean }) {
-  console.log({
-    isLoaded: doc.isLoaded,
-    isSynced: doc.isSynced,
-    meta: doc.meta,
-  })
-
   // useEffect(() => {
   //   doc.on('update', (update) => {
   //     console.log('update', update)
@@ -153,7 +152,8 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
   const {slug} = useParams()
   const userId = host ? useUser(state => state.user?.id) : Number.parseInt(useParams().userId!)
   const [online, setOnline] = useState(initialOnline);
-  const {provider} = useRemoteProvider(online, slug!, userId!)
+  const {provider, synced, status} = useRemoteProvider(online, slug!, userId!)
+  console.log({synced, status})
 
   const {data} = useProblemQuery(slug!)
   const {name, description, languages, solutions} = data!
@@ -220,24 +220,32 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
           <Group>
             {
               online ? (
-                <HoverCard>
-                  <HoverCard.Target>
-                    <Button color={'teal'} onClick={() => setOnline(false)}>
-                      Онлайн
-                    </Button>
-                  </HoverCard.Target>
-                  <HoverCard.Dropdown>
-                    <CopyButton value={`${window.location.origin}/problem/${slug}/${userId}`}>
-                      {
-                        ({copied, copy}) => (
-                          <Button variant={'outline'} color={copied ? 'teal' : 'blue'} onClick={copy}>
-                            {copied ? 'Скопирован' : 'Скопировать url'}
-                          </Button>
-                        )
-                      }
-                    </CopyButton>
-                  </HoverCard.Dropdown>
-                </HoverCard>
+                {
+                  connected: <HoverCard>
+                    <HoverCard.Target>
+                      <Button color={'teal'} onClick={() => setOnline(false)}>
+                        Онлайн
+                      </Button>
+                    </HoverCard.Target>
+                    <HoverCard.Dropdown>
+                      <CopyButton value={`${window.location.origin}/problem/${slug}/${userId}`}>
+                        {
+                          ({copied, copy}) => (
+                            <Button variant={'outline'} color={copied ? 'teal' : 'blue'} onClick={copy}>
+                              {copied ? 'Скопирован' : 'Скопировать url'}
+                            </Button>
+                          )
+                        }
+                      </CopyButton>
+                    </HoverCard.Dropdown>
+                  </HoverCard>,
+                  connecting: <Button color={'cyan'} onClick={() => setOnline(false)}>
+                    Подключение...
+                  </Button>,
+                  disconnected: <Button color={'grape'} onClick={() => setOnline(false)}>
+                    Отключен
+                  </Button>
+                }[status ?? 'connecting']
               ) : (
                 <Button color={'gray'} onClick={() => setOnline(true)}>
                   Оффлайн

@@ -71,7 +71,7 @@ export const routes = [
         {
           path: "/problem/:slug/:userId",
           lazy: async () => ({
-            Component: (await import("../pages/Problem/Problem.tsx")).default
+            Component: (await import("../pages/Problem/GuestProblem.tsx")).default
           }),
           loader: ProblemLoader
         },
