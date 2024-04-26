@@ -10,6 +10,7 @@ import {Protected} from "./protection.tsx";
 import {Account} from "../pages/Account/Account.tsx";
 import {Support} from "../pages/Support/Support.tsx";
 import {NotImplemented} from "./not-implemented.tsx";
+import {StatisticsLoader} from "../pages/Statistics/Loader.tsx";
 
 export const routes = [
   {
@@ -40,6 +41,12 @@ export const routes = [
               Component: (await import("../pages/Problems/Problems.tsx")).default
             }),
             loader: ProblemsLoader
+          }, {
+            path: "/stats",
+            lazy: async () => ({
+              Component: (await import("../pages/Statistics/Statistics.tsx")).default
+            }),
+            loader: StatisticsLoader
           }),
           {
             path: "/account",

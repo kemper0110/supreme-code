@@ -177,12 +177,15 @@ export const BaseLayout = () => {
               <Tabs.Tab value={'/playground'}>
                 Компилятор
               </Tabs.Tab>
+              <Tabs.Tab value={'/stats'}>
+                Статистика
+              </Tabs.Tab>
               <Tabs.Tab value={'/account'}>
                 Учетная запись
               </Tabs.Tab>
-              <Tabs.Tab value={'/support'}>
-                Поддержка
-              </Tabs.Tab>
+              {/*<Tabs.Tab value={'/support'}>*/}
+              {/*  Поддержка*/}
+              {/*</Tabs.Tab>*/}
               {
                 customTabs.map(tab => (
                   <Tabs.Tab key={tab.href} value={tab.href} rightSection={
