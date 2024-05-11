@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>net.danil.RunnerController</OriginalElement>
+  <nodes>
+    <node x="-141.0" y="632.5">net.danil.runner.CppRunner</node>
+    <node x="-177.0" y="974.8485016648168">net.danil.RunnerController</node>
+    <node x="-100.26359600443953" y="268.3756936736959">net.danil.event.ErrorEvent</node>
+    <node x="-141.0" y="418.49999999999994">net.danil.runner.Runner</node>
+    <node x="-100.26359600443953" y="108.4556048834628">net.danil.event.RunnerEvent</node>
+    <node x="183.20421753607093" y="632.5">net.danil.runner.JavascriptRunner</node>
+    <node x="-317.69755826859046" y="268.3756936736959">net.danil.event.LogEvent</node>
+    <node x="-465.2042175360709" y="632.5">net.danil.runner.JavaRunner</node>
+    <node x="-152.0" y="810.879578246393">net.danil.RunnerService</node>
+    <node x="110.55549389567136" y="268.3756936736959">net.danil.event.InfoEvent</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="net.danil.RunnerService" target="net.danil.runner.CppRunner" relationship="TO_ONE">
+      <point x="5.5" y="-31.5" />
+      <point x="0.0" y="43.5" />
+    </edge>
+    <edge source="net.danil.event.InfoEvent" target="net.danil.event.RunnerEvent" relationship="REALIZATION">
+      <point x="0.0" y="-43.5" />
+      <point x="204.05549389567136" y="151.9556048834628" />
+      <point x="93.5" y="0.0" />
+    </edge>
+    <edge source="net.danil.runner.JavascriptRunner" target="net.danil.runner.Runner" relationship="GENERALIZATION">
+      <point x="0.0" y="-43.5" />
+      <point x="330.2042175360709" y="485.99999999999994" />
+      <point x="147.0" y="0.0" />
+    </edge>
+    <edge source="net.danil.event.LogEvent" target="net.danil.event.RunnerEvent" relationship="REALIZATION">
+      <point x="0.0" y="-43.5" />
+      <point x="-224.19755826859046" y="151.9556048834628" />
+      <point x="-93.5" y="0.0" />
+    </edge>
+    <edge source="net.danil.RunnerService" target="net.danil.runner.JavaRunner" relationship="TO_ONE">
+      <point x="-152.5" y="0.0" />
+      <point x="-318.2042175360709" y="842.379578246393" />
+      <point x="0.0" y="43.5" />
+    </edge>
+    <edge source="net.danil.runner.JavaRunner" target="net.danil.runner.Runner" relationship="GENERALIZATION">
+      <point x="8.006659267480472" y="-43.5" />
+      <point x="-310.19755826859046" y="485.99999999999994" />
+      <point x="-147.0" y="0.0" />
+    </edge>
+    <edge source="net.danil.runner.CppRunner" target="net.danil.runner.Runner" relationship="GENERALIZATION">
+      <point x="0.0" y="-43.5" />
+      <point x="0.0" y="67.50000000000006" />
+    </edge>
+    <edge source="net.danil.event.ErrorEvent" target="net.danil.event.RunnerEvent" relationship="REALIZATION">
+      <point x="0.0" y="-43.5" />
+      <point x="0.0" y="43.5" />
+    </edge>
+    <edge source="net.danil.RunnerController" target="net.danil.RunnerService" relationship="TO_ONE">
+      <point x="0.0" y="-31.5" />
+      <point x="0.5" y="979.9289678135406" />
+      <point x="0.0" y="31.5" />
+    </edge>
+    <edge source="net.danil.RunnerService" target="net.danil.runner.JavascriptRunner" relationship="TO_ONE">
+      <point x="152.5" y="0.0" />
+      <point x="330.2042175360709" y="842.379578246393" />
+      <point x="0.0" y="43.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.7558724832214765" showDependencies="true" x="295.5233074361897" y="551.3229744728096" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
