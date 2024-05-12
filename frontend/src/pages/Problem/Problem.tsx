@@ -217,7 +217,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
             }
           </Flex>
 
-          <Group>
+          <Group justify={'center'}>
             {
               online ? (
                 {

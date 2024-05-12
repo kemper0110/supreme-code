@@ -141,17 +141,17 @@ function Landing() {
           </Stack>
         </Container>
       </DotBackground>
-      <div className={'absolute top-0 right-0 h-full w-[400px]'}>
-        <div className={'sticky top-8 right-0'}>
-          <TableOfContents active={''} links={[
-            {
-              label: "CTA",
-              link: "#CTA",
-              order: 1
-            }
-          ]}/>
-        </div>
-      </div>
+      {/*<div className={'absolute top-0 right-0 h-full w-[400px]'}>*/}
+      {/*  <div className={'sticky top-8 right-0'}>*/}
+      {/*    <TableOfContents active={''} links={[*/}
+      {/*      {*/}
+      {/*        label: "CTA",*/}
+      {/*        link: "#CTA",*/}
+      {/*        order: 1*/}
+      {/*      }*/}
+      {/*    ]}/>*/}
+      {/*  </div>*/}
+      {/*</div>*/}
     </div>
   );
 }
