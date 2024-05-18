@@ -1,6 +1,6 @@
 supreme-code:
   task-runner:
     container:
-      ttk: 4000
+      ttk: 12000
 server:
   port: 8090

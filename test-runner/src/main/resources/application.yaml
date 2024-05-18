@@ -5,7 +5,7 @@ supreme-code:
       path: supreme-code-content/content/problems
   test-runner:
     container:
-      ttk: 4000
+      ttk: 12000
 logging:
   level:
     net:

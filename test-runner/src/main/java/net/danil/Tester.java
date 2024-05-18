@@ -158,9 +158,6 @@ public abstract class Tester {
                 resultFuture.complete(result);
             } catch (Exception e) {
                 resultFuture.complete(TestResult.builder().logs(logs).statusCode(statusCode));
-            } finally {
-                dockerClient.removeContainerCmd(containerId).exec();
-                log.debug("container({})-wait: removed container, exiting", containerId);
             }
         }
 
@@ -232,6 +229,8 @@ public abstract class Tester {
                     } else {
                         timeoutCF.cancel(true);
                     }
+                    dockerClient.removeContainerCmd(containerId).exec();
+                    log.debug("container({})-wait: removed container, exiting", containerId);
                     return waitCF;
                 })
                 .thenCompose(completedFuture -> completedFuture);

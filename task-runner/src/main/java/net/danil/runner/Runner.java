@@ -79,7 +79,7 @@ public abstract class Runner {
 
         @Override
         public void close() throws IOException {
-
+            sink.complete();
         }
     }
 
@@ -110,9 +110,10 @@ public abstract class Runner {
                     log.info("container({}): killed after timeout", containerId.substring(0, 8));
                 } catch (NotFoundException e) {
                     log.info("container({}): not found to kill {}, maybe already killed", containerId.substring(0, 8), e.getMessage());
+                } finally {
+                    dockerClient.removeContainerCmd(containerId).exec();
+                    System.out.println("Removed container");
                 }
-                dockerClient.removeContainerCmd(containerId).exec();
-                System.out.println("Removed container");
             });
 
             CompletableFuture.delayedExecutor(ttk, TimeUnit.MILLISECONDS).execute(sink::complete);
@@ -143,11 +144,12 @@ public abstract class Runner {
         @Override
         public void onComplete() {
             System.out.println("complete logging");
+            sink.complete();
         }
 
         @Override
         public void close() throws IOException {
-
+            sink.complete();
         }
     }
 }
