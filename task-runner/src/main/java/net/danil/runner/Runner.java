@@ -4,8 +4,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.exception.NotFoundException;
-import com.github.dockerjava.api.model.Frame;
-import com.github.dockerjava.api.model.WaitResponse;
+import com.github.dockerjava.api.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.danil.event.ErrorEvent;
@@ -18,6 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
 import java.io.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -84,7 +84,26 @@ public abstract class Runner {
     }
 
     public Flux<RunnerEvent> run(String code) {
-        final var container = createContainer().exec();
+        final var cmd = createContainer();
+        cmd.withHostConfig(
+                new HostConfig()
+                        .withMemory(1024L * 1024L * 400L)
+                        .withMemorySwap(1024L * 1024L * 1024L)
+                        .withNanoCPUs(1_000_000_000L)
+                        .withSecurityOpts(List.of("no-new-privileges"))
+                        .withRestartPolicy(RestartPolicy.noRestart())
+                        .withUlimits(
+                                List.of(
+                                        new Ulimit("nofile", 112L, 128L),
+                                        new Ulimit("nproc", 10L, 16L)
+                                )
+                        )
+                        .withCapDrop(Capability.NET_ADMIN)
+                        .withNetworkMode("none")
+        );
+        cmd.withNetworkDisabled(true);
+
+        final var container = cmd.exec();
         final var containerId = container.getId();
         final var archive = createArchive(code);
 

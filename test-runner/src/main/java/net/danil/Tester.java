@@ -4,8 +4,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.NotFoundException;
-import com.github.dockerjava.api.model.Frame;
-import com.github.dockerjava.api.model.WaitResponse;
+import com.github.dockerjava.api.model.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import lombok.Getter;
@@ -22,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.*;
 
 @RequiredArgsConstructor
@@ -71,7 +71,25 @@ public abstract class Tester {
     protected abstract String containerName();
 
     protected CreateContainerResponse createContainer() {
-        return dockerClient.createContainerCmd(containerName()).exec();
+        final var cmd = dockerClient.createContainerCmd(containerName());
+        cmd.withHostConfig(
+                new HostConfig()
+                        .withMemory(1024L * 1024L * 400L)
+                        .withMemorySwap(1024L * 1024L * 1024L)
+                        .withNanoCPUs(1_000_000_000L)
+                        .withSecurityOpts(List.of("no-new-privileges"))
+                        .withRestartPolicy(RestartPolicy.noRestart())
+                        .withUlimits(
+                                List.of(
+                                        new Ulimit("nofile", 112L, 128L),
+                                        new Ulimit("nproc", 10L, 16L)
+                                )
+                        )
+                        .withCapDrop(Capability.NET_ADMIN)
+                        .withNetworkMode("none")
+        );
+        cmd.withNetworkDisabled(true);
+        return cmd.exec();
     }
 
     protected abstract String reportPath();
