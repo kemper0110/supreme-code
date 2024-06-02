@@ -1,14 +1,28 @@
-import {Editor} from "@monaco-editor/react";
 import React, {useRef, useState} from "react";
 import {Badge, Button, Flex, Group, SegmentedControl, Text} from "@mantine/core";
-import {editor} from "monaco-editor";
 import {LanguageValue} from "../../types/LanguageValue.tsx";
 import {codeExamples} from "./CodeExamples.tsx";
 import {IconArrowAutofitLeft, IconBrain, IconCoin, IconGripVertical, IconMoodCrazyHappy} from "@tabler/icons-react";
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import {Link} from "react-router-dom";
 import {SSE} from "sse.js";
+import {editor} from "monaco-editor";
 import ICodeEditor = editor.ICodeEditor;
+import * as monaco from 'monaco-editor';
+import {Editor, loader} from "@monaco-editor/react";
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+
+self.MonacoEnvironment = {
+  getWorker(_, label) {
+    if (label === 'typescript' || label === 'javascript') {
+      return new tsWorker();
+    }
+    return new editorWorker();
+  },
+};
+loader.config({ monaco });
+loader.init().then(/* ... */);
 
 type RunRequest = {
   code: string

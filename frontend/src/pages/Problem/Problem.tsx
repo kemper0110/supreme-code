@@ -1,7 +1,25 @@
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import {useEffect, useRef, useState} from "react";
 import {editor} from "monaco-editor";
-import {Editor} from "@monaco-editor/react";
+import * as monaco from 'monaco-editor';
+import {Editor, loader} from "@monaco-editor/react";
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+
+
+self.MonacoEnvironment = {
+  getWorker(_, label) {
+    if (label === 'typescript' || label === 'javascript') {
+      return new tsWorker();
+    }
+    return new editorWorker();
+  },
+};
+
+loader.config({ monaco });
+
+loader.init().then(/* ... */);
+
 import {
   IconArrowAutofitLeft,
   IconBrain,
