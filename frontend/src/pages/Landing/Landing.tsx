@@ -3,8 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {DotBackground} from "../../components/Background.tsx";
 import {useUser} from "../../store/useUser.tsx";
 import playground from './assets/playground.webm'
-import {ProgressBar} from "./components/ProgressBar.tsx";
-import TableOfContents from "./components/TableOfContents";
+import functionBg from './assets/function-bg.jpg'
 import 'reactflow/dist/style.css';
 import {ReactFlow, Node, Edge} from "reactflow";
 import {IconBrandReact} from "@tabler/icons-react";
@@ -105,6 +104,9 @@ function Landing() {
               <span
                 className={'from-blue-600 via-green-500 to-indigo-400 font-medium bg-gradient-to-r bg-clip-text text-transparent print:text-black'}>Достигайте мастерства</span>
                 <span className={'font-medium text-slate-700'}> через вызов</span>
+                <span className={'font-medium !bg-clip-text !bg-cover !text-transparent print:text-black'} style={{
+                  background: `url(${functionBg})`,
+                }}> функции</span>
               </h1>
               <p className={'mt-4 text-[24px] text-slate-700 font-medium'}>
                 Совершенствуйте свои навыки программирования
