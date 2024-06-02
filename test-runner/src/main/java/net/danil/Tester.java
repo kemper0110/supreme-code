@@ -81,8 +81,8 @@ public abstract class Tester {
                         .withRestartPolicy(RestartPolicy.noRestart())
                         .withUlimits(
                                 List.of(
-                                        new Ulimit("nofile", 112L, 128L),
-                                        new Ulimit("nproc", 10L, 16L)
+                                        new Ulimit("nofile", 468L, 512L),
+                                        new Ulimit("nproc", 58L, 64L)
                                 )
                         )
                         .withCapDrop(Capability.NET_ADMIN)
