@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.danil.web.user.model.User;
 import org.danil.model.Language;
+import org.hibernate.annotations.ColumnTransformer;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.Type;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 
 @Entity
@@ -30,7 +34,9 @@ public class Solution {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @ColumnTransformer(write="?::supreme_code.language_enum")
     private Language language;
+
 
     @OneToOne(mappedBy = "solution", cascade = CascadeType.ALL)
     private SolutionResult solutionResult;

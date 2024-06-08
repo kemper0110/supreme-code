@@ -6,13 +6,25 @@ create table users
     image    varchar(255)
 );
 
+CREATE TYPE language_enum AS ENUM ('Cpp', 'Java', 'Javascript');
+CREATE TYPE difficulty_enum AS ENUM ('Easy', 'Normal', 'Hard');
+
+CREATE TABLE IF NOT EXISTS problem
+(
+    problem_slug VARCHAR(50) primary key,
+    name        VARCHAR(255)    NOT NULL,
+    description TEXT            NOT NULL,
+    difficulty  difficulty_enum NOT NULL,
+    languages   language_enum[] NOT NULL
+);
+
 create table solution
 (
     id           bigserial primary key,
-    problem_slug varchar(50) not null,
-    language     varchar(20) not null,
-    user_id      bigint      not null references users (id),
-    code         text        not null
+    problem_slug varchar(50)   not null,
+    language     language_enum not null,
+    user_id      bigint        not null references users (id),
+    code         text          not null
 );
 
 create table solution_result

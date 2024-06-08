@@ -33,13 +33,11 @@ public class StatisticsService {
 
     public DifficultyCounts difficultyCounts() {
         long easy = 0, normal = 0, hard = 0;
-        for (var problemCount : statisticsRepository.getDifficultyCounts()) {
-            final var problem = problemRepository.getBySlug(problemCount.getProblemSlug());
-            if(problem == null) continue;
-            switch (problem.getDifficulty()) {
-                case Easy -> ++easy;
-                case Normal -> ++normal;
-                case Hard -> ++hard;
+        for (var difCount : statisticsRepository.getDifficultyCounts()) {
+            switch (difCount.getDifficulty()) {
+                case "Easy" -> ++easy;
+                case "Normal" -> ++normal;
+                case "Hard" -> ++hard;
             }
         }
         return new DifficultyCounts(easy, normal, hard);
@@ -74,13 +72,11 @@ public class StatisticsService {
 
     public DifficultyCounts difficultyCounts(Long userId) {
         long easy = 0, normal = 0, hard = 0;
-        for (var problemCount : statisticsRepository.getDifficultyCountsByUser(userId)) {
-            final var problem = problemRepository.getBySlug(problemCount.getProblemSlug());
-            if(problem == null) continue;
-            switch (problem.getDifficulty()) {
-                case Easy -> ++easy;
-                case Normal -> ++normal;
-                case Hard -> ++hard;
+        for (var difCount : statisticsRepository.getDifficultyCountsByUser(userId)) {
+            switch (difCount.getDifficulty()) {
+                case "Easy" -> ++easy;
+                case "Normal" -> ++normal;
+                case "Hard" -> ++hard;
             }
         }
         return new DifficultyCounts(easy, normal, hard);
