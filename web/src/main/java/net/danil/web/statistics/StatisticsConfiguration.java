@@ -7,13 +7,25 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.concurrent.TimeUnit;
 
 
 @Configuration
 @EnableCaching
+@EnableScheduling
+@EnableAsync
 public class StatisticsConfiguration {
+    private final StatisticsRepository statisticsRepository;
+
+    public StatisticsConfiguration(StatisticsRepository statisticsRepository) {
+        this.statisticsRepository = statisticsRepository;
+    }
+
     @Bean(name = "generalStatisticsCacheManager")
     @Primary
     public CacheManager generalStatisticsCacheManager() {
@@ -35,5 +47,12 @@ public class StatisticsConfiguration {
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .recordStats());
         return cacheManager;
+    }
+
+    @Scheduled(fixedRate = 60 * 1000)
+    @Async
+    public void scheduleFixedDelayTask() {
+        statisticsRepository.updateGeneralStatistics();
+        System.out.println("updateGeneralStatistics");
     }
 }

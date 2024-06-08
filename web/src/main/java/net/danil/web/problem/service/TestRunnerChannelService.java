@@ -5,6 +5,7 @@ import net.danil.web.problem.dto.TestResult;
 import net.danil.web.problem.model.SolutionResult;
 import net.danil.web.problem.repository.SolutionRepository;
 import net.danil.web.problem.repository.SolutionResultRepository;
+import net.danil.web.statistics.StatisticsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -29,6 +30,7 @@ public class TestRunnerChannelService {
     private final SolutionResultRepository solutionResultRepository;
     private final SolutionRepository solutionRepository;
     private final TestResultAnalyzerService testResultAnalyzerService;
+    private final StatisticsRepository statisticsRepository;
 
     @KafkaListener(topics = TOPIC_NAME)
     protected void listen(@Payload TestResult testResult, @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String messageId) {
@@ -46,6 +48,7 @@ public class TestRunnerChannelService {
                     testResult.logs(), testResult.xml(), verdict.solved(), solution);
             solutionResultRepository.save(solutionResult);
             solution.setSolutionResult(solutionResult);
+            statisticsRepository.updateUserStatistics(solution.getUser().getId());
 
             sink.success(new GenericMessage<>(solution));
         } catch (Exception e) {
