@@ -37,7 +37,7 @@ export const ProblemsLoader = () => {
     queryKey,
     queryFn: async () => (await api.get<ProblemsResponse>(`/api/problem`)).data ?? null,
     staleTime: 120000
-  }), 300, 300)
+  }), 500, 500)
   return defer({
     problemsPromise: problemsPromise
   })

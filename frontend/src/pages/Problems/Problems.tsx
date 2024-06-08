@@ -41,7 +41,7 @@ export default function Problems() {
   const Fallback = () => {
     const [show, setShow] = useState(false)
     useEffect(() => {
-      let timeout = setTimeout(() => setShow(true), 300)
+      let timeout = setTimeout(() => setShow(true), 500)
       return () => {
         clearTimeout(timeout)
       }
