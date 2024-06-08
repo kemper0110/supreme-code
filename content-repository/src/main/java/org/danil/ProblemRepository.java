@@ -9,19 +9,23 @@ import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class ProblemRepository {
+    @Value("${supreme-code.content-repository.root}")
+    private String root;
     @Value("${supreme-code.content-repository.problem.path}")
     private String problemRoot;
     private final YAMLMapper objectMapper;
     public Problem getBySlug(String slug) {
         // TODO: sanitize slug
-        final var path = problemRoot + "/" + slug + "/manifest.yaml";
         try {
-            final var problem = IOUtils.resourceToString(path, StandardCharsets.UTF_8);
+            final var path = Paths.get(root, problemRoot, slug, "manifest.yaml");
+            final var problem = Files.readString(path, StandardCharsets.UTF_8);
             return objectMapper.readValue(problem, Problem.class);
         } catch (IOException e) {
             throw new RuntimeException(e);

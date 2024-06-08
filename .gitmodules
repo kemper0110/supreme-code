@@ -1,3 +1,3 @@
-[submodule "content-repository/src/main/resources/supreme-code-content"]
-	path = content-repository/src/main/resources/supreme-code-content
+[submodule "supreme-code-content"]
+	path = supreme-code-content
 	url = https://github.com/kemper0110/supreme-code-content

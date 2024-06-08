@@ -32,9 +32,10 @@ spring:
 
 supreme-code:
   content-repository:
-    path: /supreme-code-content/content
+    root: C:\Users\Danil\IdeaProjects\supreme-code\supreme-code-content
+    path: /content
     problem:
-      path: /supreme-code-content/content/problems
+      path: /content/problems
 
 jwt:
   cookie-name: sc-token
