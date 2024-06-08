@@ -6,6 +6,7 @@ import net.danil.web.statistics.dto.LanguageCount;
 import net.danil.web.statistics.dto.ProblemCount;
 import net.danil.web.statistics.dto.SolvedAttemptedCounts;
 import org.danil.ProblemRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,7 +50,26 @@ public class StatisticsService {
     }
 
 
-// private
+    public record General(
+            List<ProblemCount> topSolved,
+            List<ProblemCount> topAttempted,
+            List<ProblemCount> topAttemptedNotSolved,
+            DifficultyCounts difficultyCounts,
+            List<LanguageCount> languageCounts
+    ) {
+
+    }
+
+    @Cacheable(value = "statistics/general", cacheManager = "generalStatisticsCacheManager")
+    public General getGeneralStatistics() {
+        return new General(
+                topSolved(),
+                topAttempted(),
+                topAttemptedNotSolved(),
+                difficultyCounts(),
+                languageCounts()
+        );
+    }
 
 
     public DifficultyCounts difficultyCounts(Long userId) {
@@ -72,5 +92,22 @@ public class StatisticsService {
 
     public SolvedAttemptedCounts solvedAndAttempted(Long userId) {
         return statisticsRepository.getSolvedAndAttempted(userId);
+    }
+
+    public record Personal(
+            DifficultyCounts difficultyCounts,
+            List<LanguageCount> languageCounts,
+            SolvedAttemptedCounts solvedAndAttempted
+    ) {
+
+    }
+
+    @Cacheable(value = "statistics/personal", cacheManager = "personalStatisticsCacheManager")
+    public Personal getPersonalStatistics(Long userId) {
+        return new Personal(
+                difficultyCounts(userId),
+                languageCounts(userId),
+                solvedAndAttempted(userId)
+        );
     }
 }
