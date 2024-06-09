@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>21db1efd-8c05-41c4-a3bb-0281a42a6fa1.SCHEMA:supreme_code.supreme_code</OriginalElement>
+  <nodes>
+    <node x="-1646.7017674418591" y="977.6533209302311">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.MATERIALIZED VIEW:supreme_code.supreme_code.general_statistics_topattempted</node>
+    <node x="-1632.1426976744183" y="1299.916279069767">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.problem</node>
+    <node x="-1310.252837209302" y="823.0218418604632">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.MATERIALIZED VIEW:supreme_code.supreme_code.general_statistics_languagecounts</node>
+    <node x="-940.4469767441858" y="847.0218418604632">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.MATERIALIZED VIEW:supreme_code.supreme_code.general_statistics_topsolved</node>
+    <node x="-905.4469767441858" y="1017.0578604651157">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.user_statistics_language</node>
+    <node x="-1321.7336558139534" y="977.6533209302311">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.MATERIALIZED VIEW:supreme_code.supreme_code.general_statistics_topattemptednotsolved</node>
+    <node x="-1231.3064744186045" y="1287.916279069767">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.solution</node>
+    <node x="-1139.285953488372" y="1108.284799999999">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.users</node>
+    <node x="-835.7742697674421" y="1191.916279069767">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.solution_result</node>
+    <node x="-1655.2017674418591" y="829.7727627906964">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.MATERIALIZED VIEW:supreme_code.supreme_code.general_statistics_difficultycounts</node>
+    <node x="-1639.2474790697668" y="1120.284799999999">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.user_statistics_solved</node>
+    <node x="-1402.3992372093019" y="1108.284799999999">21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.user_statistics_difficulty</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.user_statistics_language" target="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.users" relationship="REFERENCES">
+      <point x="-74.5530232558142" y="68.00013953488428" />
+      <point x="-858.5" y="1267.0" />
+      <point x="-1054.286" y="1267.0" />
+      <point x="-4.6511628170264885E-5" y="68.00020000000109" />
+    </edge>
+    <edge source="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.solution_result" target="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.solution" relationship="REFERENCES">
+      <point x="-83.5" y="48.0" />
+      <point x="143.5" y="0.0" />
+    </edge>
+    <edge source="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.user_statistics_difficulty" target="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.users" relationship="REFERENCES">
+      <point x="2.3720930198578571E-4" y="68.00020000000109" />
+      <point x="-1280.899" y="1267.0" />
+      <point x="-1054.286" y="1267.0" />
+      <point x="-4.6511628170264885E-5" y="68.00020000000109" />
+    </edge>
+    <edge source="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.user_statistics_solved" target="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.users" relationship="REFERENCES">
+      <point x="4.7906976669764845E-4" y="56.00020000000109" />
+      <point x="-1528.247" y="1267.0" />
+      <point x="-1054.286" y="1267.0" />
+      <point x="-4.6511628170264885E-5" y="68.00020000000109" />
+    </edge>
+    <edge source="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.solution" target="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.users" relationship="REFERENCES">
+      <point x="4.744186044263188E-4" y="-92.00027906976698" />
+      <point x="-1087.806" y="1267.0" />
+      <point x="-1054.286" y="1267.0" />
+      <point x="-4.6511628170264885E-5" y="68.00020000000109" />
+    </edge>
+    <edge source="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.solution" target="21db1efd-8c05-41c4-a3bb-0281a42a6fa1.TABLE:supreme_code.supreme_code.problem" relationship="REFERENCES">
+      <point x="-143.5" y="0.0" />
+      <point x="152.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="1.0739689897698226" showDependencies="false" x="-1187.7675600930243" y="1133.472074418604" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+
