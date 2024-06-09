@@ -26,21 +26,21 @@ public interface StatisticsRepository extends JpaRepository<Solution, Long> {
     public List<ProblemCount> getTopAttemptedNotSolved();
 
 
-    @Query(value = "select difficulty, count from supreme_code.general_statistics_difficultyCounts", nativeQuery = true)
-    public List<DifficultyCount> getDifficultyCounts();
+    @Query(value = "select easy, normal, hard from supreme_code.general_statistics_difficultyCounts", nativeQuery = true)
+    public DifficultyCount getDifficultyCounts();
 
 
-    @Query(value = "select language, count from supreme_code.general_statistics_languageCounts", nativeQuery = true)
-    public List<LanguageCount> getLanguageCounts();
+    @Query(value = "select cpp, java, javascript from supreme_code.general_statistics_languageCounts", nativeQuery = true)
+    public LanguageCount getLanguageCounts();
 
     // personal
 
     @Query(value = "select easy, normal, hard from supreme_code.user_statistics_difficulty where user_id = ?1", nativeQuery = true)
-    public List<DifficultyCount> getDifficultyCountsByUser(Long userId);
+    public DifficultyCount getDifficultyCountsByUser(Long userId);
 
 
     @Query(value = "select cpp, java, javascript from supreme_code.user_statistics_language where user_id = ?1", nativeQuery = true)
-    public List<LanguageCount> getLanguageCounts(Long userId);
+    public LanguageCount getLanguageCounts(Long userId);
 
 
     @Query(value = "select solvedCount, attemptedCount from supreme_code.user_statistics_solved where user_id = ?1", nativeQuery = true)

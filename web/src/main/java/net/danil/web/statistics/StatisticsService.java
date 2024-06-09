@@ -1,10 +1,7 @@
 package net.danil.web.statistics;
 
 import lombok.RequiredArgsConstructor;
-import net.danil.web.statistics.dto.DifficultyCounts;
-import net.danil.web.statistics.dto.LanguageCount;
-import net.danil.web.statistics.dto.ProblemCount;
-import net.danil.web.statistics.dto.SolvedAttemptedCounts;
+import net.danil.web.statistics.dto.*;
 import org.danil.ProblemRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -16,8 +13,6 @@ import java.util.List;
 public class StatisticsService {
 
     private final StatisticsRepository statisticsRepository;
-
-    private final ProblemRepository problemRepository;
 
     public List<ProblemCount> topSolved() {
         return statisticsRepository.getTopSolved();
@@ -31,19 +26,11 @@ public class StatisticsService {
         return statisticsRepository.getTopAttemptedNotSolved();
     }
 
-    public DifficultyCounts difficultyCounts() {
-        long easy = 0, normal = 0, hard = 0;
-        for (var difCount : statisticsRepository.getDifficultyCounts()) {
-            switch (difCount.getDifficulty()) {
-                case "Easy" -> ++easy;
-                case "Normal" -> ++normal;
-                case "Hard" -> ++hard;
-            }
-        }
-        return new DifficultyCounts(easy, normal, hard);
+    public DifficultyCount difficultyCounts() {
+        return statisticsRepository.getDifficultyCounts();
     }
 
-    public List<LanguageCount> languageCounts() {
+    public LanguageCount languageCounts() {
         return statisticsRepository.getLanguageCounts();
     }
 
@@ -52,8 +39,8 @@ public class StatisticsService {
             List<ProblemCount> topSolved,
             List<ProblemCount> topAttempted,
             List<ProblemCount> topAttemptedNotSolved,
-            DifficultyCounts difficultyCounts,
-            List<LanguageCount> languageCounts
+            DifficultyCount difficultyCounts,
+            LanguageCount languageCounts
     ) {
 
     }
@@ -70,19 +57,11 @@ public class StatisticsService {
     }
 
 
-    public DifficultyCounts difficultyCounts(Long userId) {
-        long easy = 0, normal = 0, hard = 0;
-        for (var difCount : statisticsRepository.getDifficultyCountsByUser(userId)) {
-            switch (difCount.getDifficulty()) {
-                case "Easy" -> ++easy;
-                case "Normal" -> ++normal;
-                case "Hard" -> ++hard;
-            }
-        }
-        return new DifficultyCounts(easy, normal, hard);
+    public DifficultyCount difficultyCounts(Long userId) {
+        return statisticsRepository.getDifficultyCountsByUser(userId);
     }
 
-    public List<LanguageCount> languageCounts(Long userId) {
+    public LanguageCount languageCounts(Long userId) {
         return statisticsRepository.getLanguageCounts(userId);
     }
 
@@ -91,8 +70,8 @@ public class StatisticsService {
     }
 
     public record Personal(
-            DifficultyCounts difficultyCounts,
-            List<LanguageCount> languageCounts,
+            DifficultyCount difficultyCounts,
+            LanguageCount languageCounts,
             SolvedAttemptedCounts solvedAndAttempted
     ) {
 
