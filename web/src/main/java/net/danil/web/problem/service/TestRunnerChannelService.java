@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoSink;
 
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -44,7 +45,7 @@ public class TestRunnerChannelService {
             final var verdict = testResultAnalyzerService.judgeResults(testResult);
             final var solution = solutionRepository.findById(testResult.solutionId()).get();
 
-            SolutionResult solutionResult = new SolutionResult(solution.getId(), testResult.tests(), testResult.failures(), testResult.errors(), testResult.statusCode(), testResult.time(),
+            SolutionResult solutionResult = new SolutionResult(solution.getId(), new Date(), testResult.tests(), testResult.failures(), testResult.errors(), testResult.statusCode(), testResult.time(),
                     testResult.logs(), testResult.xml(), verdict.solved(), solution);
             solutionResultRepository.save(solutionResult);
             solution.setSolutionResult(solutionResult);

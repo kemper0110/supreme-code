@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.util.Date;
 
 @Table
 @Entity
@@ -15,6 +18,10 @@ import lombok.Setter;
 public class SolutionResult {
     @Id
     private Long id;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private Date createdAt;
 
     @Column(nullable = false)
     private Integer tests;

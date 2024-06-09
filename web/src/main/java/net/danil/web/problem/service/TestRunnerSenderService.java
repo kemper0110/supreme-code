@@ -10,6 +10,8 @@ import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class TestRunnerSenderService {
@@ -20,7 +22,7 @@ public class TestRunnerSenderService {
 
     public Mono<Long> send(Long userId, String code, String slug, Language language) {
         final var user = userRepository.getReferenceById(userId);
-        final var solution = solutionRepository.save(new Solution(null, user, code, slug, language, null));
+        final var solution = solutionRepository.save(new Solution(null, new Date(), user, code, slug, language, null));
         final var solutionId = solution.getId();
         return kafka.send(TOPIC_NAME, solutionId.toString(), new TestMessage(
                 solutionId, solution.getCode(), solution.getProblemSlug(), solution.getLanguage()

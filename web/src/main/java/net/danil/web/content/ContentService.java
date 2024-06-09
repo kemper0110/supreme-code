@@ -1,10 +1,10 @@
 package net.danil.web.content;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.danil.ContentRepository;
 import org.danil.ProblemRepository;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -14,13 +14,13 @@ import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @Service
-public class ContentService implements ApplicationListener<ApplicationReadyEvent> {
+@Slf4j
+public class ContentService {
     private final ContentRepository contentRepository;
     private final JdbcTemplate jdbcTemplate;
     private final ProblemRepository problemRepository;
 
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    public synchronized void updateContent() {
         jdbcTemplate.update("truncate table supreme_code.problem");
 
         final var content = contentRepository.get();
@@ -46,5 +46,10 @@ public class ContentService implements ApplicationListener<ApplicationReadyEvent
                 return problemsSlugs.size();
             }
         });
+    }
+
+    @PostConstruct
+    public void initialUpdate() {
+        updateContent();
     }
 }

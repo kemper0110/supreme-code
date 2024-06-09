@@ -11,6 +11,9 @@ import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.util.Date;
 
 
 @Entity
@@ -22,6 +25,10 @@ public class Solution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private Date createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
