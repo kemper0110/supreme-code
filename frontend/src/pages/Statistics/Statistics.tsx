@@ -19,8 +19,8 @@ export default function Statistics() {
             mt={24}
             size={250}
             data={[
-              {name: 'решенные', value: data.personal.solvedAndAttempted.solvedCount, color: 'blue.6'},
-              {name: 'начатые', value: data.personal.solvedAndAttempted.attemptedCount, color: 'gray.6'}
+              {name: 'решенные', value: data.personal.solvedAndAttempted?.solvedCount ?? 0, color: 'blue.6'},
+              {name: 'начатые', value: data.personal.solvedAndAttempted?.attemptedCount ?? 0, color: 'gray.6'}
             ]}
             withTooltip
             withLabels
@@ -35,14 +35,11 @@ export default function Statistics() {
             mt={24}
             h={400}
             data={
-              Object.entries(data.personal.languageCounts.reduce((prev, {language, count}) => {
-                  prev[language] = count
-                  return prev
-                }, {Cpp: 0, Javascript: 0, Java: 0})
-              ).map(([language, count]) => ({
-                language,
-                count
-              }))
+              Object.entries({Cpp: 0, Javascript: 0, Java: 0, ...data.personal.languageCounts})
+                .map(([language, count]) => ({
+                  language,
+                  count
+                }))
             }
             withPolarRadiusAxis
             mx="auto" series={[{name: 'count', color: 'blue'}]} dataKey={"language"}
@@ -55,7 +52,7 @@ export default function Statistics() {
             mt={24}
             h={400}
             data={
-              Object.entries(data.personal.difficultyCounts).map(([difficulty, count]) => ({
+              Object.entries(data.personal.difficultyCounts ?? {Easy: 0, Normal: 0, Hard: 0}).map(([difficulty, count]) => ({
                 difficulty, count
               }))
             }

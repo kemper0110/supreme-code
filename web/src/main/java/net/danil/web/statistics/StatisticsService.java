@@ -45,7 +45,7 @@ public class StatisticsService {
 
     }
 
-    @Cacheable(value = "statistics/general", cacheManager = "generalStatisticsCacheManager")
+//    @Cacheable(value = "statistics/general", cacheManager = "generalStatisticsCacheManager")
     public General getGeneralStatistics() {
         return new General(
                 topSolved(),
@@ -77,7 +77,7 @@ public class StatisticsService {
 
     }
 
-    @Cacheable(value = "statistics/personal", cacheManager = "personalStatisticsCacheManager")
+//    @Cacheable(value = "statistics/personal", cacheManager = "personalStatisticsCacheManager")
     public Personal getPersonalStatistics(Long userId) {
         return new Personal(
                 difficultyCounts(userId),

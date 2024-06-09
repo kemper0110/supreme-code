@@ -1,7 +1,6 @@
 import {queryClient} from "../../queryClient.ts";
 import {api} from "../../api/api.ts";
 import {useQuery, UseQueryOptions} from "@tanstack/react-query";
-import {LanguageValue} from "../../types/LanguageValue.tsx";
 
 export type ProblemCount = {
   problemSlug: string
@@ -9,8 +8,9 @@ export type ProblemCount = {
 }
 
 export type LanguageCount = {
-  language: LanguageValue
-  count: number
+  cpp: number
+  java: number
+  javascript: number
 }
 
 export type DifficultyCounts = {
@@ -26,14 +26,14 @@ export type Statistics = {
       solvedCount: number
     },
     difficultyCounts: DifficultyCounts
-    languageCounts: LanguageCount[]
+    languageCounts: LanguageCount
   },
   general: {
     topSolved: ProblemCount[]
     topAttempted: ProblemCount[]
     topAttemptedNotSolved: ProblemCount[]
     difficultyCounts: DifficultyCounts
-    languageCounts: LanguageCount[]
+    languageCounts: LanguageCount
   }
 }
 
