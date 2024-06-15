@@ -63,7 +63,7 @@ export const BaseLayout = () => {
   return (
     <div className={'min-h-dvh'}>
       <div className={classes.header}>
-        <Container className={classes.mainSection} size="md">
+        <Container className={classes.mainSection} size="xl">
           <Group justify="space-between">
             <Link to={'/'} className={'flex text-3xl font-semibold'}
                   style={{transform: "skew(-20deg, 0deg)"}}
