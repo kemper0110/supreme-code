@@ -15,7 +15,14 @@ CREATE TABLE IF NOT EXISTS problem
     name         VARCHAR(255)    NOT NULL,
     description  TEXT            NOT NULL,
     difficulty   difficulty_enum NOT NULL,
-    languages    language_enum[] NOT NULL
+    languages    language_enum[] NOT NULL,
+    tags         VARCHAR(50)[]   NOT NULL
+);
+
+create table if not exists tag
+(
+    id   varchar(50) primary key,
+    name varchar(255) not null
 );
 
 create table solution
