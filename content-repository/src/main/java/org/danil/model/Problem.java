@@ -15,6 +15,7 @@ public class Problem {
     private String description;
     private Difficulty difficulty;
     private List<Language> languages;
+    private List<String> tags;
 
     public enum Difficulty {
         Easy, Normal, Hard
