@@ -6,8 +6,6 @@ import {useProblemsQuery} from "./Loader.tsx";
 import {IconBrandCpp, IconBrandNodejs, IconSearch, IconTag} from "@tabler/icons-react";
 
 
-const fakeTags = ['Криптография', 'Data Science', 'Игры'];
-
 export default function Problems() {
   const navigate = useNavigate()
   const state = new URLSearchParams(window.location.search)
@@ -57,9 +55,9 @@ export default function Problems() {
           <div className={'mt-4 flex gap-2 flex-wrap items-center'}>
             <IconTag size={20} stroke={2.2} className={'text-slate-700'}/>
             {
-              fakeTags.map(tag => (
-                <div key={tag} className={'border bg-slate-200 px-1 py-0.5 font-semibold rounded-lg'}>
-                  {tag}
+              problem.tags.map(tagId => (
+                <div key={tagId} className={'border bg-slate-200 px-1 py-0.5 font-semibold rounded-lg'}>
+                  {data?.tags.find(tag => tag.id === tagId)?.name}
                 </div>
               ))
             }

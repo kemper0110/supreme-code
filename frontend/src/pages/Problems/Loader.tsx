@@ -13,6 +13,7 @@ export type ProblemData = {
   description: string
   difficulty: 'Easy' | 'Normal' | 'Hard'
   languages: LanguageValue[]
+  tags: string[]
 }
 
 export type ProblemsResponse = {
@@ -27,7 +28,7 @@ export const problemsQueryKey = (searchParams: string) => {
   return ['problems', useUser.getState().user?.id, searchParams];
 };
 
-export const ProblemsLoader = ({request}) => {
+export const ProblemsLoader = ({request}: {request: Request}) => {
   const [,searchParams = ''] = request.url.split("?");
   // const state = new URLSearchParams(searchParams)
   // const [name, difficulty, language, tags] = [state.get('name'), state.get('difficulty'), state.getAll('language'), state.getAll('tags')]
