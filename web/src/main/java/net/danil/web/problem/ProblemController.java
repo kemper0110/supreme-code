@@ -2,11 +2,11 @@ package net.danil.web.problem;
 
 import lombok.RequiredArgsConstructor;
 import net.danil.web.problem.model.Solution;
+import net.danil.web.problem.repository.JdbcProblemRepository;
 import net.danil.web.problem.repository.SolutionRepository;
 import net.danil.web.problem.service.TestRunnerChannelService;
 import net.danil.web.problem.service.TestRunnerSenderService;
-import org.danil.ContentRepository;
-import org.danil.ProblemRepository;
+import org.danil.TagRepository;
 import org.danil.TemplateRepository;
 import org.danil.model.Language;
 import org.danil.model.Problem;
@@ -25,13 +25,14 @@ import java.util.Map;
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("/api/problem")
 public class ProblemController {
+    private final TagRepository tagRepository;
     Logger logger = LoggerFactory.getLogger(ProblemController.class);
 
     final private TestRunnerChannelService testRunnerChannelService;
 
     final private TemplateRepository templateRepository;
-    final private ProblemRepository problemRepository;
-    final private ContentRepository contentRepository;
+    final private JdbcProblemRepository problemRepository;
+    final private org.danil.ProblemRepository fileProblemRepository;
     final private TestRunnerSenderService testRunnerSenderService;
     private final SolutionRepository solutionRepository;
 
@@ -40,10 +41,13 @@ public class ProblemController {
     }
 
     @GetMapping
-    Mono<Map<String, ?>> index() {
-        final var problemSlugs = contentRepository.get().getProblems();
+    Mono<Map<String, ?>> index(@RequestParam(required = false) String name,
+                               @RequestParam(required = false) String difficulty,
+                               @RequestParam(required = false) List<String> languages,
+                               @RequestParam(required = false) List<String> tags) {
         return Mono.just(Map.of(
-                "problems", problemSlugs.stream().map(slug -> new ProblemEntry(slug, problemRepository.getBySlug(slug))).toList()
+                "problems", problemRepository.findFiltered(name, difficulty, languages, tags),
+                "tags", tagRepository.get()
         ));
     }
 
@@ -82,7 +86,7 @@ public class ProblemController {
 
     @GetMapping("/{slug}")
     Mono<ProblemView> view(@PathVariable String slug, @AuthenticationPrincipal(expression = "id") Long userId) {
-        final var problem = problemRepository.getBySlug(slug);
+        final var problem = fileProblemRepository.getBySlug(slug);
         final var solutions = solutionRepository.findByProblemSlugAndUserIdOrderByIdDesc(slug, userId).stream();
         return Mono.just(new ProblemView(problem.getId(), problem.getName(), problem.getDescription(), problem.getDifficulty(), problem.getLanguages().stream().map(lang -> new LanguageTemplate(lang, templateRepository.getBySlugAndLanguage(slug, lang))).toList(), solutions.map(s -> {
             final var solutionResult = s.getSolutionResult();

@@ -1,54 +1,75 @@
 import {Container, MultiSelect, Select, Skeleton, TextInput} from '@mantine/core';
 import {Suspense, useEffect, useState} from 'react';
-import {Await, Link, useLoaderData} from "react-router-dom";
+import {Await, Link, useLoaderData, useNavigate} from "react-router-dom";
 import {DotBackground} from "../../components/Background.tsx";
 import {useProblemsQuery} from "./Loader.tsx";
 import {IconBrandCpp, IconBrandNodejs, IconSearch, IconTag} from "@tabler/icons-react";
 
 
-const tags = ['Криптография', 'Data Science', 'Игры'];
+const fakeTags = ['Криптография', 'Data Science', 'Игры'];
 
 export default function Problems() {
+  const navigate = useNavigate()
+  const state = new URLSearchParams(window.location.search)
+  const [name, difficulty, languages, tags] = [state.get('name'), state.get('difficulty'), state.getAll('languages'), state.getAll('tags')]
+
+  console.log('state', name, difficulty, languages, tags)
+
+  const setState = (key: string, value: any) => {
+    if (Array.isArray(value)) {
+      state.delete(key)
+      if (value.length > 0)
+        value.forEach(v => state.append(key, v))
+    } else {
+      state.set(key, value)
+    }
+    navigate(`/problem?${state.toString()}`)
+  }
+  const unsetState = (key: string) => {
+    state.delete(key)
+    navigate(`/problem?${state.toString()}`)
+  }
+
   const {problemsPromise} = useLoaderData() as { problemsPromise: Promise<unknown> }
 
   const Rows = () => {
-    const {data} = useProblemsQuery()
-    return data?.problems.map(problemEntry => (
-      <div key={problemEntry.slug} className={'p-4 pe-8 bg-slate-50 flex rounded-lg items-center gap-4'}
+    const {data} = useProblemsQuery(window.location.search.slice(1))
+    return data?.problems.map(problem => (
+      <div key={problem.id} className={'p-4 pe-8 bg-slate-50 flex rounded-lg items-center gap-4'}
       >
-        <div className={'w-1/2'}>
-          <div className={'flex gap-2 items-center'}>
+        <div className={'w-3/4'}>
+          <div className={'flex gap-2 items-start'}>
             <div className={"text-xl font-bold px-4 py-0.5 bg-slate-200 " + {
               Easy: 'text-green-500',
               Normal: 'text-yellow-600',
               Hard: 'text-red-500',
-            }[problemEntry.problem.difficulty]} style={{
+            }[problem.difficulty]} style={{
               clipPath: "polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%)"
             }}>
-              {problemEntry.problem.difficulty}
+              {problem.difficulty}
             </div>
-            <Link to={`/problem/${problemEntry.slug}`}
+            <Link to={`/problem/${problem.id}`}
                   className={'text-2xl font-semibold'}
             >
-              {problemEntry.problem.name}
+              {problem.name}
             </Link>
           </div>
           <div className={'mt-4 flex gap-2 flex-wrap items-center'}>
             <IconTag size={20} stroke={2.2} className={'text-slate-700'}/>
             {
-              tags.map(tag => (
-                <div className={'border bg-slate-200 px-1 py-0.5 font-semibold rounded-lg'}>
+              fakeTags.map(tag => (
+                <div key={tag} className={'border bg-slate-200 px-1 py-0.5 font-semibold rounded-lg'}>
                   {tag}
                 </div>
               ))
             }
           </div>
         </div>
-        <div className={'w-1/2'}>
+        <div className={'w-1/4'}>
           <div className={'flex flex-row-reverse gap-2'}>
             {
-              problemEntry.problem.languages.map(lang => (
-                <div className={'bg-slate-200 p-2 flex items-center justify-center rounded-md'}>
+              problem.languages.map(lang => (
+                <div key={lang} className={'bg-slate-200 p-2 flex items-center justify-center rounded-md'}>
                   {
                     {
                       Javascript: <IconBrandNodejs size={50} stroke={1.3}/>,
@@ -63,6 +84,22 @@ export default function Problems() {
         </div>
       </div>
     ))
+  }
+
+  const TagSelect = () => {
+    const {data} = useProblemsQuery(window.location.search.slice(1))
+    return (
+      <MultiSelect
+        label={'Теги'}
+        data={data?.tags.map(tag => ({
+          value: tag.id,
+          label: tag.name
+        }))}
+        placeholder={'Выберите теги'}
+        value={tags ?? []}
+        onChange={(e) => setState('tags', e)}
+      />
+    )
   }
 
   const Fallback = () => {
@@ -94,10 +131,12 @@ export default function Problems() {
       <div className={'w-3/12'}>
         <div className={'flex flex-col gap-1.5 p-3 bg-slate-50 rounded-lg'}>
           <TextInput
+            value={name ?? ''}
+            onChange={(e) => setState('name', e.target.value)}
             label={'Название'}
             rightSection={<IconSearch size={20}/>}
           />
-          <Select mt={8} label={'Статус'} defaultValue={'Любой'} data={[
+          <Select mt={8} label={'Статус'} data={[
             'Любой', 'Без попыток', 'Не решена', 'Решена',
           ]}
                   allowDeselect={false}
@@ -106,17 +145,37 @@ export default function Problems() {
             'Любая', 'Easy', 'Normal', 'Hard',
           ]}
                   allowDeselect={false}
+                  value={difficulty ?? 'Любая'}
+                  onChange={(e) => {
+                    if (e === 'Любая')
+                      unsetState('difficulty')
+                    else
+                      setState('difficulty', e)
+                  }}
           />
 
-          <Select label={'Язык'} defaultValue={'Любой'} data={[
-            'Любой', 'C++', 'Java', 'JavaScript'
-          ]} allowDeselect={false}/>
+          <MultiSelect label={'Языки'} defaultValue={['Любой']} data={[
+            {value: 'Cpp', label: 'C++'},
+            {value: 'Java', label: 'Java'},
+            {value: 'Javascript', label: 'JavaScript'}
+          ]}
+                       value={languages ?? []}
+                       placeholder={'Выберите языки'}
+                       onChange={(e) => setState('languages', e)}
+          />
 
-          <MultiSelect
+          <Suspense fallback={<MultiSelect
             label={'Теги'}
-            data={tags}
+            data={[]}
             placeholder={'Выберите теги'}
-          />
+            value={tags ?? []}
+            onChange={(e) => setState('tags', e)}
+          />}>
+            <Await resolve={problemsPromise}>
+              <TagSelect/>
+            </Await>
+          </Suspense>
+
         </div>
       </div>
       <div className={'w-9/12 h-full flex flex-col gap-4 overflow-y-auto'}>

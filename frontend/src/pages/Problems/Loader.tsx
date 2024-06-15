@@ -15,27 +15,30 @@ export type ProblemData = {
   languages: LanguageValue[]
 }
 
-export type ProblemWithSlug = {
-  slug: string
-  problem: ProblemData
-}
-
 export type ProblemsResponse = {
-  problems: ProblemWithSlug[]
+  problems: ProblemData[]
+  tags: {
+    id: string
+    name: string
+  }[]
 }
 
-export const problemsQueryKey = () => {
-  return ['problems', useUser.getState().user?.id];
+export const problemsQueryKey = (searchParams: string) => {
+  return ['problems', useUser.getState().user?.id, searchParams];
 };
 
-export const ProblemsLoader = () => {
-  const queryKey = problemsQueryKey()
+export const ProblemsLoader = ({request}) => {
+  const [,searchParams = ''] = request.url.split("?");
+  // const state = new URLSearchParams(searchParams)
+  // const [name, difficulty, language, tags] = [state.get('name'), state.get('difficulty'), state.getAll('language'), state.getAll('tags')]
+
+  const queryKey = problemsQueryKey(searchParams)
   const problemsResponse = queryClient.getQueryData<ProblemsResponse>(queryKey)
   if (problemsResponse)
     console.log("data available")
   const problemsPromise = problemsResponse ? Promise.resolve(problemsResponse) : debouncedPromise(queryClient.fetchQuery({
     queryKey,
-    queryFn: async () => (await api.get<ProblemsResponse>(`/api/problem`)).data ?? null,
+    queryFn: async () => (await api.get<ProblemsResponse>(`/api/problem?${searchParams}`)).data ?? null,
     staleTime: 120000
   }), 500, 500)
   return defer({
@@ -43,5 +46,5 @@ export const ProblemsLoader = () => {
   })
 }
 
-export const useProblemsQuery = (options?: UseQueryOptions<ProblemsResponse>) =>
-  useQuery<ProblemsResponse>({queryKey: problemsQueryKey(), ...options})
+export const useProblemsQuery = (searchParams: string, options?: UseQueryOptions<ProblemsResponse>) =>
+  useQuery<ProblemsResponse>({queryKey: problemsQueryKey(searchParams), ...options})
