@@ -1,10 +1,15 @@
-import {Container, MultiSelect, Select, Skeleton, TextInput} from '@mantine/core';
+import {BackgroundImage, Container, MultiSelect, Select, Skeleton, TextInput} from '@mantine/core';
 import {Suspense, useEffect, useState} from 'react';
 import {Await, Link, useLoaderData, useNavigate} from "react-router-dom";
 import {DotBackground} from "../../components/Background.tsx";
 import {useProblemsQuery} from "./Loader.tsx";
 import {IconBrandCpp, IconBrandNodejs, IconSearch, IconTag} from "@tabler/icons-react";
-
+import {Carousel} from "@mantine/carousel";
+import { DonutChart } from '@mantine/charts';
+import '@mantine/carousel/styles.css';
+import cube from './assets/cube.jpg'
+import city from './assets/city.jpg'
+import floor from './assets/floor.jpg'
 
 export default function Problems() {
   const navigate = useNavigate()
@@ -38,11 +43,11 @@ export default function Problems() {
         <div className={'w-3/4'}>
           <div className={'flex gap-2 items-start'}>
             <div className={"text-xl font-bold px-4 py-0.5 bg-slate-200 " + {
-              Easy: 'text-green-500',
+              Easy: 'text-teal-600',
               Normal: 'text-yellow-600',
               Hard: 'text-red-500',
             }[problem.difficulty]} style={{
-              clipPath: "polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%)"
+              clipPath: "polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%)",
             }}>
               {problem.difficulty}
             </div>
@@ -170,13 +175,63 @@ export default function Problems() {
                   allowDeselect={false}
           />
         </div>
+        <div className={'flex gap-2 mt-8 p-3 bg-slate-50 rounded-lg'}>
+          <DonutChart
+            size={210}
+            classNames={{
+              label: '!text-xl !font-semibold',
+            }}
+            withLabelsLine withLabels
+            chartLabel={
+              'Прогресс'
+            }
+            data={[
+              {name: 'Не решено', value: 100, color: 'gray.6'},
+              {name: 'Easy', value: 100, color: 'teal.6'},
+              {name: 'Normal', value: 100, color: 'yellow.6'},
+              {name: 'Hard', value: 100, color: 'indigo.6'},
+            ]}
+          />
+        </div>
       </div>
-      <div className={'w-9/12 h-full flex flex-col gap-4 overflow-y-auto'}>
-        <Suspense fallback={<Fallback/>}>
-          <Await resolve={problemsPromise}>
-            <Rows/>
-          </Await>
-        </Suspense>
+      <div className={'w-9/12 h-full flex flex-col'}>
+        <Carousel
+          height={130}
+          slideSize="33.333333%"
+          slideGap="md"
+          loop
+          align="start"
+          slidesToScroll={3}
+        >
+          <Carousel.Slide>
+            <BackgroundImage src={cube} radius={'lg'}>
+              <div className={'h-[130px] pt-2 ps-4 text-slate-50 [text-shadow:2px_2px_2px_#000]'}>
+                <h1 className={'text-4xl font-semibold'}>Задачи на C++</h1>
+              </div>
+            </BackgroundImage>
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <BackgroundImage src={city} radius={'lg'}>
+              <div className={'h-[130px] pt-2 text-center text-slate-50 [text-shadow:2px_2px_2px_#000]'}>
+                <h1 className={'text-4xl font-semibold'}>Задачи на массивы</h1>
+              </div>
+            </BackgroundImage>
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <BackgroundImage src={floor} radius={'lg'}>
+              <div className={'h-[130px] pt-2 ps-4 text-slate-50 [text-shadow:2px_2px_2px_#000]'}>
+                <h1 className={'text-4xl font-semibold'}>Рекурсия</h1>
+              </div>
+            </BackgroundImage>
+          </Carousel.Slide>
+        </Carousel>
+        <div className={'mt-4 h-full overflow-y-auto flex flex-col gap-4'}>
+          <Suspense fallback={<Fallback/>}>
+            <Await resolve={problemsPromise}>
+              <Rows/>
+            </Await>
+          </Suspense>
+        </div>
       </div>
     </Container>
   </DotBackground>

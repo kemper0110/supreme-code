@@ -14,7 +14,7 @@
   },
   "packageManager": "yarn@4.1.0",
   "dependencies": {
-    "@mantine/carousel": "^7.5.0",
+    "@mantine/carousel": "^7.10.2",
     "@mantine/charts": "^7.5.0",
     "@mantine/code-highlight": "^7.5.0",
     "@mantine/core": "^7.5.0",
@@ -45,7 +45,7 @@
     "@tiptap/starter-kit": "^2.2.0",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
-    "embla-carousel-react": "^8.0.0-rc21",
+    "embla-carousel-react": "^7.1.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.3",
     "monaco-editor": "^0.45.0",
