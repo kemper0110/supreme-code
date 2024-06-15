@@ -110,14 +110,8 @@ export default function Problems() {
     }, [])
     if (show)
       return Array.from({length: 5}).map((_v, i) => (
-        <div key={i} className={'hover:bg-slate-100 transition-colors'}>
-          {
-            Array.from({length: 3}).map((_v, i) => (
-              <div key={i}>
-                <Skeleton width={'80%'} height={14}/>
-              </div>
-            ))
-          }
+        <div key={i} className={'bg-slate-50 rounded-lg'}>
+          <Skeleton width={'100%'} height={110}/>
         </div>
       ))
     return null
@@ -133,11 +127,6 @@ export default function Problems() {
             onChange={(e) => setState('name', e.target.value)}
             label={'Название'}
             rightSection={<IconSearch size={20}/>}
-          />
-          <Select mt={8} label={'Статус'} data={[
-            'Любой', 'Без попыток', 'Не решена', 'Решена',
-          ]}
-                  allowDeselect={false}
           />
           <Select label={'Сложность'} defaultValue={'Любая'} data={[
             'Любая', 'Easy', 'Normal', 'Hard',
@@ -174,6 +163,12 @@ export default function Problems() {
             </Await>
           </Suspense>
 
+          <Select mt={8} label={'Статус'} data={[
+            'Любой', 'Без попыток', 'Не решена', 'Решена',
+          ]}
+                  placeholder={'Выберите статус'}
+                  allowDeselect={false}
+          />
         </div>
       </div>
       <div className={'w-9/12 h-full flex flex-col gap-4 overflow-y-auto'}>
