@@ -86,7 +86,7 @@ const useSharedSelectedLanguage: LanguageStoreProvider = (languages: Language[])
   const state = useSyncedStore(store)
   useEffect(() => {
     if (state.language.value === undefined) {
-      state.language.value = languages[0].language
+      state.language.value = languages[0]?.language
     }
   }, []);
   const setSelectedLanguage = (language: Language) => {
@@ -210,7 +210,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
     setEditorRef(editor)
     if (editor) {
       if (host) {
-        editor.setValue(selectedLanguage.template)
+        editor.setValue(selectedLanguage?.template ?? '')
       }
     }
   }
@@ -270,7 +270,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
                 </Button>
               )
             }
-            <Button onClick={onRunClick}>
+            <Button disabled={!selectedSolution} onClick={onRunClick}>
               Запустить
             </Button>
           </Group>
@@ -278,7 +278,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
             <SegmentedControl size={'xs'} data={
               languages.map(l =>
                 ({
-                  label: <HoverCard position={'top'} disabled={selectedLanguage.language !== l.language}>
+                  label: <HoverCard position={'top'} disabled={selectedLanguage?.language !== l.language}>
                     <HoverCard.Target>
                       <Flex align={'center'} gap={4}>
                         {
@@ -300,7 +300,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
                   value: l.language
                 }))
             }
-                              value={selectedLanguage.language}
+                              value={selectedLanguage?.language}
                               onChange={value => setSelectedLanguage(languages.find(l => l.language === value)!)}/>
           </Flex>
         </Flex>
@@ -333,7 +333,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
                               </Text>
                             }
                             height="100%"
-                            language={selectedLanguage.language.toLowerCase()}
+                            language={selectedLanguage?.language?.toLowerCase()}
                     />
                   </Tabs.Panel>
                 </Tabs>
