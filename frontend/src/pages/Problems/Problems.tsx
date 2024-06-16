@@ -10,6 +10,7 @@ import '@mantine/carousel/styles.css';
 import cube from './assets/cube.jpg'
 import city from './assets/city.jpg'
 import floor from './assets/floor.jpg'
+import {Legend} from "recharts";
 
 export default function Problems() {
   const navigate = useNavigate()
@@ -175,23 +176,18 @@ export default function Problems() {
                   allowDeselect={false}
           />
         </div>
-        <div className={'flex gap-2 mt-8 p-3 bg-slate-50 rounded-lg'}>
-          <DonutChart
-            size={210}
-            classNames={{
-              label: '!text-xl !font-semibold',
-            }}
+        <div className={'flex gap-2 mt-8 p-3 bg-slate-50 rounded-lg w-full items-center justify-center'}>
+          <DonutChart w={200} h={260}
             withLabelsLine withLabels
-            chartLabel={
-              'Прогресс'
-            }
             data={[
-              {name: 'Не решено', value: 100, color: 'gray.6'},
-              {name: 'Easy', value: 100, color: 'teal.6'},
-              {name: 'Normal', value: 100, color: 'yellow.6'},
-              {name: 'Hard', value: 100, color: 'indigo.6'},
+              {name: 'Не решено', value: 10, color: 'gray.6'},
+              {name: 'Easy', value: 3, color: 'teal.6'},
+              {name: 'Normal', value: 2, color: 'yellow.6'},
+              {name: 'Hard', value: 1, color: 'indigo.6'},
             ]}
-          />
+          >
+            <Legend/>
+          </DonutChart>
         </div>
       </div>
       <div className={'w-9/12 h-full flex flex-col'}>
@@ -203,21 +199,27 @@ export default function Problems() {
           align="start"
           slidesToScroll={3}
         >
-          <Carousel.Slide>
+          <Carousel.Slide onClick={() => {
+            setState('languages', ['Cpp'])
+          }}>
             <BackgroundImage src={cube} radius={'lg'}>
               <div className={'h-[130px] pt-2 ps-4 text-slate-50 [text-shadow:2px_2px_2px_#000]'}>
                 <h1 className={'text-4xl font-semibold'}>Задачи на C++</h1>
               </div>
             </BackgroundImage>
           </Carousel.Slide>
-          <Carousel.Slide>
+          <Carousel.Slide onClick={() => {
+            setState('tags', ['arrays'])
+          }}>
             <BackgroundImage src={city} radius={'lg'}>
               <div className={'h-[130px] pt-2 text-center text-slate-50 [text-shadow:2px_2px_2px_#000]'}>
                 <h1 className={'text-4xl font-semibold'}>Задачи на массивы</h1>
               </div>
             </BackgroundImage>
           </Carousel.Slide>
-          <Carousel.Slide>
+          <Carousel.Slide onClick={() => {
+            setState('tags', ['recursion'])
+          }}>
             <BackgroundImage src={floor} radius={'lg'}>
               <div className={'h-[130px] pt-2 ps-4 text-slate-50 [text-shadow:2px_2px_2px_#000]'}>
                 <h1 className={'text-4xl font-semibold'}>Рекурсия</h1>
