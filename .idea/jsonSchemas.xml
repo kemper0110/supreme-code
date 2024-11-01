@@ -3,6 +3,29 @@
   <component name="JsonSchemaMappingsProjectConfiguration">
     <state>
       <map>
+        <entry key="JSON Schema version 7">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="JSON Schema version 7" />
+              <option name="relativePathToSchema" value="http://json-schema.org/draft-07/schema" />
+              <option name="schemaVersion" value="JSON Schema version 7" />
+              <option name="applicationDefined" value="true" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="content-repository/src/main/resources/supreme-code-content/schemas/tags.schema.json" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="content-repository/src/main/resources/supreme-code-content/schemas/problem.schema.json" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="content-repository/src/main/resources/supreme-code-content/schemas/content.schema.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
         <entry key="docker-compose.yml">
           <value>
             <SchemaInfo>

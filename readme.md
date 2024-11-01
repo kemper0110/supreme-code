@@ -34,4 +34,4 @@
 
 ## Подробности реализации
 
-все в [презентации](presentation-sber.pptx) 
+все в [презентации](docs/4k/presentation-sber.pptx) 
