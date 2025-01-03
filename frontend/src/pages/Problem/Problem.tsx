@@ -270,7 +270,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
                 </Button>
               )
             }
-            <Button disabled={!selectedSolution} onClick={onRunClick}>
+            <Button onClick={onRunClick}>
               Запустить
             </Button>
           </Group>

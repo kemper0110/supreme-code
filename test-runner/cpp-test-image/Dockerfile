@@ -1,5 +1,5 @@
 FROM gcc:13.2.0
-RUN apt-get update && \
+RUN apt-get update -y && \
     apt-get install -y cmake
 
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser

@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -39,31 +37,31 @@ services:
       - '5432:5432'
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "localhost", "-U", "postgres"]
-      interval: 10s
+      interval: 5s
       timeout: 3s
       retries: 3
     volumes:
       - rdbms:/var/lib/postgresql/data
       - ./init-rdb:/docker-entrypoint-initdb.d
 
-  keycloak:
-    image: bitnami/keycloak:23
-    container_name: sc-keycloak
-    environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: rdbms
-      DB_DATABASE: keycloak_db
-      DB_USER: keycloak_user
-      DB_PASSWORD: password
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-    ports:
-      - "8484:8080"
-    depends_on:
-      rdbms:
-        condition: service_healthy
-    links:
-      - "rdbms:rdbms"
+#  keycloak:
+#    image: bitnami/keycloak:23
+#    container_name: sc-keycloak
+#    environment:
+#      DB_VENDOR: POSTGRES
+#      DB_ADDR: rdbms
+#      DB_DATABASE: keycloak_db
+#      DB_USER: keycloak_user
+#      DB_PASSWORD: password
+#      KEYCLOAK_ADMIN: admin
+#      KEYCLOAK_ADMIN_PASSWORD: admin
+#    ports:
+#      - "8484:8080"
+#    depends_on:
+#      rdbms:
+#        condition: service_healthy
+#    links:
+#      - "rdbms:rdbms"
 #  flyway:
 #    image: redgate/flyway:latest
 #    container_name: sc-flyway
