@@ -8,6 +8,9 @@ A New Contest Sandbox
 Olympiads in Informatics, 2021 Vol. 15, 37–52 © 2021 IOI, Vilnius University
 Security of Grading Systems
 
+Perspective on Code Submission and Automated Evaluation Platforms for University
+Teaching
+
 В первой статье авторы описали свой вариант контейнеризации основанный на linux control group и namespaces.
 Те же механизмы используются в системе контейнеризации docker, которую использую я, поэтому
 я перенес требования из статей к докеру.
