@@ -73,6 +73,7 @@
 Решение отправляемое пользователем на проверку.
 
 - user: User
+- problem: Problem
 - language: Language
 - code: string
 
@@ -103,7 +104,7 @@
 Комната для совместного редактирования кода решения.
 
 - problem: Problem
-- host: User
+- owner: User
 - link: string
 - members: User[]
 - code: string
