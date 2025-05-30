@@ -1,0 +1,69 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class language {
+   name: varchar(24)
+   image: varchar(255)
+   pod_manifest: varchar
+   id: bigint
+}
+class problem {
+   author_id: bigint
+   name: varchar(50)
+   description: varchar(10000)
+   difficulty: varchar(16)
+   id: bigint
+}
+class problem_language {
+   problem_id: bigint
+   language_id: bigint
+   initial_solution: varchar(8192)
+   preloaded: varchar(100000)
+   tests: varchar(20000)
+   id: bigint
+}
+class problem_tags {
+   problem_id: bigint
+   tag_id: bigint
+}
+class solution {
+   created_at: timestamp
+   user_id: bigint
+   problem_language_id: bigint
+   code: varchar(20000)
+   id: bigint
+}
+class solution_result {
+   created_at: timestamp
+   exit_code: integer
+   stdout: varchar(10000)
+   stderr: varchar(10000)
+   time: double precision
+   timed_out: boolean
+   solved: boolean
+   tests: varchar(10000)
+   id: bigint
+}
+class tag {
+   name: varchar(24)
+   id: bigint
+}
+class users {
+   email: varchar(255)
+   username: varchar(24)
+   avatar: varchar(255)
+   id: bigint
+}
+
+problem           -[#595959,plain]-^  users            : "author_id:id"
+problem_language  -[#595959,plain]-^  language         : "language_id:id"
+problem_language  -[#595959,plain]-^  problem          : "problem_id:id"
+problem_tags      -[#595959,plain]-^  problem          : "problem_id:id"
+problem_tags      -[#595959,plain]-^  tag              : "tag_id:id"
+solution          -[#595959,plain]-^  problem_language : "problem_language_id:id"
+solution          -[#595959,plain]-^  users            : "user_id:id"
+solution_result   -[#595959,plain]-^  solution         : "id"
+@enduml

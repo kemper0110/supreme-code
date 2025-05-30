@@ -1,11 +1,11 @@
-package net.danil.web.problem;
+package net.danil.web.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.danil.web.problem.model.Solution;
-import net.danil.web.problem.repository.JdbcProblemRepository;
-import net.danil.web.problem.repository.SolutionRepository;
-import net.danil.web.problem.service.TestRunnerChannelService;
-import net.danil.web.problem.service.TestRunnerSenderService;
+import net.danil.web.domain.Solution;
+import net.danil.web.repository.JdbcProblemRepository;
+import net.danil.web.repository.SolutionRepository;
+import net.danil.web.service.TestRunnerChannelService;
+import net.danil.web.service.TestRunnerSenderService;
 import org.danil.TagRepository;
 import org.danil.TemplateRepository;
 import org.danil.model.Language;

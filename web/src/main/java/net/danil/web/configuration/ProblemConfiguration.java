@@ -1,7 +1,7 @@
-package net.danil.web.problem;
+package net.danil.web.configuration;
 
-import net.danil.web.problem.dto.TestMessage;
-import net.danil.web.problem.dto.TestResult;
+import net.danil.web.service.TestMessage;
+import net.danil.web.service.TestResult;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;

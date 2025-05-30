@@ -1,10 +1,9 @@
-package net.danil.web.problem.service;
+package net.danil.web.service;
 
 import lombok.RequiredArgsConstructor;
-import net.danil.web.problem.dto.TestResult;
-import net.danil.web.problem.model.SolutionResult;
-import net.danil.web.problem.repository.SolutionRepository;
-import net.danil.web.problem.repository.SolutionResultRepository;
+import net.danil.web.domain.SolutionResult;
+import net.danil.web.repository.SolutionRepository;
+import net.danil.web.repository.SolutionResultRepository;
 import net.danil.web.statistics.StatisticsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

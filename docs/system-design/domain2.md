@@ -24,6 +24,7 @@
 - author: User
 - name: string
 - description: string
+- difficulty: string
 - tags: Tag[]
 - revision: number
 - isPublished: boolean

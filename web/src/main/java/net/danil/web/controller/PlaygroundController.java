@@ -1,4 +1,4 @@
-package net.danil.web.playground;
+package net.danil.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.route.RouteLocator;

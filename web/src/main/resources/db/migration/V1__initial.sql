@@ -1,50 +1,69 @@
 create table users
 (
     id       bigserial primary key,
-    username varchar(50) not null unique,
-    password varchar(50) not null,
-    image    varchar(255)
+    email    varchar(255) not null unique,
+    username varchar(24)  not null unique,
+    avatar   varchar(255)
 );
 
-CREATE TYPE language_enum AS ENUM ('Cpp', 'Java', 'Javascript');
-CREATE TYPE difficulty_enum AS ENUM ('Easy', 'Normal', 'Hard');
-
-CREATE TABLE IF NOT EXISTS problem
+CREATE TABLE language
 (
-    problem_slug VARCHAR(50) primary key,
-    name         VARCHAR(255)    NOT NULL,
-    description  TEXT            NOT NULL,
-    difficulty   difficulty_enum NOT NULL,
-    languages    language_enum[] NOT NULL,
-    tags         VARCHAR(50)[]   NOT NULL
+    id           BIGSERIAL PRIMARY KEY,
+    name         varchar(24)  NOT NULL,
+    image        varchar(255) NOT NULL,
+    pod_manifest varchar      NOT NULL
+);
+
+CREATE TABLE problem
+(
+    id          BIGSERIAL PRIMARY KEY,
+    author_id   BIGINT         NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    name        varchar(50)    NOT NULL,
+    description varchar(10000) NOT NULL,
+    difficulty  varchar(16)    NOT NULL
 );
 
 create table if not exists tag
 (
-    id   varchar(50) primary key,
-    name varchar(255) not null
+    id   bigserial primary key,
+    name varchar(24) not null
 );
 
-create table solution
+CREATE TABLE problem_tags
 (
-    id           bigserial primary key,
-    created_at   timestamp     not null,
-    problem_slug varchar(50)   not null,
-    language     language_enum not null,
-    user_id      bigint        not null references users (id),
-    code         text          not null
+    problem_id BIGINT NOT NULL REFERENCES problem (id) ON DELETE CASCADE,
+    tag_id     BIGINT NOT NULL REFERENCES tag (id) ON DELETE CASCADE,
+    PRIMARY KEY (problem_id, tag_id)
 );
 
-create table solution_result
+CREATE TABLE problem_language
 (
-    solution_id bigint primary key references solution (id),
-    created_at  timestamp not null,
-    tests       int       not null,
-    failures    int       not null,
-    errors      int       not null,
-    status_code int       not null,
-    time        float     not null,
-    logs        text      not null,
-    junit_xml   text,
-    solved      boolean   not null
+    id               BIGSERIAL PRIMARY KEY,
+    problem_id       BIGINT          NOT NULL REFERENCES problem (id) ON DELETE CASCADE,
+    language_id      BIGINT          NOT NULL REFERENCES language (id) ON DELETE CASCADE,
+    initial_solution varchar(8192)   NOT NULL,
+    preloaded        varchar(100000) NOT NULL,
+    tests            varchar(200000) NOT NULL
+);
+
+CREATE TABLE solution
+(
+    id                  BIGSERIAL PRIMARY KEY,
+    created_at          TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id             BIGINT         NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    problem_language_id BIGINT         NOT NULL REFERENCES problem_language (id) ON DELETE CASCADE,
+    code                varchar(20000) NOT NULL
+);
+
+CREATE TABLE solution_result
+(
+    id         BIGINT PRIMARY KEY REFERENCES solution (id) ON DELETE CASCADE,
+    created_at TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    exit_code  INT            NOT NULL DEFAULT 0,
+    stdout     varchar(10000) NOT NULL DEFAULT '',
+    stderr     varchar(10000) NOT NULL DEFAULT '',
+    time       FLOAT          NOT NULL DEFAULT 0,
+    timed_out  BOOLEAN        NOT NULL DEFAULT FALSE,
+    solved     BOOLEAN        NOT NULL DEFAULT FALSE,
+    tests      varchar(10000) NOT NULL
 );

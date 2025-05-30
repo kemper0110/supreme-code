@@ -1,4 +1,4 @@
-package net.danil.web.content;
+package net.danil.web.service;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

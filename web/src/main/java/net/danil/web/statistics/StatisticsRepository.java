@@ -1,6 +1,6 @@
 package net.danil.web.statistics;
 
-import net.danil.web.problem.model.Solution;
+import net.danil.web.domain.Solution;
 import net.danil.web.statistics.dto.DifficultyCount;
 import net.danil.web.statistics.dto.LanguageCount;
 import net.danil.web.statistics.dto.ProblemCount;

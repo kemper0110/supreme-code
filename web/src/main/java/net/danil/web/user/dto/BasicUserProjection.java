@@ -1,6 +1,6 @@
 package net.danil.web.user.dto;
 
-import net.danil.web.user.model.User;
+import net.danil.web.domain.User;
 
 /**
  * Projection for {@link User}

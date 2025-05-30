@@ -1,0 +1,88 @@
+@startuml
+' ======================= Пакеты =========================
+package "Domain Model" {
+  class User
+  class Problem
+  class Tag
+  class Language
+  class Solution
+  class SolutionResult
+}
+
+package "Repositories" {
+  interface UserRepository
+  interface ProblemRepository
+  interface TagRepository
+  interface LanguageRepository
+  interface SolutionRepository
+  interface SolutionResultRepository
+}
+
+package "External Services" {
+  interface KeycloakService
+  interface MinioService
+}
+
+package "Application Services" {
+  class UserService
+  class ProblemService
+  class TagService
+  class LanguageService
+  class SolutionService
+  class SolutionResultService
+}
+
+allowmixing
+
+package "Infrastructure" {
+  database "PostgreSQL"
+  cloud "Keycloak"
+  cloud "MinIO"
+}
+
+' ======================= Связи =========================
+' Repositories <-> Domain
+UserRepository --> User
+ProblemRepository --> Problem
+TagRepository --> Tag
+LanguageRepository --> Language
+SolutionRepository --> Solution
+SolutionResultRepository --> SolutionResult
+
+' Application Services -> Repositories
+UserService --> UserRepository
+UserService --> KeycloakService
+UserService --> MinioService
+
+ProblemService --> ProblemRepository
+TagService --> TagRepository
+LanguageService --> LanguageRepository
+SolutionService --> SolutionRepository
+SolutionService --> SolutionResultRepository
+SolutionResultService --> SolutionResultRepository
+
+' Application Services -> Domain Model
+UserService --> User
+ProblemService --> Problem
+TagService --> Tag
+LanguageService --> Language
+SolutionService --> Solution
+SolutionService --> SolutionResult
+SolutionResultService --> SolutionResult
+
+' External services integration
+UserService --> KeycloakService : roles, permissions
+UserService --> MinioService : avatars
+
+' Infrastructure integrations
+UserRepository --> PostgreSQL
+ProblemRepository --> PostgreSQL
+TagRepository --> PostgreSQL
+LanguageRepository --> PostgreSQL
+SolutionRepository --> PostgreSQL
+SolutionResultRepository --> PostgreSQL
+
+KeycloakService --> Keycloak : roles & permissions
+MinioService --> MinIO : avatars
+
+@enduml

@@ -1,4 +1,4 @@
-package net.danil.web.problem.dto;
+package net.danil.web.service;
 
 import org.danil.model.Language;
 

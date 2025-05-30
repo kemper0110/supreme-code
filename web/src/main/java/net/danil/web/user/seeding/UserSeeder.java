@@ -1,8 +1,8 @@
 package net.danil.web.user.seeding;
 
 import lombok.RequiredArgsConstructor;
-import net.danil.web.user.model.User;
-import net.danil.web.user.repository.UserRepository;
+import net.danil.web.domain.User;
+import net.danil.web.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

@@ -1,6 +1,5 @@
-package net.danil.web.problem.service;
+package net.danil.web.service;
 
-import net.danil.web.problem.dto.TestResult;
 import org.springframework.stereotype.Service;
 
 @Service

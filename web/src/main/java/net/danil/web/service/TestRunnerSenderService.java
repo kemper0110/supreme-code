@@ -1,10 +1,9 @@
-package net.danil.web.problem.service;
+package net.danil.web.service;
 
 import lombok.RequiredArgsConstructor;
-import net.danil.web.problem.dto.TestMessage;
-import net.danil.web.problem.model.Solution;
-import net.danil.web.problem.repository.SolutionRepository;
-import net.danil.web.user.repository.UserRepository;
+import net.danil.web.domain.Solution;
+import net.danil.web.repository.SolutionRepository;
+import net.danil.web.repository.UserRepository;
 import org.danil.model.Language;
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
 import org.springframework.stereotype.Service;

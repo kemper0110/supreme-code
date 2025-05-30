@@ -1,7 +1,7 @@
-package net.danil.web.user.repository;
+package net.danil.web.repository;
 
 import net.danil.web.user.dto.BasicUserProjection;
-import net.danil.web.user.model.User;
+import net.danil.web.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

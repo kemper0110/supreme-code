@@ -1,6 +1,6 @@
-package net.danil.web.problem.repository;
+package net.danil.web.repository;
 
-import net.danil.web.problem.model.SolutionResult;
+import net.danil.web.domain.SolutionResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

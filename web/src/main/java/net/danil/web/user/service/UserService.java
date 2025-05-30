@@ -2,8 +2,8 @@ package net.danil.web.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.danil.web.user.model.User;
-import net.danil.web.user.repository.UserRepository;
+import net.danil.web.domain.User;
+import net.danil.web.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

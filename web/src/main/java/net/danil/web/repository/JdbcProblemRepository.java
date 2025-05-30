@@ -1,4 +1,4 @@
-package net.danil.web.problem.repository;
+package net.danil.web.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.danil.model.Language;
