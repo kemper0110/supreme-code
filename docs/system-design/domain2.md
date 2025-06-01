@@ -4,9 +4,7 @@
 - username: string
 - password: string
 - image: string
-- roles: []
-    - user
-    - admin
+- roles: массив, где значения это user или admin
 - permissions: string[]
 
 Функционал над текущим пользователем или над любым, если текущий - admin:
@@ -94,7 +92,7 @@
 - timedOut: boolean
 - time: number
 - completed: boolean
-- tests: { name: string, passed: boolean }[] - value object
+- tests: { name: string, passed: boolean }[]
 
 Функционал:
 
