@@ -136,6 +136,8 @@ public abstract class Tester {
 
         @Override
         public void onNext(Frame frame) {
+            // TODO: пофиксить приведение к строке
+            // а в какой кодировке летят логи?
             builder.append(new String(frame.getPayload()));
         }
 
