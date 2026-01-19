@@ -1,302 +1,396 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
   <diagram name="Страница-1" id="hvxvriBwSXhtkUUwFKWO">
-    <mxGraphModel dx="1661" dy="1708" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3536" dy="1931" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="jGSH_cQpomrff6g7vneL-1" value="Пользователь" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
-          <mxGeometry x="190" y="240" width="30" height="60" as="geometry" />
+        <mxCell id="SVzlbXzB3AJubhK4BVNu-38" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="160" width="440" x="-540" y="1420" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-2" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#d5e8d4;strokeColor=#82b366;" edge="1" parent="1" target="jGSH_cQpomrff6g7vneL-3">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="220" y="270" as="sourcePoint" />
-            <mxPoint x="290" y="270" as="targetPoint" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-1" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Пользователь" vertex="1">
+          <mxGeometry height="60" width="30" x="947.5" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="jGSH_cQpomrff6g7vneL-2" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#d5e8d4;strokeColor=#82b366;" target="jGSH_cQpomrff6g7vneL-3" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="977.5" y="220" as="sourcePoint" />
+            <mxPoint x="1047.5" y="220" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-9" value="1. UserSolution" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-2">
-          <mxGeometry x="-0.2646" y="-2" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-9" connectable="0" parent="jGSH_cQpomrff6g7vneL-2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="1. UserSolution" vertex="1">
+          <mxGeometry relative="1" x="-0.2646" y="-2" as="geometry">
             <mxPoint x="12" y="-12" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-10" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fillColor=#d5e8d4;strokeColor=#82b366;exitX=0.999;exitY=0.329;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.001;entryY=0.336;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-3" target="jGSH_cQpomrff6g7vneL-4">
+        <mxCell id="jGSH_cQpomrff6g7vneL-10" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-3" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fillColor=#d5e8d4;strokeColor=#82b366;exitX=0.999;exitY=0.329;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.001;entryY=0.336;entryDx=0;entryDy=0;entryPerimeter=0;" target="jGSH_cQpomrff6g7vneL-4">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="560" y="260" as="targetPoint" />
+            <mxPoint x="1317.5" y="210" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-13" value="4. SolutionKafka" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-10">
-          <mxGeometry x="0.0141" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-13" connectable="0" parent="jGSH_cQpomrff6g7vneL-10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="4. SolutionKafka" vertex="1">
+          <mxGeometry relative="1" x="0.0141" as="geometry">
             <mxPoint x="-1" y="-12" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-11" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.999;exitY=0.638;exitDx=0;exitDy=0;entryX=-0.001;entryY=0.342;entryDx=0;entryDy=0;fillColor=#d5e8d4;strokeColor=#82b366;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" target="jGSH_cQpomrff6g7vneL-6">
+        <mxCell id="jGSH_cQpomrff6g7vneL-11" edge="1" parent="1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.999;exitY=0.638;exitDx=0;exitDy=0;entryX=-0.001;entryY=0.342;entryDx=0;entryDy=0;fillColor=#d5e8d4;strokeColor=#82b366;exitPerimeter=0;entryPerimeter=0;" target="jGSH_cQpomrff6g7vneL-6">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="429.8799999999999" y="278.2800000000002" as="sourcePoint" />
-            <mxPoint x="591.6799999999998" y="366.6600000000001" as="targetPoint" />
+            <mxPoint x="1187.3799999999999" y="228.2800000000002" as="sourcePoint" />
+            <mxPoint x="1349.1799999999998" y="316.6600000000001" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-12" value="3. SolutionMinIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-11">
-          <mxGeometry x="-0.0061" y="3" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-12" connectable="0" parent="jGSH_cQpomrff6g7vneL-11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="3. SolutionMinIO" vertex="1">
+          <mxGeometry relative="1" x="-0.0061" y="3" as="geometry">
             <mxPoint x="38" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-3" target="jGSH_cQpomrff6g7vneL-7">
+        <mxCell id="jGSH_cQpomrff6g7vneL-33" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;" target="jGSH_cQpomrff6g7vneL-7">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-34" value="11. ResultDB" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-33">
-          <mxGeometry x="-0.3643" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-34" connectable="0" parent="jGSH_cQpomrff6g7vneL-33" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="11. ResultDB" vertex="1">
+          <mxGeometry relative="1" x="-0.3643" as="geometry">
             <mxPoint x="10" y="-2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-3" value="Webserver" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="310" y="240" width="120" height="60" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Webserver" vertex="1">
+          <mxGeometry height="60" width="120" x="1067.5" y="190" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-22" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.985;exitY=0.351;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#d5e8d4;strokeColor=#82b366;exitPerimeter=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-4" target="jGSH_cQpomrff6g7vneL-21">
+        <mxCell id="jGSH_cQpomrff6g7vneL-22" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.985;exitY=0.351;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#d5e8d4;strokeColor=#82b366;exitPerimeter=0;" target="jGSH_cQpomrff6g7vneL-21">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="710" y="260" as="sourcePoint" />
-            <mxPoint x="827" y="260" as="targetPoint" />
+            <mxPoint x="1467.5" y="210" as="sourcePoint" />
+            <mxPoint x="1584.5" y="210" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-26" value="5. SolutionKafka" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-22">
-          <mxGeometry x="-0.3727" y="-1" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-26" connectable="0" parent="jGSH_cQpomrff6g7vneL-22" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="5. SolutionKafka" vertex="1">
+          <mxGeometry relative="1" x="-0.3727" y="-1" as="geometry">
             <mxPoint x="21" y="-11" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-31" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-4" target="jGSH_cQpomrff6g7vneL-3">
+        <mxCell id="jGSH_cQpomrff6g7vneL-31" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;" target="jGSH_cQpomrff6g7vneL-3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-32" value="9. ResultKafka" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-31">
-          <mxGeometry x="-0.1635" y="2" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-32" connectable="0" parent="jGSH_cQpomrff6g7vneL-31" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="9. ResultKafka" vertex="1">
+          <mxGeometry relative="1" x="-0.1635" y="2" as="geometry">
             <mxPoint x="2" y="8" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-4" value="Kafka" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="530" y="240" width="120" height="60" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Kafka" vertex="1">
+          <mxGeometry height="60" width="120" x="1287.5" y="190" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-6" value="MinIO" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="530" y="365" width="120" height="60" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="MinIO" vertex="1">
+          <mxGeometry height="60" width="120" x="1287.5" y="315" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-7" value="PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="310" y="370" width="120" height="60" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="PostgreSQL" vertex="1">
+          <mxGeometry height="60" width="120" x="1067.5" y="320" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-8" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fillColor=#d5e8d4;strokeColor=#82b366;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-3" target="jGSH_cQpomrff6g7vneL-7">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="320" y="350" as="sourcePoint" />
-            <mxPoint x="370" y="300" as="targetPoint" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-8" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-3" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fillColor=#d5e8d4;strokeColor=#82b366;" target="jGSH_cQpomrff6g7vneL-7" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="1077.5" y="300" as="sourcePoint" />
+            <mxPoint x="1127.5" y="250" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-14" value="2. SolutionDB" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-8">
-          <mxGeometry x="-0.0649" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-14" connectable="0" parent="jGSH_cQpomrff6g7vneL-8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="2. SolutionDB" vertex="1">
+          <mxGeometry relative="1" x="-0.0649" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-16" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;UserSolution&lt;/h1&gt;&lt;div&gt;Решение задачи от пользователя&amp;nbsp;&lt;/div&gt;&lt;div&gt;code: string&lt;/div&gt;&lt;div&gt;languageId: ID&lt;/div&gt;&lt;div&gt;problemId: ID&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="84" y="-10" width="220" height="120" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-16" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;UserSolution&lt;/h1&gt;&lt;div&gt;Решение задачи от пользователя&amp;nbsp;&lt;/div&gt;&lt;div&gt;code: string&lt;/div&gt;&lt;div&gt;languageId: ID&lt;/div&gt;&lt;div&gt;problemId: ID&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="195" x="856" y="40" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-17" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;SolutionDB&lt;/h1&gt;&lt;div&gt;Данные о решении, сохраняемые в БД&lt;/div&gt;&lt;div&gt;languageId: ID&lt;/div&gt;&lt;div&gt;problemId: ID&lt;/div&gt;&lt;div&gt;userId: ID&lt;/div&gt;&lt;div&gt;userIpAddress: string&lt;/div&gt;&lt;div&gt;createdAt: Date&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="310" y="-10" width="230" height="150" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-17" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;SolutionDB&lt;/h1&gt;&lt;div&gt;Данные о решении, сохраняемые в БД&lt;/div&gt;&lt;div&gt;languageId: ID&lt;/div&gt;&lt;div&gt;problemId: ID&lt;/div&gt;&lt;div&gt;userId: ID&lt;/div&gt;&lt;div&gt;userIpAddress: string&lt;/div&gt;&lt;div&gt;createdAt: Date&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="230" x="1068.5" y="40" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-18" value="Как подключать языки и их идентификаторы?" style="text;html=1;whiteSpace=wrap;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="295" y="-360" width="150" height="70" as="geometry" />
+        <mxCell id="21" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="20" value="">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-19" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;SolutionKafka&lt;/h1&gt;&lt;div&gt;languageId: ID&lt;/div&gt;&lt;div&gt;userId: ID&lt;/div&gt;&lt;div&gt;problemId: ID&lt;/div&gt;&lt;div&gt;solutionId: ID&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="570" y="-10" width="230" height="120" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-18" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;rounded=0;" value="Как подключать языки и их идентификаторы?" vertex="1">
+          <mxGeometry height="70" width="150" x="-320" y="-380" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-20" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;SolutionMinIO&lt;/h1&gt;&lt;div&gt;solution.txt&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="740" y="-10" width="230" height="150" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-19" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;SolutionKafka&lt;/h1&gt;&lt;div&gt;languageId: ID&lt;/div&gt;&lt;div&gt;userId: ID&lt;/div&gt;&lt;div&gt;problemId: ID&lt;/div&gt;&lt;div&gt;solutionId: ID&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="230" x="1317.5" y="40" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-23" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-21" target="jGSH_cQpomrff6g7vneL-6">
+        <mxCell id="jGSH_cQpomrff6g7vneL-20" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;SolutionMinIO&lt;/h1&gt;&lt;div&gt;solution.txt&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="230" x="1547.5" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jGSH_cQpomrff6g7vneL-23" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-21" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;" target="jGSH_cQpomrff6g7vneL-6">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="800" y="290" />
+              <mxPoint x="1557.5" y="240" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-30" value="7. ResultMinIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-23">
-          <mxGeometry x="0.4306" y="3" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-30" connectable="0" parent="jGSH_cQpomrff6g7vneL-23" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="7. ResultMinIO" vertex="1">
+          <mxGeometry relative="1" x="0.4306" y="3" as="geometry">
             <mxPoint x="29" y="-8" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-21" value="Test-runner" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="770" y="230" width="120" height="60" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Test-runner" vertex="1">
+          <mxGeometry height="60" width="120" x="1527.5" y="180" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-25" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fillColor=#f8cecc;strokeColor=#b85450;exitX=0.001;exitY=0.658;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitPerimeter=0;strokeWidth=1.5;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-21" target="jGSH_cQpomrff6g7vneL-4">
+        <mxCell id="jGSH_cQpomrff6g7vneL-25" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-21" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fillColor=#f8cecc;strokeColor=#b85450;exitX=0.001;exitY=0.658;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitPerimeter=0;strokeWidth=1.5;" target="jGSH_cQpomrff6g7vneL-4">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="800" y="301" as="sourcePoint" />
-            <mxPoint x="700" y="281" as="targetPoint" />
+            <mxPoint x="1557.5" y="251" as="sourcePoint" />
+            <mxPoint x="1457.5" y="231" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-29" value="8. ResultKafka" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-25">
-          <mxGeometry x="-0.0615" y="-3" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-29" connectable="0" parent="jGSH_cQpomrff6g7vneL-25" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="8. ResultKafka" vertex="1">
+          <mxGeometry relative="1" x="-0.0615" y="-3" as="geometry">
             <mxPoint x="-5" y="14" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-27" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;ResultKafka&lt;/h1&gt;&lt;div&gt;solutionId: ID&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1060" y="-10" width="180" height="80" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-27" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;ResultKafka&lt;/h1&gt;&lt;div&gt;solutionId: ID&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="180" x="856" y="410" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-28" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;ResultMinIO&lt;/h1&gt;&lt;div&gt;logs.txt&lt;/div&gt;&lt;div&gt;result.json&lt;/div&gt;&lt;div&gt;*.* - конфигурируемо плагином&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1060" y="80" width="180" height="100" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-28" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;ResultMinIO&lt;/h1&gt;&lt;div&gt;logs.txt&lt;/div&gt;&lt;div&gt;result.json&lt;/div&gt;&lt;div&gt;*.* - конфигурируемо плагином&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="180" x="1068.5" y="412.5" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-35" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=0;strokeWidth=1.5;" edge="1" parent="1">
+        <mxCell id="jGSH_cQpomrff6g7vneL-35" edge="1" parent="1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=0;strokeWidth=1.5;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="310" y="285" as="sourcePoint" />
-            <mxPoint x="220" y="285" as="targetPoint" />
+            <mxPoint x="1067.5" y="235" as="sourcePoint" />
+            <mxPoint x="977.5" y="235" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-36" value="12. UserResult" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-35">
-          <mxGeometry x="0.4276" y="-3" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-36" connectable="0" parent="jGSH_cQpomrff6g7vneL-35" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="12. UserResult" vertex="1">
+          <mxGeometry relative="1" x="0.4276" y="-3" as="geometry">
             <mxPoint x="24" y="18" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-37" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;ResultDB&lt;/h1&gt;&lt;div&gt;passed: boolean&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1060" y="195" width="180" height="105" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-37" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;ResultDB&lt;/h1&gt;&lt;div&gt;passed: boolean&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="105" width="160" x="1317.5" y="412.5" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-38" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;UserResult&lt;/h1&gt;&lt;div&gt;passed: boolean&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1060" y="320" width="230" height="150" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-38" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;UserResult&lt;/h1&gt;&lt;div&gt;passed: boolean&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="139" x="1542.5" y="410" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-39" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;fillColor=#d5e8d4;strokeColor=#82b366;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-6" target="jGSH_cQpomrff6g7vneL-21">
+        <mxCell id="jGSH_cQpomrff6g7vneL-39" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-6" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;fillColor=#d5e8d4;strokeColor=#82b366;" target="jGSH_cQpomrff6g7vneL-21">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="710" y="345" as="sourcePoint" />
-            <mxPoint x="857" y="290" as="targetPoint" />
+            <mxPoint x="1467.5" y="295" as="sourcePoint" />
+            <mxPoint x="1614.5" y="240" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-40" value="6. SolutionMinIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-39">
-          <mxGeometry x="-0.0061" y="3" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-40" connectable="0" parent="jGSH_cQpomrff6g7vneL-39" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="6. SolutionMinIO" vertex="1">
+          <mxGeometry relative="1" x="-0.0061" y="3" as="geometry">
             <mxPoint x="-23" y="5" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-41" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-6" target="jGSH_cQpomrff6g7vneL-3">
+        <mxCell id="jGSH_cQpomrff6g7vneL-41" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-6" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;" target="jGSH_cQpomrff6g7vneL-3">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="700" y="400" as="sourcePoint" />
-            <mxPoint x="500" y="440" as="targetPoint" />
+            <mxPoint x="1457.5" y="350" as="sourcePoint" />
+            <mxPoint x="1257.5" y="390" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-42" value="10. ResultMinIO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="jGSH_cQpomrff6g7vneL-41">
-          <mxGeometry x="0.4306" y="3" relative="1" as="geometry">
+        <mxCell id="jGSH_cQpomrff6g7vneL-42" connectable="0" parent="jGSH_cQpomrff6g7vneL-41" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="10. ResultMinIO" vertex="1">
+          <mxGeometry relative="1" x="0.4306" y="3" as="geometry">
             <mxPoint x="24" y="28" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-47" value="&lt;b&gt;Хранилище MinIO&lt;/b&gt;&lt;br&gt;&lt;div&gt;&lt;i&gt;/users/{userId}/solutions&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;/{solutionId}&lt;/span&gt;&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;i&gt;&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: transparent; white-space: pre;&quot;&gt;&#x9;/&lt;/span&gt;solution.txt&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;i&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); white-space: pre;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;logs.txt&lt;/span&gt;&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;i&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); white-space: pre;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;result.json&lt;/span&gt;&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;Файлы рассматриваются в разрезе конкретного пользователя. Это может быть его решение.&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;Выбрал solution.TXT, потому что это по сути текст, а не код на конкретном языке. Выглядит достаточно удачно.&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;b&gt;Единообразная сборка ключа&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;общим алгоритмом&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;b&gt;Как хранить задачки&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;/system/problems/{problemId}&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/test.txt&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/pre.txt&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/solution-template.txt&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/solution.txt&lt;br&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="500" y="-350" width="330" height="290" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-47" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="&lt;b&gt;Хранилище MinIO&lt;/b&gt;&lt;br&gt;&lt;div&gt;&lt;i&gt;/users/{userId}/solutions&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;/{solutionId}&lt;/span&gt;&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;i&gt;&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: transparent; white-space: pre;&quot;&gt;&#x9;/&lt;/span&gt;solution.txt&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;i&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); white-space: pre;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;logs.txt&lt;/span&gt;&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;i&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); white-space: pre;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;result.json&lt;/span&gt;&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;Файлы рассматриваются в разрезе конкретного пользователя. Это может быть его решение.&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;Выбрал solution.TXT, потому что это по сути текст, а не код на конкретном языке. Выглядит достаточно удачно.&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;b&gt;Как хранить задачки&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;/system/problems/{problemId}&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/test.txt&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/pre.txt&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/solution-template.txt&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;/solution.txt&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="290" width="330" x="1101" y="-365" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-50" value="&lt;b&gt;1. Миграция на MinIO хранилище&lt;/b&gt;&lt;div&gt;&lt;b&gt;2. Плагинизация языков&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Минио&lt;/b&gt;&lt;/div&gt;&lt;div&gt;- Схема работы с минио&lt;/div&gt;&lt;div&gt;- Описание шагов&lt;/div&gt;&lt;div&gt;- Описание структуры файлов&lt;/div&gt;&lt;div&gt;- Модель result.json&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Плагинизация&lt;/b&gt;&lt;/div&gt;&lt;div&gt;- Интерфейс для плагина, некое SDK&lt;/div&gt;&lt;div&gt;- Что будет включать SDK.&lt;/div&gt;&lt;div&gt;- Супер сложно заранее выдумать, надо трепать нейронки&lt;/div&gt;&lt;div&gt;- В итоге получаем jar файл, который можно закинуть в папку и он подключится как язык.&amp;nbsp;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="20" y="-370" width="270" height="296.5" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-51" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;rounded=0;" value="Оценивает ли CodeWars время выполнения?" vertex="1">
+          <mxGeometry height="70" width="130" x="-60" y="-900" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-51" value="Оценивает ли CodeWars время выполнения?" style="text;html=1;whiteSpace=wrap;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1241" y="235" width="130" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-59" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-52" target="jGSH_cQpomrff6g7vneL-54">
+        <mxCell id="jGSH_cQpomrff6g7vneL-59" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="jGSH_cQpomrff6g7vneL-54">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-52" target="jGSH_cQpomrff6g7vneL-58">
+        <mxCell id="jGSH_cQpomrff6g7vneL-60" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="jGSH_cQpomrff6g7vneL-58">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-61" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-52" target="jGSH_cQpomrff6g7vneL-57">
+        <mxCell id="jGSH_cQpomrff6g7vneL-61" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="jGSH_cQpomrff6g7vneL-57">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-52" value="&lt;b&gt;Кажется через плагинизацию можно реализовать проверку и не через тест-кейсы?&lt;/b&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=#b85450;fillColor=#f8cecc;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1675" y="90" width="200" height="100" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-52" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#b85450;fillColor=#f8cecc;align=center;verticalAlign=middle;rounded=0;" value="&lt;b&gt;Кажется через плагинизацию можно реализовать проверку и не через тест-кейсы?&lt;/b&gt;" vertex="1">
+          <mxGeometry height="100" width="200" x="961" y="990" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-54" value="&lt;div&gt;&lt;div&gt;Как иерархию сделать&lt;/div&gt;&lt;div&gt;Family языка: js&lt;/div&gt;&lt;div&gt;Тип языка: js test case, js stdin/stdout, js function&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1480" y="330" width="260" height="80" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-54" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;" value="&lt;div&gt;&lt;div&gt;Как иерархию сделать&lt;/div&gt;&lt;div&gt;Family языка: js&lt;/div&gt;&lt;div&gt;Тип языка: js test case, js stdin/stdout, js function&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="260" x="766" y="1230" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-57" value="&lt;div&gt;А как UI создания задачи реализовать?&lt;/div&gt;&lt;div&gt;В конфиге указывать язык редактора для тестов и для задачи.&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1808" y="305" width="260" height="80" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-57" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;" value="&lt;div&gt;А как UI создания задачи реализовать?&lt;/div&gt;&lt;div&gt;В конфиге указывать язык редактора для тестов и для задачи.&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="260" x="1094" y="1205" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-58" value="Но как же тогда реализовать подачу данных через STDIN?&amp;nbsp;&lt;div&gt;1. Создать образ, где ожидается STDIO.&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;2. Дать доступ к dockerClient, который будет ожидать STDIO.&amp;nbsp;&lt;/div&gt;&lt;div&gt;3. В целом реалистично.&lt;/div&gt;&lt;div&gt;То же самое сделать для function сигнатуры с парсингом входа и выхода.&amp;nbsp;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1570" y="450" width="420" height="120" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-58" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;rounded=0;" value="Но как же тогда реализовать подачу данных через STDIN?&amp;nbsp;&lt;div&gt;1. Создать образ, где ожидается STDIO.&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;2. Дать доступ к dockerClient, который будет ожидать STDIO.&amp;nbsp;&lt;/div&gt;&lt;div&gt;3. В целом реалистично.&lt;/div&gt;&lt;div&gt;То же самое сделать для function сигнатуры с парсингом входа и выхода.&amp;nbsp;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="420" x="856" y="1350" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-63" value="Нет ли проблем, что предлагаем потребителю дописать нужное самостоятельно?" style="text;html=1;whiteSpace=wrap;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="2170" y="450" width="190" height="90" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-63" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;rounded=0;" value="Нет ли проблем, что предлагаем потребителю дописать нужное самостоятельно?" vertex="1">
+          <mxGeometry height="90" width="190" x="1456" y="1350" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-64" value="Ограничением остается UI для создания задачи, где можно указать лишь &lt;br&gt;pre.txt, test.txt, solution.txt, solution-template.txt&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Сделать N-файлов? - хз может&lt;br&gt;Сделать дерево файлов? - избыточно&amp;nbsp;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="2100" y="160" width="330" height="130" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-64" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;rounded=0;" value="Ограничением остается UI для создания задачи, где можно указать лишь &lt;br&gt;pre.txt, test.txt, solution.txt, solution-template.txt&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Сделать N-файлов? - хз может&lt;br&gt;Сделать дерево файлов? - избыточно&amp;nbsp;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="330" x="1386" y="1060" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-65" value="Сделать problem-template, где описано какие файлы нужны для создания задачи.&amp;nbsp;" style="text;html=1;whiteSpace=wrap;strokeColor=#d79b00;fillColor=#ffe6cc;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="2145" y="330" width="240" height="80" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-65" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#d79b00;fillColor=#ffe6cc;align=center;verticalAlign=middle;rounded=0;" value="Сделать problem-template, где описано какие файлы нужны для создания задачи.&amp;nbsp;" vertex="1">
+          <mxGeometry height="80" width="240" x="1431" y="1230" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-66" value="&lt;div&gt;{&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;summary&quot;: {&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;total&quot;: 5,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;passed&quot;: 4,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;failed&quot;: 1,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;skipped&quot;: 0,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;errors&quot;: 0,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;executionTimeMs&quot;: 127,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;success&quot;: false&lt;/div&gt;&lt;div&gt;&amp;nbsp; },&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;testCases&quot;: [&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; {&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;id&quot;: &quot;test_add_positive_numbers&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;name&quot;: &quot;test_add_positive_numbers&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;status&quot;: &quot;passed&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;message&quot;: null,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorType&quot;: null,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorMessage&quot;: null,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorDetails&quot;: null,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;executionTimeMs&quot;: 23,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;stdout&quot;: &quot;&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;stderr&quot;: &quot;&quot;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; },&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; {&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;id&quot;: &quot;test_divide_by_zero&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;name&quot;: &quot;test_divide_by_zero&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;status&quot;: &quot;failed&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;message&quot;: &quot;AssertionError: Expected exception ZeroDivisionError not raised&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorType&quot;: &quot;AssertionError&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorMessage&quot;: &quot;Expected exception ZeroDivisionError not raised&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorDetails&quot;: &quot;File \&quot;solution_test.py\&quot;, line 25, in test_divide_by_zero\n&amp;nbsp; assert_raises(ZeroDivisionError, divide, 1, 0)&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;executionTimeMs&quot;: 18,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;stdout&quot;: &quot;&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;stderr&quot;: &quot;AssertionError: Expected exception ZeroDivisionError not raised\n&quot;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; }&lt;/div&gt;&lt;div&gt;&amp;nbsp; ],&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;stdout&quot;: &quot;Running 5 tests...\n&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;stderr&quot;: &quot;&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;exitCode&quot;: 1&lt;/div&gt;&lt;div style=&quot;&quot;&gt;}&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1030" y="510" width="450" height="600" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-66" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="&lt;div&gt;{&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;summary&quot;: {&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;total&quot;: 5,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;passed&quot;: 4,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;failed&quot;: 1,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;skipped&quot;: 0,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;errors&quot;: 0,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;executionTimeMs&quot;: 127,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &quot;success&quot;: false&lt;/div&gt;&lt;div&gt;&amp;nbsp; },&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;testCases&quot;: [&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; {&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;id&quot;: &quot;test_add_positive_numbers&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;name&quot;: &quot;test_add_positive_numbers&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;status&quot;: &quot;passed&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;message&quot;: null,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorType&quot;: null,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorMessage&quot;: null,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorDetails&quot;: null,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;executionTimeMs&quot;: 23,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;stdout&quot;: &quot;&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;stderr&quot;: &quot;&quot;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; },&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; {&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;id&quot;: &quot;test_divide_by_zero&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;name&quot;: &quot;test_divide_by_zero&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;status&quot;: &quot;failed&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;message&quot;: &quot;AssertionError: Expected exception ZeroDivisionError not raised&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorType&quot;: &quot;AssertionError&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorMessage&quot;: &quot;Expected exception ZeroDivisionError not raised&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;errorDetails&quot;: &quot;File \&quot;solution_test.py\&quot;, line 25, in test_divide_by_zero\n&amp;nbsp; assert_raises(ZeroDivisionError, divide, 1, 0)&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;executionTimeMs&quot;: 18,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;stdout&quot;: &quot;&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &quot;stderr&quot;: &quot;AssertionError: Expected exception ZeroDivisionError not raised\n&quot;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; }&lt;/div&gt;&lt;div&gt;&amp;nbsp; ],&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;stdout&quot;: &quot;Running 5 tests...\n&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;stderr&quot;: &quot;&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp; &quot;exitCode&quot;: 1&lt;/div&gt;&lt;div style=&quot;&quot;&gt;}&lt;/div&gt;" vertex="1">
+          <mxGeometry height="600" width="450" x="340" y="1040" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-67" value="&lt;div&gt;&lt;b&gt;Плагинизация языков&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;Перестать пробовать, а верхнеуровнево декларативно раскидать что да где нужно предоставить!!!&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-290" y="-260" width="270" height="100" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-68" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="&lt;div&gt;Работа тестраннера раньше:&lt;/div&gt;&lt;div&gt;1. Слушает сообщения из кафки&lt;/div&gt;&lt;div&gt;2. Ищет файлы задачи&lt;/div&gt;&lt;div&gt;3. Переключает плагины по languageId&lt;/div&gt;&lt;div&gt;4. Вызывает метод .test() с кодом решения и задачей&lt;/div&gt;&lt;div&gt;5. Возвращает в кафку результат&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Дальше в тестере:&lt;/div&gt;&lt;div&gt;1. Создать контейнер&lt;/div&gt;&lt;div&gt;2. Создать архив и закинуть в контейнер&lt;/div&gt;&lt;div&gt;3. Запустить контейнер&lt;/div&gt;&lt;div&gt;4. Вешаю обработчик логов&lt;/div&gt;&lt;div&gt;5. Запускаю таймаут и ожидаю контейнер&lt;/div&gt;&lt;div&gt;6. Ожидаю завершения одного, или другого.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Работа тестраннера сейчас:&lt;/div&gt;&lt;div&gt;...&lt;br&gt;?. Вернуть логи, результаты тестов, положить на диск.&amp;nbsp;&lt;/div&gt;&lt;div&gt;Положить еще что-то на диск.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;Что предоставляет хост:&lt;div&gt;- dockerClient&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Что предоставляет плагин:&lt;/div&gt;&lt;div&gt;- languageId для выбора плагина по&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;languageId&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;в сообщении&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="410" width="390" x="-1170" y="-150" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-68" value="&lt;div&gt;Работа тестраннера раньше:&lt;/div&gt;&lt;div&gt;1. Слушает сообщения из кафки&lt;/div&gt;&lt;div&gt;2. Ищет файлы задачи&lt;/div&gt;&lt;div&gt;3. Переключает плагины по languageId&lt;/div&gt;&lt;div&gt;4. Вызывает метод .test() с кодом решения и задачей&lt;/div&gt;&lt;div&gt;5. Возвращает в кафку результат&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Дальше в тестере:&lt;/div&gt;&lt;div&gt;1. Создать контейнер&lt;/div&gt;&lt;div&gt;2. Создать архив и закинуть в контейнер&lt;/div&gt;&lt;div&gt;3. Запустить контейнер&lt;/div&gt;&lt;div&gt;4. Вешаю обработчик логов&lt;/div&gt;&lt;div&gt;5. Запускаю таймаут и ожидаю контейнер&lt;/div&gt;&lt;div&gt;6. Ожидаю завершения одного, или другого.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Работа тестраннера сейчас:&lt;/div&gt;&lt;div&gt;...&lt;br&gt;?. Вернуть логи, результаты тестов, положить на диск.&amp;nbsp;&lt;/div&gt;&lt;div&gt;Положить еще что-то на диск.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;Что предоставляет хост:&lt;div&gt;- dockerClient&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Что предоставляет плагин:&lt;/div&gt;&lt;div&gt;- languageId для выбора плагина по&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;languageId&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;в сообщении&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-410" y="-90" width="390" height="220" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-69" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;" value="test-runner кеширует файлы по ревизии указанной в сообщении" vertex="1">
+          <mxGeometry height="120" width="170" x="-840" y="-180" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-69" value="test-runner кеширует файлы по ревизии указанной в сообщении" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-650" y="-100" width="170" height="120" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-70" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;rounded=0;" value="Извлечь наружу ожидание таймаута.&amp;nbsp;" vertex="1">
+          <mxGeometry height="120" width="170" x="-634" y="-190" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-70" value="Извлечь наружу ожидание таймаута.&amp;nbsp;" style="text;html=1;whiteSpace=wrap;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-670" y="70" width="170" height="120" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-71" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="Предоставить атомы разработки&lt;div&gt;- LogCallback: коллекционирует логи с лимитом по размеру&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="260" x="-650" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-71" value="Предоставить атомы разработки&lt;div&gt;- LogCallback: коллекционирует логи с лимитом по размеру&lt;/div&gt;&lt;div&gt;- WaitCallback: ловит статус завершения и обёртка для CompletableFuture для обработки результатов&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-700" y="270" width="260" height="140" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-73" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Плагин предоставляет" vertex="1">
+          <mxGeometry height="60" width="120" x="-670" y="517.5" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-72" value="Плагин должен предоставить&lt;div&gt;- DockerFile&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- java функция для тестирования&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- имя образа&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- всякие пути к файлам&lt;br&gt;&lt;/div&gt;&lt;div&gt;- id языка, название, всякая мета&lt;/div&gt;&lt;div&gt;- js плагин для редактора&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-413" y="355" width="213" height="135" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-74" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="DockerFile" vertex="1">
+          <mxGeometry height="60" width="120" x="-790" y="622.5" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-73" value="Плагин предоставляет" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-474" y="525" width="120" height="60" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-75" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Java Plugin" vertex="1">
+          <mxGeometry height="60" width="120" x="-736" y="782.5" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-74" value="DockerFile" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-594" y="630" width="120" height="60" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-76" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="JS Plugin" vertex="1">
+          <mxGeometry height="60" width="120" x="-576" y="782.5" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-75" value="Java Plugin" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-533" y="790" width="120" height="60" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-77" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Метаданные" vertex="1">
+          <mxGeometry height="60" width="120" x="-536" y="622.5" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-76" value="JS Plugin" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-400" y="790" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-77" value="Метаданные" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-340" y="630" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-79" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-73" target="jGSH_cQpomrff6g7vneL-74">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-510" y="610" as="sourcePoint" />
-            <mxPoint x="-460" y="560" as="targetPoint" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-79" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-73" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" target="jGSH_cQpomrff6g7vneL-74" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-706" y="602.5" as="sourcePoint" />
+            <mxPoint x="-656" y="552.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-80" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.355;exitY=0.986;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-73" target="jGSH_cQpomrff6g7vneL-75">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-333" y="600" as="sourcePoint" />
-            <mxPoint x="-530" y="660" as="targetPoint" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-80" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-73" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.355;exitY=0.986;exitDx=0;exitDy=0;exitPerimeter=0;" target="jGSH_cQpomrff6g7vneL-75" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-529" y="592.5" as="sourcePoint" />
+            <mxPoint x="-726" y="652.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-81" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.819;exitY=0.995;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-73" target="jGSH_cQpomrff6g7vneL-77">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-230" y="569.84" as="sourcePoint" />
-            <mxPoint x="-290" y="630.84" as="targetPoint" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-81" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-73" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.819;exitY=0.995;exitDx=0;exitDy=0;exitPerimeter=0;" target="jGSH_cQpomrff6g7vneL-77" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-426" y="562.34" as="sourcePoint" />
+            <mxPoint x="-486" y="623.34" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-82" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.646;exitY=0.982;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-73" target="jGSH_cQpomrff6g7vneL-76">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-320" y="590" as="sourcePoint" />
-            <mxPoint x="-380" y="651" as="targetPoint" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-82" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-73" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.646;exitY=0.982;exitDx=0;exitDy=0;exitPerimeter=0;" target="jGSH_cQpomrff6g7vneL-76" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-516" y="582.5" as="sourcePoint" />
+            <mxPoint x="-576" y="643.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-84" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-74" target="jGSH_cQpomrff6g7vneL-75">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-510" y="680" as="sourcePoint" />
-            <mxPoint x="-510" y="710" as="targetPoint" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-84" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-74" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;dashed=1;" target="jGSH_cQpomrff6g7vneL-75" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-706" y="672.5" as="sourcePoint" />
+            <mxPoint x="-706" y="702.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-85" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;dashed=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-77" target="jGSH_cQpomrff6g7vneL-75">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-460" y="690" as="sourcePoint" />
-            <mxPoint x="-392" y="780" as="targetPoint" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-85" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-77" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;dashed=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" target="jGSH_cQpomrff6g7vneL-75" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-656" y="682.5" as="sourcePoint" />
+            <mxPoint x="-588" y="772.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-86" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;dashed=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-77" target="jGSH_cQpomrff6g7vneL-76">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="-389.5" y="710" as="sourcePoint" />
-            <mxPoint x="-436.5" y="800" as="targetPoint" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-86" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-77" style="endArrow=classic;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;dashed=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="jGSH_cQpomrff6g7vneL-76" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-585.5" y="702.5" as="sourcePoint" />
+            <mxPoint x="-632.5" y="792.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-87" value="Не понимаю плагинной архитектуры&lt;div&gt;- мне точно нужно выносить в разрозненные плагины?&lt;/div&gt;&lt;div&gt;- graphql codegen&lt;/div&gt;&lt;div&gt;- сложности со связыванием&lt;/div&gt;&lt;div&gt;- сложности с управлением зависимостями&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-160" y="540" width="200" height="180" as="geometry" />
+        <mxCell id="33" edge="1" parent="1" source="jGSH_cQpomrff6g7vneL-88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="32" value="">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="jGSH_cQpomrff6g7vneL-88" value="Поход на бэкенд при каждом открытии страницы на нужном языке?&amp;nbsp;&lt;div&gt;Чтобы подгрузить имена таблиц и столбцов из задачи.&lt;/div&gt;&lt;div&gt;Эти данные основа не на тексте задачи, а на запуске контейнера с определенными командами.&amp;nbsp;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-160" y="740" width="240" height="110" as="geometry" />
+        <mxCell id="jGSH_cQpomrff6g7vneL-88" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;" value="Поход на бэкенд при каждом открытии страницы на нужном языке?&amp;nbsp;&lt;div&gt;Чтобы подгрузить имена таблиц и столбцов из задачи.&lt;/div&gt;&lt;div&gt;Эти данные основа не на тексте задачи, а на запуске контейнера с определенными командами.&amp;nbsp;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="110" width="240" x="-200" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" value="Конфиг для языка указываем в плагине.&amp;nbsp;&lt;div&gt;Фронт делает запрос и скачивает конфигу с языками.&amp;nbsp;&lt;br&gt;Фронт отображает выбор этого языка.&amp;nbsp;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="230" x="-509" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Фронт" vertex="1">
+          <mxGeometry height="60" width="120" x="-504" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="web-server" vertex="1">
+          <mxGeometry height="60" width="120" x="-144" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="5" edge="1" parent="1" source="3" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;edgeStyle=entityRelationEdgeStyle;" target="4" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-324" y="1000" as="sourcePoint" />
+            <mxPoint x="-274" y="950" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6" connectable="0" parent="5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Какие есть плагины?" vertex="1">
+          <mxGeometry relative="1" x="-0.1119" y="-1" as="geometry">
+            <mxPoint x="13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7" edge="1" parent="1" source="4" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" target="3" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-264" y="1080" as="sourcePoint" />
+            <mxPoint x="-214" y="1030" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9" connectable="0" parent="7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Ответ" vertex="1">
+          <mxGeometry relative="1" x="0.0802" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" value="[&lt;br&gt;{&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;id: &quot;nodejs&quot;,&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;monacoLanguageId: &quot;javascript&quot;,&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;modulePath: &quot;/plugins/http.js&quot;,&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;modulePath: &quot;/api/plugin/module&quot;&lt;br&gt;}&lt;br&gt;]" vertex="1">
+          <mxGeometry height="140" width="220" x="-374" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Фронтовый js модуль" vertex="1">
+          <mxGeometry height="60" width="120" x="-314" y="1350" as="geometry" />
+        </mxCell>
+        <mxCell id="11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="web-server эндпоинт обработчик" vertex="1">
+          <mxGeometry height="60" width="120" x="-454" y="1431" as="geometry" />
+        </mxCell>
+        <mxCell id="12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="test-runner модуль тестирования" vertex="1">
+          <mxGeometry height="60" width="120" x="-324" y="1431" as="geometry" />
+        </mxCell>
+        <mxCell id="14" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Минио&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Схема работы с минио&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Описание шагов&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Описание структуры файлов&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Модель result.json&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="180" x="780" y="-370" as="geometry" />
+        </mxCell>
+        <mxCell id="15" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Плагинизация&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Интерфейс для плагина, некое SDK&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Что будет включать SDK.&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Супер сложно заранее выдумать, надо трепать нейронки&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- В итоге получаем jar файл, который можно закинуть в папку и он подключится как язык.&amp;nbsp;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="270" x="-790" y="-370" as="geometry" />
+        </mxCell>
+        <mxCell id="16" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;font style=&quot;font-size: 64px;&quot;&gt;Файлы в MinIO&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="720" x="765" y="-480" as="geometry" />
+        </mxCell>
+        <mxCell id="17" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;font style=&quot;font-size: 64px;&quot;&gt;Плагинизация&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="720" x="-800" y="-470" as="geometry" />
+        </mxCell>
+        <mxCell id="18" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;font style=&quot;font-size: 64px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;1. Миграция на MinIO хранилище&lt;/b&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;2. Плагинизация языков&lt;/b&gt;&lt;/div&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="180" width="1090" x="-180" y="-1140" as="geometry" />
+        </mxCell>
+        <mxCell id="20" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;rounded=0;" value="Возвращать java плагином" vertex="1">
+          <mxGeometry height="70" width="150" x="-90" y="-380" as="geometry" />
+        </mxCell>
+        <mxCell id="22" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="&lt;b&gt;Для добавления нового языка&lt;br&gt;&lt;/b&gt;&lt;br&gt;Создать Dockerfile, сбилдить образ.&lt;br&gt;&lt;br&gt;web-server plugin&lt;br&gt;обрабатывают запросы к /api/language/*&lt;br&gt;- ссылка на js плагин редактора&lt;br&gt;&lt;br&gt;test-runner plugin&lt;br&gt;java класс для тестирования&lt;br&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;- имя образа&lt;/span&gt;&lt;br&gt;&lt;div&gt;- всякие пути к файлам&lt;/div&gt;" vertex="1">
+          <mxGeometry height="200" width="280" x="-180" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="25" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="Состав языка" vertex="1">
+          <mxGeometry height="60" width="170" x="-414" y="1300" as="geometry" />
+        </mxCell>
+        <mxCell id="26" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Dockerfile и образ" vertex="1">
+          <mxGeometry height="60" width="120" x="-456" y="1350" as="geometry" />
+        </mxCell>
+        <mxCell id="27" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Модуль метаданных" vertex="1">
+          <mxGeometry height="60" width="120" x="-389" y="1501" as="geometry" />
+        </mxCell>
+        <mxCell id="28" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Модуль тестирования" vertex="1">
+          <mxGeometry height="60" width="120" x="-524" y="1501" as="geometry" />
+        </mxCell>
+        <mxCell id="29" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Модуль веб-сервера" vertex="1">
+          <mxGeometry height="60" width="120" x="-249" y="1501" as="geometry" />
+        </mxCell>
+        <mxCell id="31" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;SDK&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Интерфейсы сервисов&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- DTO результатов&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Готовый JAXB парсер для junit.xml&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Готовый обработчик логов&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Тест для проверки успешности динамического связывания плагина&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b&gt;Плагин содержит&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- FAT .jar c shading и всеми зависимостями&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- Реализации интерфейсов&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Плагин подгружается&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- из папки /plugins или другой конфигурируемо&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;- загружается через изолированный URLClassLoader&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="260" width="355" x="-371" y="-250" as="geometry" />
+        </mxCell>
+        <mxCell id="32" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=#b85450;fillColor=#f8cecc;align=center;verticalAlign=middle;rounded=0;" value="Придется качать файлы задачи на каждый поход к API" vertex="1">
+          <mxGeometry height="110" width="240" x="120" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="35" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="-850" y="-340" as="geometry" />
+        </mxCell>
+        <mxCell id="36" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="-710" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="37" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="-430" y="-240" as="geometry" />
+        </mxCell>
+        <mxCell id="SVzlbXzB3AJubhK4BVNu-39" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="-240" y="80" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
