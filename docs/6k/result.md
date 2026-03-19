@@ -10,7 +10,7 @@ LSP.
 
 Яндекс контест.
 
-# Как масштабировать
+# Kafka
 
 > Проблема, которую вы описали, действительно существует: при использовании Kafka максимальный параллелизм обработки
 > сообщений в рамках одной группы потребителей ограничен количеством партиций топика. Если вы хотите динамически
@@ -43,9 +43,15 @@ RPS = 200 / 12 = 16
 **Как масштабировать.**
 один пользователь = один процесс LSP (как минимум). LSP серверы тяжелые и stateful.
 
-StatefulSet для LSP (нужен стабильный network identity)
-Redis для хранения маппинга user → LSP
-Sticky sessions через IP hash или cookie
-HPA по памяти, но с учетом специфики (max 1 user per pod)
-Автоудаление неактивных LSP через 30 минут
-Resource limits обязательны (иначе один пользователь положит весь кластер)
+https://chatgpt.com/c/69bbda79-c034-832e-a5df-6151c413f548
+https://developers.cloudflare.com/containers/
+https://github.com/val-town/vtlsp/blob/main/demo/deploy/main.ts
+https://docs.val.town/reference/deno-lsp/
+
+# Kubernetes Job vs Pod
+
+https://chatgpt.com/c/69bbeb0f-2638-832d-bd0e-78ba4b059c91
+
+# Вопросы
+
+Как запускаем код?
