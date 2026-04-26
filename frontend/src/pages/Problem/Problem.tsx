@@ -1,10 +1,37 @@
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import {useEffect, useRef, useState} from "react";
+import * as monaco from "monaco-editor";
 import {editor} from "monaco-editor";
-import * as monaco from 'monaco-editor';
 import {Editor, loader} from "@monaco-editor/react";
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+import {IconArrowAutofitLeft, IconCheck, IconCode, IconGripVertical, IconRestore} from "@tabler/icons-react";
+import {
+  ActionIcon,
+  Button,
+  CopyButton,
+  Flex,
+  Group,
+  HoverCard,
+  SegmentedControl,
+  Tabs,
+  Text,
+  Title
+} from "@mantine/core";
+import {Link, useParams} from "react-router-dom";
+import {useProblemQuery, useTestMutation} from "./Loader.tsx";
+import {SelectedSolutionContext, SelectedSolutionTuple} from "./SelectedSolutionContext.tsx";
+import {ProblemTabs} from "./Tabs/ProblemTabs.tsx";
+import {useTabSpyLocation} from "./hooks/useTabSpyLocation.tsx";
+import {LanguageValue} from "../../types/LanguageValue.tsx";
+import {getYjsDoc, syncedStore} from "@syncedstore/core";
+import {useSyncedStore} from "@syncedstore/react";
+// @ts-ignore
+import {MonacoBinding} from 'y-monaco'
+import {useUser} from "../../store/useUser.tsx";
+import {WebsocketProvider} from "y-websocket";
+import {Awareness} from "y-protocols/awareness";
+import {usePlatformConfigQuery} from "../shared/PlatformConfig.ts";
 
 
 self.MonacoEnvironment = {
@@ -16,49 +43,10 @@ self.MonacoEnvironment = {
   },
 };
 
-loader.config({ monaco });
+loader.config({monaco});
 
 loader.init().then(/* ... */);
 
-import {
-  IconArrowAutofitLeft,
-  IconBrain,
-  IconCheck,
-  IconCode,
-  IconCoin,
-  IconGripHorizontal,
-  IconGripVertical,
-  IconMoodCrazyHappy,
-  IconRestore
-} from "@tabler/icons-react";
-import {
-  ActionIcon,
-  Button,
-  CopyButton,
-  Flex,
-  Group,
-  HoverCard,
-  SegmentedControl,
-  Stack,
-  Tabs,
-  Text,
-  Title
-} from "@mantine/core";
-import {Link, useParams} from "react-router-dom";
-import {Language, Solution, useProblemQuery, useTestMutation} from "./Loader.tsx";
-import {ResultPills} from "./components/components.tsx";
-import {SelectedSolutionContext} from "./SelectedSolutionContext.tsx";
-import {ProblemTabs} from "./Tabs/ProblemTabs.tsx";
-import {TestResultLoader} from "./components/TestResultLoader.tsx";
-import {useTabSpyLocation} from "./hooks/useTabSpyLocation.tsx";
-import {LanguageValue} from "../../types/LanguageValue.tsx";
-import {getYjsDoc, syncedStore} from "@syncedstore/core";
-import {useSyncedStore} from "@syncedstore/react";
-// @ts-ignore
-import {MonacoBinding} from 'y-monaco'
-import {useUser} from "../../store/useUser.tsx";
-import {WebsocketProvider} from "y-websocket";
-import {Awareness} from "y-protocols/awareness";
 import ICodeEditor = editor.ICodeEditor;
 
 
@@ -76,24 +64,24 @@ const doc = getYjsDoc(store);
 const ydocumentTextType = doc.getText('monaco')
 
 type LanguageStore = [
-  language: Language,
-  setSelectedLanguage: (language: Language) => void
+  language: string,
+  setSelectedLanguage: (language: string) => void
 ]
 
-type LanguageStoreProvider = (languages: Language[]) => LanguageStore
+type LanguageStoreProvider = (languages: string[]) => LanguageStore
 
-const useSharedSelectedLanguage: LanguageStoreProvider = (languages: Language[]) => {
+const useSharedSelectedLanguage: LanguageStoreProvider = (languages: string[]) => {
   const state = useSyncedStore(store)
   useEffect(() => {
     if (state.language.value === undefined) {
-      state.language.value = languages[0]?.language
+      state.language.value = languages[0]
     }
   }, []);
-  const setSelectedLanguage = (language: Language) => {
-    state.language.value = language.language
+  const setSelectedLanguage = (language: string) => {
+    state.language.value = language
   }
   return [
-    languages.find(language => language.language === state.language.value) ?? languages[0],
+    languages.find(language => language === state.language.value) ?? languages[0],
     setSelectedLanguage
   ] as LanguageStore
 }
@@ -174,15 +162,14 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
   console.log({synced, status})
 
   const {data} = useProblemQuery(slug!)
-  const {name, description, languages, solutions} = data!
-  const solved = solutions.some(solution => solution.solutionResult?.solved)
+  const {data: platformConfig} = usePlatformConfigQuery()
+  const {name, description, languages} = data!
+  const solved = Object.values(languages).some(lang => lang.solutions.some(solution => solution.solutionResult?.solved))
   useTabSpyLocation(name)
 
-  const [selectedLanguage, setSelectedLanguage] = useSharedSelectedLanguage(languages)
+  const [selectedLanguage, setSelectedLanguage] = useSharedSelectedLanguage(Object.keys(languages))
 
-  const selectedSolutionState = useState<Solution | null>(
-    solutions && solutions.length > 0 ? solutions[0] : null
-  )
+  const selectedSolutionState = useState<SelectedSolutionTuple | null>(null)
   const [selectedSolution, setSelectedSolution] = selectedSolutionState
 
   const [editorRef, setEditorRef] = useState<ICodeEditor | null>(null)
@@ -195,7 +182,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
       setActiveTab('solutions')
     },
     onSuccess: (response) => {
-      setSelectedSolution(response.data)
+      // setSelectedSolution(response.data)
       console.log(response.data)
     }
   })
@@ -210,7 +197,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
     setEditorRef(editor)
     if (editor) {
       if (host) {
-        editor.setValue(selectedLanguage?.template ?? '')
+        editor.setValue(languages[selectedLanguage]?.solutionTemplate ?? '')
       }
     }
   }
@@ -276,38 +263,36 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
           </Group>
           <Flex p={'16px 16px 8px'} justify={'end'} gap={12} align={'center'} pr={20}>
             <SegmentedControl size={'xs'} data={
-              languages.map(l =>
-                ({
-                  label: <HoverCard position={'top'} disabled={selectedLanguage?.language !== l.language}>
+              Object.keys(languages).map(l => {
+                const languageConfig = platformConfig!.languages[l]
+                return ({
+                  label: <HoverCard position={'top'} disabled={selectedLanguage !== l}>
                     <HoverCard.Target>
                       <Flex align={'center'} gap={4}>
-                        {
-                          {
-                            Cpp: <><IconBrain/><Text size={'lg'}>C++17 gcc:13.2.0</Text></>,
-                            Java: <><IconCoin/><Text size={'lg'}>Java 21 corretto</Text></>,
-                            Javascript: <><IconMoodCrazyHappy/><Text size={'lg'}>node.js 20</Text></>
-                          }[l.language]
-                        }
+                        <Text size={'lg'}>{languageConfig.name}</Text>
+                        <img src={languageConfig.iconPath}/>
                       </Flex>
                     </HoverCard.Target>
                     <HoverCard.Dropdown>
                       <ActionIcon variant={'light'} color={'gray'}
-                                  onClick={() => editorRef?.setValue(selectedLanguage.template)}>
+                                  onClick={() => editorRef?.setValue(languages[selectedLanguage]?.solutionTemplate)}>
                         <IconRestore/>
                       </ActionIcon>
                     </HoverCard.Dropdown>
                   </HoverCard>,
-                  value: l.language
-                }))
+                  value: l
+                });
+              })
             }
-                              value={selectedLanguage?.language}
-                              onChange={value => setSelectedLanguage(languages.find(l => l.language === value)!)}/>
+                              value={selectedLanguage}
+                              onChange={value => setSelectedLanguage(value)}
+            />
           </Flex>
         </Flex>
         <PanelGroup autoSaveId={'problem:[description-editor]'} direction={'horizontal'}>
           <Panel defaultSize={30}>
             <div className={'rounded-xl h-full'}>
-              <ProblemTabs solutions={solutions} activeTab={activeTab} setActiveTab={setActiveTab}
+              <ProblemTabs languages={languages} activeTab={activeTab} setActiveTab={setActiveTab}
                            description={description}/>
             </div>
           </Panel>
@@ -333,28 +318,28 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
                               </Text>
                             }
                             height="100%"
-                            language={selectedLanguage?.language?.toLowerCase()}
+                            language={platformConfig!.languages[selectedLanguage]?.monacoLanguageId}
                     />
                   </Tabs.Panel>
                 </Tabs>
               </Panel>
-              <PanelResizeHandle className={'flex items-center justify-center'}>
-                <IconGripHorizontal className={'h-[15px] text-slate-500'}/>
-              </PanelResizeHandle>
-              <Panel className={'!overflow-auto rounded-xl bg-white'}>
-                {
-                  testMutation.isPending ? (
-                    <div className={'w-full h-full flex items-center justify-center'}>
-                      <TestResultLoader/>
-                    </div>
-                  ) : (
-                    selectedSolution ? <SolutionPanel solution={selectedSolution}/> :
-                      <div className={'w-full h-full flex items-center justify-center'}>
-                        {"Решений пока не предложено"}
-                      </div>
-                  )
-                }
-              </Panel>
+              {/*<PanelResizeHandle className={'flex items-center justify-center'}>*/}
+              {/*  <IconGripHorizontal className={'h-[15px] text-slate-500'}/>*/}
+              {/*</PanelResizeHandle>*/}
+              {/*<Panel className={'!overflow-auto rounded-xl bg-white'}>*/}
+              {/*  {*/}
+              {/*    testMutation.isPending ? (*/}
+              {/*      <div className={'w-full h-full flex items-center justify-center'}>*/}
+              {/*        <TestResultLoader/>*/}
+              {/*      </div>*/}
+              {/*    ) : (*/}
+              {/*      selectedSolution ? <SolutionPanel solution={selectedSolution}/> :*/}
+              {/*        <div className={'w-full h-full flex items-center justify-center'}>*/}
+              {/*          {"Решений пока не предложено"}*/}
+              {/*        </div>*/}
+              {/*    )*/}
+              {/*  }*/}
+              {/*</Panel>*/}
             </PanelGroup>
           </Panel>
         </PanelGroup>
@@ -371,27 +356,27 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
       v3.1: тестирование решения завершено => просто выводим результаты и логи
       v3.2: еще не завершено => выводим сообщение
  */
-const SolutionPanel = ({solution}: { solution: Solution }) => {
-  if (!solution.solutionResult) {
-    return (
-      <div className={'w-full h-full flex items-center justify-center'}>
-        <span>{`Результат для решения #${solution.id} еще не доступен`}</span>
-      </div>
-    )
-  }
-
-  return (
-    <Stack className={'h-full'} p={8}>
-      <ResultPills solutionResult={solution.solutionResult}/>
-      <Flex className={'shrink grow gap-2'}>
-                      <pre
-                        className={'w-1/2 overflow-auto rounded-lg border-2 border-slate-200 shadow-md shadow-slate-200 p-2'}>
-                        {solution.solutionResult.logs}
-                      </pre>
-        <pre className={'w-1/2 overflow-auto rounded-lg border-2 border-slate-200 shadow-md shadow-slate-200 p-2'}>
-                        {solution.solutionResult?.junitXml}
-                      </pre>
-      </Flex>
-    </Stack>
-  )
-}
+// const SolutionPanel = ({solution}: { solution: Solution }) => {
+//   if (!solution.solutionResult) {
+//     return (
+//       <div className={'w-full h-full flex items-center justify-center'}>
+//         <span>{`Результат для решения #${solution.id} еще не доступен`}</span>
+//       </div>
+//     )
+//   }
+//
+//   return (
+//     <Stack className={'h-full'} p={8}>
+//       <ResultPills solutionResult={solution.solutionResult}/>
+//       <Flex className={'shrink grow gap-2'}>
+//                       <pre
+//                         className={'w-1/2 overflow-auto rounded-lg border-2 border-slate-200 shadow-md shadow-slate-200 p-2'}>
+//                         {solution.solutionResult.logs}
+//                       </pre>
+//         <pre className={'w-1/2 overflow-auto rounded-lg border-2 border-slate-200 shadow-md shadow-slate-200 p-2'}>
+//                         {solution.solutionResult?.junitXml}
+//                       </pre>
+//       </Flex>
+//     </Stack>
+//   )
+// }

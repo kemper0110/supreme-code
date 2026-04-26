@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: lsp-manager
+  labels:
+    app: lsp-manager
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+  selector:
+    app: lsp-manager

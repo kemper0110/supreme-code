@@ -1,0 +1,22 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: lsp-manager
+  labels:
+    app: lsp-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lsp-manager
+  template:
+    metadata:
+      labels:
+        app: lsp-manager
+    spec:
+      serviceAccountName: my-sa
+      containers:
+        - name: lsp-manager
+          image: lsp-manager
+          ports:
+            - containerPort: 3000

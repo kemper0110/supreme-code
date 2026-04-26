@@ -1,0 +1,20 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test
+spec:
+  containers:
+    - name: lsp-manager
+      image: lsp-manager
+      command:
+        - tail
+        - -f
+        - /dev/null
+      volumeMounts:
+        - mountPath: /mount
+          name: wslbind
+  volumes:
+    - name: wslbind
+      hostPath:
+        path: /mnt/c/Users/Danil/IdeaProjects/supreme-code/lsp-manager/test-dir
+        type: Directory

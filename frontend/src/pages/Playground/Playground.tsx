@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Badge, Button, Flex, Group, SegmentedControl, Text} from "@mantine/core";
 import {LanguageValue} from "../../types/LanguageValue.tsx";
 import {codeExamples} from "./CodeExamples.tsx";
@@ -6,23 +6,72 @@ import {IconArrowAutofitLeft, IconBrain, IconCoin, IconGripVertical, IconMoodCra
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import {Link} from "react-router-dom";
 import {SSE} from "sse.js";
-import {editor} from "monaco-editor";
-import ICodeEditor = editor.ICodeEditor;
-import * as monaco from 'monaco-editor';
-import {Editor, loader} from "@monaco-editor/react";
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
-import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+import { MonacoEditorReactComp } from '@typefox/monaco-editor-react';
+import {EditorAppConfig} from "monaco-languageclient/editorApp";
+import * as vscode from "vscode";
+import {LanguageClientConfig} from "monaco-languageclient/lcwrapper";
+import {configureDefaultWorkerFactory} from "monaco-languageclient/workerFactory";
+import {MonacoVscodeApiConfig} from "monaco-languageclient/vscodeApiWrapper";
 
-self.MonacoEnvironment = {
-  getWorker(_, label) {
-    if (label === 'typescript' || label === 'javascript') {
-      return new tsWorker();
-    }
-    return new editorWorker();
+const languageId = 'typescript';
+const code = 'const a = [];a.pu';
+const codeUri = '/workspace/test.ts';
+
+// Monaco VSCode API configuration
+const vscodeApiConfig: MonacoVscodeApiConfig = {
+  $type: 'extended',
+  viewsConfig: {
+    $type: 'EditorService'
   },
+  userConfiguration: {
+    json: JSON.stringify({
+      'workbench.colorTheme': 'Default Dark Modern',
+      'editor.guides.bracketPairsHorizontal': 'active',
+      'editor.lightbulb.enabled': 'On',
+      'editor.wordBasedSuggestions': 'off',
+      'editor.experimental.asyncTokenization': true,
+      // Включите suggestions
+      'editor.quickSuggestions': {
+        'other': true,
+        'comments': false,
+        'strings': true
+      },
+      'editor.suggestOnTriggerCharacters': true,
+      'editor.acceptSuggestionOnEnter': 'on'
+    })
+  },
+  monacoWorkerFactory: configureDefaultWorkerFactory
 };
-loader.config({ monaco });
-loader.init().then(/* ... */);
+
+// Language client configuration
+const languageClientConfig: LanguageClientConfig = {
+  languageId,
+  connection: {
+    options: {
+      $type: 'WebSocketUrl',
+      // at this url the language server for myLang must be reachable
+      url: 'ws://localhost:30002/denols'
+    }
+  },
+  clientOptions: {
+    documentSelector: [languageId],
+    workspaceFolder: {
+      index: 0,
+      name: 'workspace',
+      uri: vscode.Uri.file('/workspace')
+    }
+  }
+};
+
+// editor app / monaco-editor configuration
+const editorAppConfig: EditorAppConfig = {
+  codeResources: {
+    modified: {
+      text: code,
+      uri: codeUri
+    }
+  }
+};
 
 type RunRequest = {
   code: string
@@ -45,7 +94,7 @@ type RunnerEvent = LogEvent | ErrorEvent | InfoEvent
 
 export default function Playground() {
   const [language, setLanguage] = useState<LanguageValue>("Javascript")
-  const editorRef = useRef<ICodeEditor>()
+  const editorRef = useRef<any>()
 
   const [messages, setMessages] = useState<RunnerEvent[]>([])
   const [running, setRunning] = useState(false)
@@ -86,10 +135,24 @@ export default function Playground() {
     setLanguage(value as LanguageValue)
     editorRef.current?.setValue(codeExamples[value as LanguageValue])
   };
-  const onEditorMount = (editor: ICodeEditor) => {
+  const onEditorMount = (editor: any) => {
     console.warn('editor initialized', editor)
     editorRef.current = editor
   }
+
+  // const single = useRef(false)
+  // useEffect(() => {
+  //   if (single.current) {
+  //     return
+  //   }
+  //   single.current = true
+  //   runExtendedClient({
+  //     port: 30002,
+  //     path: '/denols',
+  //     languageId: 'typescript',
+  //     useExternalWebSocket: false
+  //   }, 'const a = [1, 2, 3]; a.pu')
+  // }, []);
 
   return (
     <div onKeyDown={keyboardHandler}
@@ -133,13 +196,14 @@ export default function Playground() {
       </Flex>
       <PanelGroup className={'mt-1'} autoSaveId={'playground-panel-group'} direction={'horizontal'}>
         <Panel defaultSize={70} className={'pt-1 rounded-xl bg-white'}>
-          <Editor onMount={onEditorMount} height="100%" language={language.toLowerCase()}
-                  defaultValue={codeExamples[language]}
-                  loading={
-                    <Text>
-                      Редактор кода загружается
-                    </Text>
-                  }
+          <MonacoEditorReactComp
+            vscodeApiConfig={vscodeApiConfig}
+            editorAppConfig={editorAppConfig}
+            languageClientConfig={languageClientConfig}
+            style={{ height: '100%' }}
+            onError={(e) => {
+              console.error(e);
+            }}
           />
         </Panel>
         <PanelResizeHandle className={'flex items-center justify-center'}>

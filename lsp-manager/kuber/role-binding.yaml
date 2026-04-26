@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: full-access-binding
+subjects:
+  - kind: ServiceAccount
+    name: my-sa
+roleRef:
+  kind: Role
+  name: full-access
+  apiGroup: rbac.authorization.k8s.io

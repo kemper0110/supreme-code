@@ -1,6 +1,9 @@
 import React, {createContext} from "react";
-import {Solution} from "./Loader.tsx";
 
-export const SelectedSolutionContext = createContext<[Solution | null, React.Dispatch<React.SetStateAction<Solution | null>>]>([null, () => {
+export type SelectedSolutionTuple = {
+  solutionId: number
+  languageId: string
+}
+export const SelectedSolutionContext = createContext<[SelectedSolutionTuple | null, React.Dispatch<React.SetStateAction<SelectedSolutionTuple | null>>]>([null, () => {
   throw new Error("SelectedSolutionContext.Provider not found")
 }])

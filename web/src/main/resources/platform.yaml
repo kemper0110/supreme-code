@@ -1,0 +1,11 @@
+languages:
+  cpp:
+    name: C++
+    iconPath: /plugins/cpp.svg
+    monacoLanguageId: cpp
+    fileExtension: cpp
+  java:
+    name: Java
+    iconPath: /plugins/java.svg
+    monacoLanguageId: java
+    fileExtension: java

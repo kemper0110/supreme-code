@@ -1,102 +1,185 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+<mxfile host="drawio-plugin" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" modified="2026-04-05T12:52:58.236Z" etag="butEq1LypdPpU1zjgxsA" version="22.1.22" type="embed">
   <diagram id="23iRSUPoRavnBvh4doch" name="Page-1">
-    <mxGraphModel dx="1557" dy="630" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1247" dy="566" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" value="&lt;b&gt;Требования&lt;/b&gt;&lt;br&gt;&lt;br&gt;Monaco Editor, LSP&lt;br&gt;Подключение произвольных LSP серверов&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;Базовое количество одновременных клиентов - 100. Предусмотреть масштабирование на большее число.&amp;nbsp;&lt;br&gt;Обработка burst нагрузок&lt;br&gt;LSP сервисы изолированы и ограничены по CPU и RAM, падение одного не валит систему&lt;br&gt;Конфигурируемые квоты на запуск LSP&lt;br&gt;&lt;br&gt;&lt;/span&gt;" vertex="1">
-          <mxGeometry height="200" width="290" x="20" y="10" as="geometry" />
+        <mxCell id="2" value="&lt;b&gt;Требования&lt;/b&gt;&lt;br&gt;&lt;br&gt;Monaco Editor, LSP&lt;br&gt;Подключение произвольных LSP серверов&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;Базовое количество одновременных клиентов - 100. Предусмотреть масштабирование на большее число.&amp;nbsp;&lt;br&gt;Обработка burst нагрузок&lt;br&gt;LSP сервисы изолированы и ограничены по CPU и RAM, падение одного не валит систему&lt;br&gt;Конфигурируемые квоты на запуск LSP&lt;br&gt;&lt;br&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="20" y="10" width="290" height="200" as="geometry" />
         </mxCell>
-        <mxCell id="4" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;b&gt;По сервисам&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;b&gt;Gateway&lt;br&gt;&lt;/b&gt;&lt;br&gt;Websocket endpoints&lt;br&gt;/lsp/denols&lt;br&gt;/lsp/clangd&lt;br&gt;...&lt;br&gt;auth&lt;br&gt;квоты&lt;br&gt;запуск подов&lt;br&gt;проксирование&lt;br&gt;(очередь?)&lt;br&gt;&lt;br&gt;&lt;b&gt;LSP pods&lt;br&gt;&lt;/b&gt;1 pod = 1 LSP&lt;br&gt;LSP сервер + WS bridge&lt;br&gt;&lt;/span&gt;" vertex="1">
-          <mxGeometry height="260" width="180" x="340" y="10" as="geometry" />
+        <mxCell id="4" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;b&gt;По сервисам&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;b&gt;Gateway&lt;br&gt;&lt;/b&gt;&lt;br&gt;Websocket endpoints&lt;br&gt;/lsp/denols&lt;br&gt;/lsp/clangd&lt;br&gt;...&lt;br&gt;auth&lt;br&gt;квоты&lt;br&gt;запуск подов&lt;br&gt;проксирование&lt;br&gt;(очередь?)&lt;br&gt;&lt;br&gt;&lt;b&gt;LSP pods&lt;br&gt;&lt;/b&gt;1 pod = 1 LSP&lt;br&gt;LSP сервер + WS bridge&lt;br&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="340" y="10" width="180" height="260" as="geometry" />
         </mxCell>
-        <mxCell id="11" edge="1" parent="1" source="6" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="9">
+        <mxCell id="11" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="6" target="9" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="21" connectable="0" parent="11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="WebSocket" vertex="1">
-          <mxGeometry relative="1" x="-0.2344" y="1" as="geometry">
+        <mxCell id="21" value="WebSocket" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="11" connectable="0" vertex="1">
+          <mxGeometry x="-0.2344" y="1" relative="1" as="geometry">
             <mxPoint x="1" y="2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="User1" vertex="1">
-          <mxGeometry height="60" width="120" x="14" y="420" as="geometry" />
+        <mxCell id="6" value="User1" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="14" y="420" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="12" edge="1" parent="1" source="7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="9">
+        <mxCell id="12" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="7" target="9" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="User2" vertex="1">
-          <mxGeometry height="60" width="120" x="14" y="510" as="geometry" />
+        <mxCell id="7" value="User2" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="14" y="510" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="13" edge="1" parent="1" source="8" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="9">
+        <mxCell id="13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="8" target="9" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="User3" vertex="1">
-          <mxGeometry height="60" width="120" x="14" y="600" as="geometry" />
+        <mxCell id="8" value="User3" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="14" y="600" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="18" edge="1" parent="1" source="9" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="15">
+        <mxCell id="18" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="9" target="15" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="23" connectable="0" parent="18" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="WebSocket" vertex="1">
-          <mxGeometry relative="1" x="-0.0855" as="geometry">
+        <mxCell id="23" value="WebSocket" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="18" connectable="0" vertex="1">
+          <mxGeometry x="-0.0855" relative="1" as="geometry">
             <mxPoint y="-7" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="19" edge="1" parent="1" source="9" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="16">
+        <mxCell id="19" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="9" target="16" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="20" edge="1" parent="1" source="9" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="17">
+        <mxCell id="20" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="9" target="17" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-24" edge="1" parent="1" source="9" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="I2XxpJuBxpLWIYqSNJos-23">
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-24" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="9" target="I2XxpJuBxpLWIYqSNJos-23" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="414" y="350" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-29" connectable="0" parent="I2XxpJuBxpLWIYqSNJos-24" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="create/delete, get info" vertex="1">
-          <mxGeometry relative="1" x="-0.7317" as="geometry">
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-29" value="create/delete, get info" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="I2XxpJuBxpLWIYqSNJos-24" connectable="0" vertex="1">
+          <mxGeometry x="-0.7317" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="LSP manager" vertex="1">
-          <mxGeometry height="60" width="120" x="278" y="510" as="geometry" />
+        <mxCell id="9" value="LSP manager" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="278" y="510" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="User1 LSP POD" vertex="1">
-          <mxGeometry height="60" width="120" x="534" y="420" as="geometry" />
+        <mxCell id="15" value="User1 LSP POD" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="534" y="420" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="User2 LSP&amp;nbsp;POD" vertex="1">
-          <mxGeometry height="60" width="120" x="534" y="510" as="geometry" />
+        <mxCell id="16" value="User2 LSP&amp;nbsp;POD" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="534" y="510" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="User3 LSP&amp;nbsp;POD" vertex="1">
-          <mxGeometry height="60" width="120" x="534" y="600" as="geometry" />
+        <mxCell id="17" value="User3 LSP&amp;nbsp;POD" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="534" y="600" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-25" edge="1" parent="1" source="I2XxpJuBxpLWIYqSNJos-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="15">
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="I2XxpJuBxpLWIYqSNJos-23" target="15" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-26" edge="1" parent="1" source="I2XxpJuBxpLWIYqSNJos-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="16">
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="I2XxpJuBxpLWIYqSNJos-23" target="16" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-27" edge="1" parent="1" source="I2XxpJuBxpLWIYqSNJos-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="17">
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="I2XxpJuBxpLWIYqSNJos-23" target="17" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-23" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="KubeAPI" vertex="1">
-          <mxGeometry height="60" width="120" x="694" y="320" as="geometry" />
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-23" value="KubeAPI" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="694" y="320" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-28" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="WS bridge расположить в контейнере с LSP или в сайдкаре и связать через volume fifo stdin/stdout файлики?&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="220" x="594" y="135" as="geometry" />
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-28" value="WS bridge расположить в контейнере с LSP или в сайдкаре и связать через volume fifo stdin/stdout файлики?&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="594" y="135" width="220" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-31" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Образ LSP&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ WS bridge&lt;/span&gt;&lt;div&gt;Запуск типа &quot;node tsserver | ws-bridge&quot;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="90" width="230" x="584" y="25" as="geometry" />
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-31" value="Образ LSP&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ WS bridge&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="870" y="20" width="230" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-33" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" value="- Пользователь заходит на страницу решения задачи&lt;div&gt;- Открывается websocket с LSP manager&lt;/div&gt;&lt;div&gt;-&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;LSP manager&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- Проверка лимитов, подробнее в блоке ниже&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- Создает под&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- Ожидает Status.Phase ==&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;PodRunning |&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;PodFailed&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- При PodPending &amp;amp;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Unschedulable, cooldown на 1-2 секунды создание подов (должно быть редкий случай)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- Проксирует соединение пользователя на&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;ws://{&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;PodIP}:8080/&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- При превышении maxPodCount вытесняем в следующем порядке&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- под без websocket подключений&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- самый старый под по CreatedAt&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- (можно позже подумать и переделать)&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- При падении пода закрываем websocket с клиентом, реконнектом занимается клиент.&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- При закрытии соединения со стороны пользователя ожидаем таймаут и удаляем под.&amp;nbsp;&lt;/span&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="400" width="396" x="384" y="730" as="geometry" />
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-33" value="- Пользователь заходит на страницу решения задачи&lt;div&gt;- Открывается websocket с LSP manager&lt;/div&gt;&lt;div&gt;-&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;LSP manager&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- Проверка лимитов, подробнее в блоке ниже&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- Создает под&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- Ожидает Status.Phase ==&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;PodRunning |&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;PodFailed&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- При PodPending &amp;amp;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Unschedulable, cooldown на 1-2 секунды создание подов (должно быть редкий случай)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- Проксирует соединение пользователя на&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;ws://{&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;PodIP}:8080/&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- При превышении maxPodCount вытесняем в следующем порядке&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- под без websocket подключений&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- самый старый под по CreatedAt&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;- (можно позже подумать и переделать)&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- При падении пода закрываем websocket с клиентом, реконнектом занимается клиент.&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- При закрытии соединения со стороны пользователя ожидаем таймаут и удаляем под.&amp;nbsp;&lt;/span&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="384" y="730" width="396" height="400" as="geometry" />
         </mxCell>
-        <mxCell id="I2XxpJuBxpLWIYqSNJos-34" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=7;" value="&lt;div class=&quot;pointer-events-none absolute inset-x-4 top-12 bottom-4&quot;&gt;&lt;div class=&quot;pointer-events-none sticky z-40 shrink-0 z-1!&quot;&gt;&lt;div class=&quot;sticky bg-token-border-light&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;&quot;&gt;&lt;div class=&quot;relative z-0 flex max-w-full&quot;&gt;&lt;div id=&quot;code-block-viewer&quot; dir=&quot;ltr&quot; class=&quot;q9tKkq_viewer cm-editor z-10 light:cm-light dark:cm-light flex h-full w-full flex-col items-stretch ͼk ͼy&quot;&gt;&lt;div class=&quot;cm-scroller&quot;&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼn&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼn&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;ͼt&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;ͼn&quot;&gt;struct&lt;/span&gt; {&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;ID&lt;/span&gt;&lt;br&gt;&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;UserID&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;LanguageServiceId&lt;/span&gt;&lt;br&gt;&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;PodName&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;Status&lt;/span&gt;&lt;br&gt;&lt;br&gt;  Connections []&lt;span class=&quot;ͼt&quot;&gt;Conn&lt;/span&gt;&lt;br&gt;&lt;br&gt;CreatedAt&amp;nbsp;&lt;span class=&quot;ͼt&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;ͼn&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;ͼt&quot;&gt;Time&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;LastActivityAt&amp;nbsp;&lt;span class=&quot;ͼt&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;ͼn&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;ͼt&quot;&gt;Time&lt;/span&gt;&lt;br&gt;}&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼv&quot;&gt;sessions&lt;/span&gt;: &lt;span class=&quot;ͼn&quot;&gt;map&lt;/span&gt;[&lt;span class=&quot;ͼt&quot;&gt;SessionID&lt;/span&gt;]&lt;span class=&quot;ͼn&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;ͼt&quot;&gt;Session&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼt&quot;&gt;userSessions: map[UserID][]SessionID&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼt&quot;&gt;podToSession: map[PodName]SessionID&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="300" width="270" x="30" y="720" as="geometry" />
+        <mxCell id="I2XxpJuBxpLWIYqSNJos-34" value="&lt;div class=&quot;pointer-events-none absolute inset-x-4 top-12 bottom-4&quot;&gt;&lt;div class=&quot;pointer-events-none sticky z-40 shrink-0 z-1!&quot;&gt;&lt;div class=&quot;sticky bg-token-border-light&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;&quot;&gt;&lt;div class=&quot;relative z-0 flex max-w-full&quot;&gt;&lt;div id=&quot;code-block-viewer&quot; dir=&quot;ltr&quot; class=&quot;q9tKkq_viewer cm-editor z-10 light:cm-light dark:cm-light flex h-full w-full flex-col items-stretch ͼk ͼy&quot;&gt;&lt;div class=&quot;cm-scroller&quot;&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼn&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼn&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;ͼt&quot;&gt;Session&lt;/span&gt; &lt;span class=&quot;ͼn&quot;&gt;struct&lt;/span&gt; {&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;ID&lt;/span&gt;&lt;br&gt;&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;UserID&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;LanguageServiceId&lt;/span&gt;&lt;br&gt;&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;PodName&lt;/span&gt;&lt;br&gt;  &lt;span class=&quot;ͼt&quot;&gt;Status&lt;/span&gt;&lt;br&gt;&lt;br&gt;  Connections []&lt;span class=&quot;ͼt&quot;&gt;Conn&lt;/span&gt;&lt;br&gt;&lt;br&gt;CreatedAt&amp;nbsp;&lt;span class=&quot;ͼt&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;ͼn&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;ͼt&quot;&gt;Time&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;LastActivityAt&amp;nbsp;&lt;span class=&quot;ͼt&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;ͼn&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;ͼt&quot;&gt;Time&lt;/span&gt;&lt;br&gt;}&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼv&quot;&gt;sessions&lt;/span&gt;: &lt;span class=&quot;ͼn&quot;&gt;map&lt;/span&gt;[&lt;span class=&quot;ͼt&quot;&gt;SessionID&lt;/span&gt;]&lt;span class=&quot;ͼn&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;ͼt&quot;&gt;Session&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼt&quot;&gt;userSessions: map[UserID][]SessionID&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;cm-content q9tKkq_readonly&quot;&gt;&lt;span class=&quot;ͼt&quot;&gt;podToSession: map[PodName]SessionID&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=7;" parent="1" vertex="1">
+          <mxGeometry x="30" y="720" width="270" height="300" as="geometry" />
         </mxCell>
-        <mxCell id="LgDoCkQeRcNcNSYZ-bSp-23" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="MaxPodsPerUser - пользовательский лимит на число подов&lt;div&gt;MaxPodCreationsPerUserInMinute - польз лимит на количество запусков подов в минуту&lt;br&gt;&lt;div&gt;MaxGlobalPods - глобальный&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;лимит на число подов&lt;/span&gt;&lt;/div&gt;&lt;div&gt;PodCreationRateLimit - лимит на параллельные createPod&lt;/div&gt;&lt;div&gt;MaxWaitQueueSize - если не укладывается в RateLimit, или в MaxGlobalPods, то ставим в очередь&lt;/div&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="110" width="340" x="20" y="1040" as="geometry" />
+        <mxCell id="LgDoCkQeRcNcNSYZ-bSp-23" value="MaxPodsPerUser - пользовательский лимит на число подов&lt;div&gt;MaxPodCreationsPerUserInMinute - польз лимит на количество запусков подов в минуту&lt;br&gt;&lt;div&gt;MaxGlobalPods - глобальный&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;лимит на число подов&lt;/span&gt;&lt;/div&gt;&lt;div&gt;PodCreationRateLimit - лимит на параллельные createPod&lt;/div&gt;&lt;div&gt;MaxWaitQueueSize - если не укладывается в RateLimit, или в MaxGlobalPods, то ставим в очередь&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="20" y="1040" width="340" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="bun ws-bridge&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;сам спавнит процесс на основе настроек&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="870" y="150" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="lsp + bun + ws-bridge&lt;br&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;bun - oven/bun&lt;br&gt;&lt;br&gt;1. ws-bridge отдельным образом,&amp;nbsp;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1080" y="270" width="230" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="26" target="27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="29" value="built on top of" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="28">
+          <mxGeometry x="-0.0891" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="26" value="&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;ws-bridge image&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="980" y="685" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="27" target="30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="built on top of" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="32">
+          <mxGeometry x="0.3909" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="27" value="&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;lsp image&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="980" y="585" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="30" value="&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;specific/language image&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="480" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" target="26">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1055" y="795" as="sourcePoint" />
+            <mxPoint x="1100" y="755" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="35" value="final image" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="34">
+          <mxGeometry x="0.0162" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="36" value="База - некий специфичный образ" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="480" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="39" target="30" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="38" value="built on top of" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="37">
+          <mxGeometry x="-0.0891" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="39" value="&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;ws-bridge image&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1241" y="585" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="40" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="42" parent="1" target="39">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1579" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="41" value="built on top of" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="40">
+          <mxGeometry x="0.3909" y="-1" relative="1" as="geometry">
+            <mxPoint x="-1" y="13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="42" value="&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;lsp image&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1241" y="685" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="43" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" target="42" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1316" y="790" as="sourcePoint" />
+            <mxPoint x="1504.000810810811" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="44" value="final image" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="43">
+          <mxGeometry x="0.0162" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="45" value="Получаем специфичный +&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="600" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

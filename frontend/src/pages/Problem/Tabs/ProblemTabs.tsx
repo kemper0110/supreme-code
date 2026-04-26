@@ -1,14 +1,14 @@
-import {Solution} from "../Loader.tsx";
+import {LanguageMap} from "../Loader.tsx";
 import {Tabs} from "@mantine/core";
 import {IconFileDescription, IconReport} from "@tabler/icons-react";
 import {Description} from "./Description.tsx";
 import {SolutionsTable} from "./SolutionsTable.tsx";
 
-export const ProblemTabs = ({activeTab, setActiveTab, description, solutions}: {
+export const ProblemTabs = ({activeTab, setActiveTab, description, languages}: {
   activeTab: string | null,
   setActiveTab: (value: 'description' | 'solutions' | null) => void,
   description: string,
-  solutions: Solution[]
+  languages: LanguageMap
 }) => {
   return (
     // @ts-ignore
@@ -30,7 +30,7 @@ export const ProblemTabs = ({activeTab, setActiveTab, description, solutions}: {
       </Tabs.Panel>
 
       <Tabs.Panel className={'bg-white rounded-b-xl'} value="solutions">
-        <SolutionsTable solutions={solutions}/>
+        <SolutionsTable languages={languages}/>
       </Tabs.Panel>
     </Tabs>
   )

@@ -1,4 +1,6 @@
 spring:
+  aop:
+    proxy-target-class: true
   main:
     web-application-type: reactive
   datasource:
@@ -31,11 +33,6 @@ spring:
     default-schema: supreme_code
 
 supreme-code:
-  content-repository:
-    root: C:\Users\Danil\IdeaProjects\supreme-code\supreme-code-content
-    path: /content
-    problem:
-      path: /content/problems
 
 jwt:
   cookie-name: sc-token
@@ -46,3 +43,11 @@ jwt:
       keylength: 256
   secret: AMDXGbO7gGwf3hoFPpm6GwQvFrqoCsn2 #This Secret For JWT HS256 Signature Algorithm MUST Have 256 bits KeySize
   expiration: 28800 # token expiration in seconds
+
+minio:
+  url: http://localhost:9000
+  access-key: minio
+  secret-key: minio123
+  bucket: my-bucket
+
+debug: on

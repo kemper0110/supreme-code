@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>task-runner</artifactId>
+    <groupId>org.supremecode</groupId>
+    <version>0.0.1</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

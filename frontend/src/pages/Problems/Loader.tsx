@@ -5,30 +5,26 @@ import {api} from "../../api/api.ts";
 import {LanguageValue} from "../../types/LanguageValue.tsx";
 import {useQuery, UseQueryOptions} from "@tanstack/react-query";
 import {useUser} from "../../store/useUser.tsx";
+import {fetchPlatformConfig, platformConfigQueryKey} from "../shared/PlatformConfig.ts";
+import {PlatformConfig} from "../Problem/Loader.tsx";
+import {fetchTags} from "../shared/tags.ts";
 
 export type ProblemData = {
   id: number
   name: string
-  active: boolean
   description: string
   difficulty: 'Easy' | 'Normal' | 'Hard'
   languages: LanguageValue[]
-  tags: string[]
+  tags: number[]
 }
 
-export type ProblemsResponse = {
-  problems: ProblemData[]
-  tags: {
-    id: string
-    name: string
-  }[]
-}
+export type ProblemsResponse = ProblemData[]
 
 export const problemsQueryKey = (searchParams: string) => {
   return ['problems', useUser.getState().user?.id, searchParams];
 };
 
-export const ProblemsLoader = ({request}: {request: Request}) => {
+export const ProblemsLoader = async ({request}: {request: Request}) => {
   const [,searchParams = ''] = request.url.split("?");
   // const state = new URLSearchParams(searchParams)
   // const [name, difficulty, language, tags] = [state.get('name'), state.get('difficulty'), state.getAll('language'), state.getAll('tags')]
@@ -42,8 +38,14 @@ export const ProblemsLoader = ({request}: {request: Request}) => {
     queryFn: async () => (await api.get<ProblemsResponse>(`/api/problem?${searchParams}`)).data ?? null,
     staleTime: 120000
   }), 500, 500)
+
+  const cachedConfig = queryClient.getQueryData<PlatformConfig>(platformConfigQueryKey)
+  const configPromise = cachedConfig ? Promise.resolve(cachedConfig) : fetchPlatformConfig()
+
   return defer({
-    problemsPromise: problemsPromise
+    problemsPromise: problemsPromise,
+    platformConfig: await configPromise,
+    tags: await fetchTags()
   })
 }
 

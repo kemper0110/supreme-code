@@ -10,7 +10,12 @@ import {Protected} from "./protection.tsx";
 import {Account} from "../pages/Account/Account.tsx";
 import {Support} from "../pages/Support/Support.tsx";
 import {NotImplemented} from "./not-implemented.tsx";
-import {StatisticsLoader} from "../pages/Statistics/Loader.tsx";
+import Tags from "../pages/Tag/Tags.tsx";
+import {TagsLoader} from "../pages/Tag/TagsLoader.ts";
+import MyProblems from "../pages/MyProblems/MyProblems.tsx";
+import {MyProblemsLoader} from "../pages/MyProblems/MyProblemsLoader.ts";
+import MyProblem from "../pages/MyProblem/MyProblem.tsx";
+import {MyProblemCreateLoader, MyProblemUpdateLoader} from "../pages/MyProblem/MyProblemLoader.ts";
 
 export const routes = [
   {
@@ -41,12 +46,6 @@ export const routes = [
               Component: (await import("../pages/Problems/Problems.tsx")).default
             }),
             loader: ProblemsLoader
-          }, {
-            path: "/stats",
-            lazy: async () => ({
-              Component: (await import("../pages/Statistics/Statistics.tsx")).default
-            }),
-            loader: StatisticsLoader
           }),
           {
             path: "/account",
@@ -57,7 +56,16 @@ export const routes = [
             path: "/support",
             loader: NotImplemented,
             element: <Support/>
-          }
+          },
+          Protected({
+            path: "/tags",
+            loader: TagsLoader,
+            element: <Tags/>
+          }, {
+            path: '/my-problem',
+            loader: MyProblemsLoader,
+            element: <MyProblems/>
+          }),
         ]
       },
       Protected(
@@ -82,6 +90,16 @@ export const routes = [
           }),
           loader: ProblemLoader
         },
+        {
+          path: "/my-problem/create",
+          element: <MyProblem/>,
+          loader: MyProblemCreateLoader,
+        },
+        {
+          path: "/my-problem/update/:problemId",
+          element: <MyProblem/>,
+          loader: MyProblemUpdateLoader,
+        }
       )
     ]
   },

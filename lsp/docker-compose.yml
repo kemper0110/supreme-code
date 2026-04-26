@@ -1,0 +1,34 @@
+services:
+  denols:
+    image: denols
+    environment:
+      serverName: DENO
+      pathName: /
+      serverPort: 30002
+      runCommand: deno
+      runCommandArgs: lsp
+      runCommandCwd: /workspace
+    ports:
+      - "30002:30002"
+  clangdls:
+    image: clangdls
+    environment:
+      serverName: CLANGD
+      pathName: /
+      serverPort: 30003
+      runCommand: clangd
+      runCommandArgs: --log=verbose --pretty --background-index
+      runCommandCwd: /workspace
+    ports:
+      - "30003:30003"
+  gopls:
+    image: gopls
+    environment:
+      serverName: GOPLS
+      pathName: /
+      serverPort: 30004
+      runCommand: gopls
+      runCommandArgs: -v -rpc.trace -logfile=/gopls.log
+      runCommandCwd: /workspace
+    ports:
+      - "30004:30004"

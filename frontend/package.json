@@ -14,6 +14,8 @@
   },
   "packageManager": "yarn@4.1.0",
   "dependencies": {
+    "@codingame/monaco-vscode-api": "28.0.1",
+    "@codingame/monaco-vscode-editor-api": "28.0.1",
     "@mantine/carousel": "^7.10.2",
     "@mantine/charts": "^7.5.0",
     "@mantine/code-highlight": "^7.5.0",
@@ -27,7 +29,7 @@
     "@mantine/nprogress": "^7.5.0",
     "@mantine/spotlight": "^7.5.0",
     "@mantine/tiptap": "^7.5.0",
-    "@monaco-editor/react": "^4.6.0",
+    "@monaco-editor/react": "^4.7.0",
     "@syncedstore/core": "^0.6.0",
     "@syncedstore/react": "^0.6.0",
     "@tabler/icons-react": "^2.46.0",
@@ -43,12 +45,14 @@
     "@tiptap/pm": "^2.2.0",
     "@tiptap/react": "^2.2.0",
     "@tiptap/starter-kit": "^2.2.0",
+    "@typefox/monaco-editor-react": "7.7.0",
     "axios": "^1.6.7",
     "dayjs": "^1.11.10",
     "embla-carousel-react": "^7.1.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.3",
-    "monaco-editor": "^0.45.0",
+    "monaco-editor": "^0.55.1",
+    "monaco-languageclient": "10.7.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -61,6 +65,7 @@
     "sort-by": "^1.2.0",
     "sse.js": "^2.4.1",
     "tailwind-merge": "^2.2.1",
+    "vscode-ws-jsonrpc": "^3.5.0",
     "y-indexeddb": "^9.0.12",
     "y-monaco": "0.1.2",
     "y-protocols": "^1.0.6",
@@ -75,6 +80,7 @@
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@types/sort-by": "^1",
+    "@types/vscode": "^1.110.0",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
@@ -91,5 +97,9 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
     "vitest": "^1.4.0"
+  },
+  "resolutions": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   }
 }

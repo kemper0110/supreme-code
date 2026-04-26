@@ -5,7 +5,7 @@ import {
   Button,
   Container,
   Group,
-  Menu,
+  Menu, MultiSelect,
   rem,
   Tabs,
   Text,
@@ -14,11 +14,12 @@ import {
 } from "@mantine/core";
 import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
 import {
+  IconAbacus,
   IconChevronDown,
   IconHeart, IconLogout,
   IconSettings,
   IconStar,
-  IconSwitchHorizontal,
+  IconSwitchHorizontal, IconTag,
   IconTriangleInverted, IconX
 } from "@tabler/icons-react";
 import cx from "clsx";
@@ -119,6 +120,22 @@ export const BaseLayout = () => {
                       }
                     >
                       Сохраненные задачи
+                    </Menu.Item>
+                    <Menu.Item leftSection={
+                      <IconTag style={{width: rem(16), height: rem(16)}}
+                               stroke={1.5}/>
+                    } onClick={() => {
+                      navigate('/tags')
+                    }}>
+                      Теги
+                    </Menu.Item>
+                    <Menu.Item leftSection={
+                      <IconAbacus style={{width: rem(16), height: rem(16)}}
+                               stroke={1.5}/>
+                    } onClick={() => {
+                      navigate('/my-problem')
+                    }}>
+                      Задачи
                     </Menu.Item>
 
                     <Menu.Label>Настройки</Menu.Label>

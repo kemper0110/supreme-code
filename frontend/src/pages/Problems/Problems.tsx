@@ -3,7 +3,7 @@ import {Suspense, useEffect, useState} from 'react';
 import {Await, Link, useLoaderData, useNavigate} from "react-router-dom";
 import {DotBackground} from "../../components/Background.tsx";
 import {useProblemsQuery} from "./Loader.tsx";
-import {IconBrandCpp, IconBrandNodejs, IconSearch, IconTag} from "@tabler/icons-react";
+import {IconSearch, IconTag} from "@tabler/icons-react";
 import {Carousel} from "@mantine/carousel";
 import { DonutChart } from '@mantine/charts';
 import '@mantine/carousel/styles.css';
@@ -11,6 +11,8 @@ import cube from './assets/cube.jpg'
 import city from './assets/city.jpg'
 import floor from './assets/floor.jpg'
 import {Legend} from "recharts";
+import {PlatformConfig} from "../Problem/Loader.tsx";
+import {useTags} from "../shared/tags.ts";
 
 export default function Problems() {
   const navigate = useNavigate()
@@ -34,11 +36,12 @@ export default function Problems() {
     navigate(`/problem?${state.toString()}`)
   }
 
-  const {problemsPromise} = useLoaderData() as { problemsPromise: Promise<unknown> }
+  const {problemsPromise, platformConfig} = useLoaderData() as { problemsPromise: Promise<unknown>, platformConfig: PlatformConfig }
+  const {data: tagsData} = useTags()
 
   const Rows = () => {
     const {data} = useProblemsQuery(window.location.search.slice(1))
-    return data?.problems.map(problem => (
+    return data?.map(problem => (
       <div key={problem.id} className={'p-4 pe-8 bg-slate-50 flex rounded-lg items-center gap-4'}
       >
         <div className={'w-3/4'}>
@@ -63,7 +66,7 @@ export default function Problems() {
             {
               problem.tags.map(tagId => (
                 <div key={tagId} className={'border bg-slate-200 px-1 py-0.5 font-semibold rounded-lg'}>
-                  {data?.tags.find(tag => tag.id === tagId)?.name}
+                  {tagsData!.find(tag => tag.id === tagId)?.name}
                 </div>
               ))
             }
@@ -74,13 +77,7 @@ export default function Problems() {
             {
               problem.languages.map(lang => (
                 <div key={lang} className={'bg-slate-200 p-2 flex items-center justify-center rounded-md'}>
-                  {
-                    {
-                      Javascript: <IconBrandNodejs size={50} stroke={1.3}/>,
-                      Cpp: <IconBrandCpp size={50} stroke={1.4}/>,
-                      Java: <IconBrandJava/>,
-                    }[lang]
-                  }
+                  {lang}
                 </div>
               ))
             }
@@ -91,12 +88,11 @@ export default function Problems() {
   }
 
   const TagSelect = () => {
-    const {data} = useProblemsQuery(window.location.search.slice(1))
     return (
       <MultiSelect
         label={'Теги'}
-        data={data?.tags.map(tag => ({
-          value: tag.id,
+        data={tagsData!.map(tag => ({
+          value: String(tag.id),
           label: tag.name
         }))}
         placeholder={'Выберите теги'}
@@ -147,11 +143,12 @@ export default function Problems() {
                   }}
           />
 
-          <MultiSelect label={'Языки'} defaultValue={['Любой']} data={[
-            {value: 'Cpp', label: 'C++'},
-            {value: 'Java', label: 'Java'},
-            {value: 'Javascript', label: 'JavaScript'}
-          ]}
+          <MultiSelect label={'Языки'} defaultValue={['Любой']} data={
+            Object.entries(platformConfig.languages).map(([languageId, language]) => ({
+              value: languageId,
+              label: language.name,
+            }))
+          }
                        value={languages ?? []}
                        placeholder={'Выберите языки'}
                        onChange={(e) => setState('languages', e)}
@@ -200,7 +197,7 @@ export default function Problems() {
           slidesToScroll={3}
         >
           <Carousel.Slide onClick={() => {
-            setState('languages', ['Cpp'])
+            // setState('languages', ['Cpp'])
           }}>
             <BackgroundImage src={cube} radius={'lg'}>
               <div className={'h-[130px] pt-2 ps-4 text-slate-50 [text-shadow:2px_2px_2px_#000]'}>
@@ -209,7 +206,7 @@ export default function Problems() {
             </BackgroundImage>
           </Carousel.Slide>
           <Carousel.Slide onClick={() => {
-            setState('tags', ['arrays'])
+            // setState('tags', ['arrays'])
           }}>
             <BackgroundImage src={city} radius={'lg'}>
               <div className={'h-[130px] pt-2 text-center text-slate-50 [text-shadow:2px_2px_2px_#000]'}>
@@ -218,7 +215,7 @@ export default function Problems() {
             </BackgroundImage>
           </Carousel.Slide>
           <Carousel.Slide onClick={() => {
-            setState('tags', ['recursion'])
+            // setState('tags', ['recursion'])
           }}>
             <BackgroundImage src={floor} radius={'lg'}>
               <div className={'h-[130px] pt-2 ps-4 text-slate-50 [text-shadow:2px_2px_2px_#000]'}>

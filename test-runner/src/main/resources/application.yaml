@@ -1,15 +1,12 @@
 supreme-code:
-  content-repository:
-    root: C:\Users\Danil\IdeaProjects\supreme-code\supreme-code-content
-    path: /content
-    problem:
-      path: /content/problems
   test-runner:
     container:
       ttk: 12000
-logging:
-  level:
-    net:
-      danil: debug
-    org:
-      danil: debug
+
+minio:
+  url: http://localhost:9000
+  access-key: minio
+  secret-key: minio123
+  bucket: my-bucket
+
+debug: on

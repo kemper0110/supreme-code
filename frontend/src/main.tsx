@@ -16,12 +16,13 @@ localStorage.log = 'true'
 const router = createBrowserRouter(routes)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <MantineProvider>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router}/>
         <ReactQueryDevtools initialIsOpen={false} buttonPosition={'bottom-left'}/>
       </QueryClientProvider>
     </MantineProvider>
-  </React.StrictMode>,
+  // </React.StrictMode>
+,
 )

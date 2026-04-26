@@ -58,11 +58,11 @@ public interface LanguageInfo {
     String getMonacoLanguageJsModule();
 }
 public interface LanguageTester {
-    String imageName();
-    int timeToKill();
-    String solutionPath();
-    String reportPath();
-    TestExecutionResult test(String report);
+    TestExecutionResult test(
+            DockerClient dockerClient, 
+            Problem problem, 
+            Solution solution
+    );
 }
 public interface LanguageWeb {
     void handleRequest(
