@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController
 import org.supremecode.web.domain.Problem
 import org.supremecode.web.domain.ProblemLanguage
 import org.supremecode.web.domain.ProblemTag
+import org.supremecode.web.domain.User
 import org.supremecode.web.repository.ProblemLanguageRepository
 import org.supremecode.web.repository.ProblemRepository
 import org.supremecode.web.repository.TagRepository
 import org.supremecode.web.repository.UserRepository
 import org.supremecode.web.service.MinioPathService
-import org.supremecode.web.user.security.UserInfo
 import org.supremecode.web.views.ProblemView
 import org.supremecode.web.views.mapProblemToView
 import java.io.ByteArrayInputStream
@@ -99,6 +99,7 @@ class MyProblemControllerImpl(
 
     @PostMapping
     fun saveMyProblem(@RequestBody problem: MyProblemView, auth: Authentication) {
+        val authUser = auth.details as User
         val p = if (problem.id != null) {
             problemRepository.findById(problem.id)
                 .orElseThrow { RuntimeException("Problem not found") }
@@ -108,7 +109,7 @@ class MyProblemControllerImpl(
         p.name = problem.name
         p.description = problem.description
         p.difficulty = problem.difficulty
-        p.author = userRepository.getReferenceById((auth.principal as UserInfo).id)
+        p.author = userRepository.getReferenceById(authUser.id!!)
 
         val existingLanguages = p.languages.associateBy { it.languageId }
         problem.languages.forEach { (langId) ->
@@ -124,7 +125,7 @@ class MyProblemControllerImpl(
         p.problemTags.addAll(
             problem.tags.map { ProblemTag(p, tagRepository.getReferenceById(it)) }.toMutableList()
         )
-        p.author = userRepository.getReferenceById((auth.principal as UserInfo).id);
+        p.author = userRepository.getReferenceById(authUser.id!!);
         val savedProblem = this.problemRepository.save(p)
 
         for (lang in problem.languages) {

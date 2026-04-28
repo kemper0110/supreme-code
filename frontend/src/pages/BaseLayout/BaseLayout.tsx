@@ -5,7 +5,7 @@ import {
   Button,
   Container,
   Group,
-  Menu, MultiSelect,
+  Menu,
   rem,
   Tabs,
   Text,
@@ -16,19 +16,20 @@ import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
 import {
   IconAbacus,
   IconChevronDown,
-  IconHeart, IconLogout,
+  IconHeart,
+  IconLogout,
   IconSettings,
   IconStar,
-  IconSwitchHorizontal, IconTag,
-  IconTriangleInverted, IconX
+  IconTag,
+  IconTriangleInverted,
+  IconX
 } from "@tabler/icons-react";
 import cx from "clsx";
 import {useDisclosure} from "@mantine/hooks";
 import {useState} from "react";
 import {useTabs} from "../../store/useTabs.tsx";
 import {useUser} from "../../store/useUser.tsx";
-
-
+import {keycloak} from "../../keycloak.ts";
 
 
 export const BaseLayout = () => {
@@ -41,7 +42,10 @@ export const BaseLayout = () => {
   const {pathname} = useLocation()
   console.log({pathname})
   const activeTab = pathname
-
+  const onLogin = () => {
+    keycloak.login()
+    // navigate('/auth');
+  }
 
   const customTabs = useTabs(state => state.tabs)
   const removeTab = useTabs(state => state.remove)
@@ -52,13 +56,9 @@ export const BaseLayout = () => {
   const logged = !!user
 
   const onLogout = () => {
+    keycloak.logout()
     invalidateUser()
     navigate("/")
-  }
-
-  const onChangeAccount = () => {
-    invalidateUser()
-    navigate("/auth")
   }
 
   return (
@@ -148,14 +148,6 @@ export const BaseLayout = () => {
                     </Menu.Item>
                     <Menu.Item
                       leftSection={
-                        <IconSwitchHorizontal style={{width: rem(16), height: rem(16)}} stroke={1.5}/>
-                      }
-                      onClick={onChangeAccount}
-                    >
-                      Сменить аккаунт
-                    </Menu.Item>
-                    <Menu.Item
-                      leftSection={
                         <IconLogout style={{width: rem(16), height: rem(16)}} stroke={1.5}/>
                       }
                       onClick={onLogout}
@@ -166,7 +158,7 @@ export const BaseLayout = () => {
                   </Menu.Dropdown>
                 </Menu>
               ) : (
-                <Button onClick={() => navigate('/auth')}>Войти</Button>
+                <Button onClick={onLogin}>Войти</Button>
               )
             }
 

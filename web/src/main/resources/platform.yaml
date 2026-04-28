@@ -4,8 +4,10 @@ languages:
     iconPath: /plugins/cpp.svg
     monacoLanguageId: cpp
     fileExtension: cpp
+    ephemeralFileName: main.cpp
   java:
     name: Java
     iconPath: /plugins/java.svg
     monacoLanguageId: java
     fileExtension: java
+    ephemeralFileName: Main.java

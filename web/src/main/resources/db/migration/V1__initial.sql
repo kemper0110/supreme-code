@@ -1,11 +1,12 @@
 create table users
 (
     id       bigserial primary key,
-    email    varchar(255) not null unique,
     username varchar(24)  not null unique,
-    password varchar(50)  not null,
-    avatar   varchar(255)
+    avatar   varchar(255),
+    keycloak_id varchar(36) unique not null
 );
+
+create unique index INDEX_USERS_KEYCLOAK_ID ON users (keycloak_id);
 
 CREATE TABLE problem
 (

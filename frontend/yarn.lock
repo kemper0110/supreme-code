@@ -2289,6 +2289,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/keycloak-js@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "@types/keycloak-js@npm:3.4.1"
+  dependencies:
+    keycloak-js: "npm:*"
+  checksum: 10c0/acc6384153dbc809ffc803c6245dce44a0cc1235bfa138c216c8eb0c7cedd16558954d192a6fced4f397afadebf09bdb80acec71ab373c71d12a6f70bcf503f9
+  languageName: node
+  linkType: hard
+
 "@types/mdast@npm:^4.0.0":
   version: 4.0.3
   resolution: "@types/mdast@npm:4.0.3"
@@ -4119,6 +4128,7 @@ __metadata:
     "@tiptap/react": "npm:^2.2.0"
     "@tiptap/starter-kit": "npm:^2.2.0"
     "@typefox/monaco-editor-react": "npm:7.7.0"
+    "@types/keycloak-js": "npm:^3.4.1"
     "@types/prop-types": "npm:^15"
     "@types/react": "npm:^18.2.43"
     "@types/react-dom": "npm:^18.2.17"
@@ -4136,6 +4146,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^4.6.0"
     eslint-plugin-react-refresh: "npm:^0.4.5"
     jsdom: "npm:^24.0.0"
+    keycloak-js: "npm:^26.2.4"
     localforage: "npm:^1.10.0"
     match-sorter: "npm:^6.3.3"
     monaco-editor: "npm:^0.55.1"
@@ -4836,6 +4847,13 @@ __metadata:
   version: 3.2.1
   resolution: "jsonc-parser@npm:3.2.1"
   checksum: 10c0/ada66dec143d7f9cb0e2d0d29c69e9ce40d20f3a4cb96b0c6efb745025ac7f9ba647d7ac0990d0adfc37a2d2ae084a12009a9c833dbdbeadf648879a99b9df89
+  languageName: node
+  linkType: hard
+
+"keycloak-js@npm:*, keycloak-js@npm:^26.2.4":
+  version: 26.2.4
+  resolution: "keycloak-js@npm:26.2.4"
+  checksum: 10c0/ad1f3e7c07b6b84fd805129e21aefe94b32e48ecdde1c586294720712c0971ff4c49613c025476d30dbff22e5d61a4fc4d294050d5f11e1ecc0646bef2f02311
   languageName: node
   linkType: hard
 

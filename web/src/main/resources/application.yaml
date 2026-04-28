@@ -15,7 +15,11 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       group-id: web-group
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8070/realms/supreme-code
   jpa:
     hibernate:
       ddl-auto: validate
@@ -51,3 +55,6 @@ minio:
   bucket: my-bucket
 
 debug: on
+
+client_id: backend
+client_secret: Klrnw7XigrmxXzYQY1mWqPdC13QYSHII

@@ -7,14 +7,12 @@ export type Tag = {
 }
 
 export async function TagsLoader () {
-  // все теги загрузить
-  if (queryClient.getQueryData(tagsQueryKey))
-    return Promise.resolve()
-  return queryClient.fetchQuery({
+  await queryClient.fetchQuery({
     queryKey: tagsQueryKey,
     queryFn: tagsQueryFn,
     staleTime: 100_000
   })
+  return null
 }
 
 

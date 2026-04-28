@@ -19,23 +19,23 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final SecurityService securityService;
 
-    @Transactional
-    public Mono<LoggedUser> login(UserLoginDto userLoginDto) {
-        return Mono.justOrEmpty(userRepository.findByUsername(userLoginDto.username()))
-                .flatMap(user -> {
-                    if (!passwordEncoder.encode(userLoginDto.password()).equals(user.getPassword()))
-                        return Mono.error(new RuntimeException("Invalid user password! INVALID_USER_PASSWORD"));
-                    return Mono.just(
-                            new LoggedUser(
-                                    new UserInfo(user.getId(), user.getUsername()),
-                                    securityService.generateAccessToken(user).toBuilder()
-                                            .userId(user.getId())
-                                            .build()
-                            )
-                    );
-                })
-                .switchIfEmpty(Mono.error(new RuntimeException("Invalid user, " + userLoginDto.username() + " is not registered. INVALID_USERNAME")));
-    }
+//    @Transactional
+//    public Mono<LoggedUser> login(UserLoginDto userLoginDto) {
+//        return Mono.justOrEmpty(userRepository.findByUsername(userLoginDto.username()))
+//                .flatMap(user -> {
+//                    if (!passwordEncoder.encode(userLoginDto.password()).equals(user.getPassword()))
+//                        return Mono.error(new RuntimeException("Invalid user password! INVALID_USER_PASSWORD"));
+//                    return Mono.just(
+//                            new LoggedUser(
+//                                    new UserInfo(user.getId(), user.getUsername()),
+//                                    securityService.generateAccessToken(user).toBuilder()
+//                                            .userId(user.getId())
+//                                            .build()
+//                            )
+//                    );
+//                })
+//                .switchIfEmpty(Mono.error(new RuntimeException("Invalid user, " + userLoginDto.username() + " is not registered. INVALID_USERNAME")));
+//    }
 
 //    public Mono<LoggedUser> register(UserRegisterDto userRegisterDto) {
 //        final var u = new User(null, userRegisterDto.username(), passwordEncoder.encode(userRegisterDto.password()), null, null);

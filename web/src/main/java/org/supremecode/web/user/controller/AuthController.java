@@ -32,23 +32,23 @@ public class AuthController {
 
     }
 
-    @PostMapping(value = "/login")
-    public Mono<ResponseEntity<Object>> login(@RequestBody UserLoginDto dto) {
-        return authService.login(dto)
-                .map(loggedUser -> {
-                            var userInfo = loggedUser.getUserInfo();
-                            var tokenInfo = loggedUser.getTokenInfo();
-                            return ResponseEntity.ok()
-                                    .header("Set-Cookie", securityService.makeJwtCookie(tokenInfo))
-                                    .body(Map.of(
-                                            "user", new LoggedUserResponse(userInfo.getId(), userInfo.getUsername(),
-                                                    tokenInfo.getExpiresAt().getTime() - tokenInfo.getIssuedAt().getTime()
-                                            )
-                                    ));
-                        }
-                );
-
-    }
+//    @PostMapping(value = "/login")
+//    public Mono<ResponseEntity<Object>> login(@RequestBody UserLoginDto dto) {
+//        return authService.login(dto)
+//                .map(loggedUser -> {
+//                            var userInfo = loggedUser.getUserInfo();
+//                            var tokenInfo = loggedUser.getTokenInfo();
+//                            return ResponseEntity.ok()
+//                                    .header("Set-Cookie", securityService.makeJwtCookie(tokenInfo))
+//                                    .body(Map.of(
+//                                            "user", new LoggedUserResponse(userInfo.getId(), userInfo.getUsername(),
+//                                                    tokenInfo.getExpiresAt().getTime() - tokenInfo.getIssuedAt().getTime()
+//                                            )
+//                                    ));
+//                        }
+//                );
+//
+//    }
 
 //    @PostMapping("/register")
 //    public Mono<ResponseEntity<Object>> register(@RequestBody UserRegisterDto dto) {

@@ -1,0 +1,13 @@
+{
+  "languages": {
+    "cpp": {
+      "image": "clangdls"
+    },
+    "go": {
+      "image": "gopls"
+    },
+    "typescript": {
+      "image": "denols"
+    }
+  }
+}

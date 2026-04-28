@@ -13,15 +13,18 @@ open class User() {
 
     open var username: String = ""
 
-    open var email: String = ""
-
     open var avatar: String? = null
 
-    open var password: String = ""
+    open var keycloakId: String = ""
 
     @OneToMany(mappedBy = "author", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     open var solutions: MutableList<Solution> = ArrayList()
 
     @OneToMany(mappedBy = "author", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     open var problems: MutableList<Problem> = ArrayList()
+
+    constructor(username: String, keycloakId: String) : this() {
+        this.username = username
+        this.keycloakId = keycloakId
+    }
 }

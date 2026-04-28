@@ -24,7 +24,7 @@ public class UserSeeder implements CommandLineRunner {
         final var user = new User();
         user.setId(1L);
         user.setUsername("root");
-        user.setPassword(passwordEncoder.encode("toor"));
+//        user.setPassword(passwordEncoder.encode("toor"));
         final var saved = userRepository.save(user);
         if(saved != null) {
             logger.info("created root user {}", saved);

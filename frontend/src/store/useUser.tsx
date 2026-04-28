@@ -2,7 +2,7 @@ import {create} from 'zustand'
 import {persist} from 'zustand/middleware'
 
 export type User = {
-  id: number
+  id: string
   username: string
   maxAge: number
 }

@@ -8,7 +8,7 @@ import {z} from "zod";
 import * as fs from "node:fs";
 import jsyaml from "js-yaml";
 import {customAlphabet} from "nanoid";
-import { cors } from 'hono/cors'
+import {cors} from 'hono/cors'
 import type {WSMessageReceive} from "hono/dist/types/helper/websocket/index.js";
 
 const kc = new k8s.KubeConfig();
@@ -200,11 +200,10 @@ app.get("/ws", upgradeWebSocket(async (c) => {
     if (lsp instanceof Error) {
         throw lsp
     }
-    let lspWs: WebSocket | null = null
+    const lspWs = new WebSocket(lsp.url)
 
     return {
         onOpen(_evt, client) {
-            lspWs = new WebSocket(lsp.url);
             lspWs.onmessage = (event) => {
                 client.send(event.data)
             }
@@ -213,34 +212,30 @@ app.get("/ws", upgradeWebSocket(async (c) => {
             }
             lspWs.onerror = (evt) => {
                 console.log('error', evt)
-
                 client.close(1011, 'Upstream error')
             }
         },
         onMessage(event) {
             send(event.data)
+
             function send(data: WSMessageReceive) {
-                if (lspWs && lspWs.readyState === WebSocket.OPEN) {
+                if (lspWs.readyState === WebSocket.OPEN) {
                     lspWs.send(data)
                 } else {
-                    if (!lspWs || lspWs.readyState === WebSocket.CONNECTING)
+                    if (lspWs.readyState === WebSocket.CONNECTING)
                         setTimeout(() => send(data), 5)
                 }
             }
         },
         onClose() {
-            if (lspWs) {
-                lspWs.close()
-            }
+            lspWs.close()
             clearLSP(lsp.name).catch(e => {
                 console.error('Не удалось удалить LSP', e)
             })
         },
         onError(evt) {
             console.log('error', evt)
-            if (lspWs) {
-                lspWs.close()
-            }
+            lspWs.close()
         },
     }
 }));
