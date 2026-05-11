@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Архитектура Плагинов Code Testing</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; max-width: 1200px; margin: auto; background-color: #f4f7fa;}
+        h1 { color: #0056b3; border-bottom: 3px solid #0056b3; padding-bottom: 10px; }
+        h2 { color: #333; margin-top: 40px; border-left: 5px solid #ff9800; padding-left: 10px; background-color: #e6f0fa; padding: 5px; }
+        h3 { color: #007bff; margin-top: 25px; }
+        pre { background-color: #eee; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', Courier, monospace; white-space: pre-wrap; word-wrap: break-word; }
+        code { font-family: 'Courier New', Courier, monospace; background-color: #ddd; padding: 2px 4px; border-radius: 3px; font-size: 0.95em;}
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #0056b3; color: white; font-weight: bold;}
+        .section-container { margin-bottom: 40px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: white;}
+    </style>
+</head>
+<body>
+
+    <h1>Схема взаимодействия модулей Code Testing</h1>
+    <p>Документация основана на файле <code>docs/6k/plugins.md</code> и описывает архитектуру системы для тестирования пользовательских решений в различных языках программирования.</p>
+
+    <!-- Section: plugin-sdk -->
+    <div class="section-container">
+        <h2>📚 1. Plugin SDK (Библиотека API)</h2>
+        <p>Предоставляет основной контракт (`LanguageTester`) и инструменты для парсинга результатов тестирования в формате JUnit XML.</p>
+
+        <h3>🧩 Структура модуля</h3>
+        <pre><code>plugin-sdk/
+├── src/main/java/org/supremecode/pluginsdk/
+│   ├── LanguageTester.java          // Главный интерфейс плагина
+│   ├── JunitParser.java             // Парсер JUnit XML отчётов
+│   └── result/
+│       ├── TestExecutionResult.java // DTO с результатами прогона
+│       └── TestCase.java            // DTO с информацией о тест-кейсе
+└── pom.xml
+</code></pre>
+
+        <h3>📌 Ключевые элементы</h3>
+        <h4>Интерфейс <code class="language-java">LanguageTester</code></h4>
+        <p>Определяет контракт, который должен реализовать каждый плагин:</p>
+        <pre><code>public interface LanguageTester {
+    String languageId();           // Идентификатор языка (java, cpp, javascript)
+    String imageName();            // Название Docker-образа для запуска тестов
+    String testsPath();            // Путь к файлу с тестами внутри контейнера
+    String solutionPath();         // Путь к файлу с решением внутри контейнера
+    String reportPath();           // Путь к файлу с JUnit отчётом
+    TestExecutionResult verdict(String report, int exitCode); // Анализ результата
+}</code></pre>
+
+        <h4>DTO классы результатов</h4>
+        <p>Неизменяемые объекты для структурирования данных:</p>
+        <ul>
+            <li><strong><code>TestExecutionResult</code></strong>: Агрегированный результат прогона (total, failures, errors, solved).</li>
+            <li><strong><code>TestCase</code></strong>: Детальная информация о каждом тесте (name, status, message, executionTimeMs и др.).</li>
+        </ul>
+
+        <h3>🛠️ Парсер JUnit XML</h3>
+        <p>Класс <code>JunitParser</code> отвечает за преобразование сырого XML-отчёта в объектную модель Java/Kotlin с использованием JAXB.</p>
+    </div>
+
+
+    <!-- Section: common-plugins -->
+    <div class="section-container">
+        <h2>🚀 2. Common Plugins (Эталонные реализации)</h2>
+        <p>Библиотека с готовыми реализациями `LanguageTester` для поддерживаемых языков: Java, C++, JavaScript.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Плагин</th>
+                    <th>Язык и фреймворк</th>
+                    <th>Docker-образ (imageName)</th>
+                    <th>Тип отчёта</th>
+                    <th>Основные пути в контейнере</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>JavaLanguageTester</strong></td>
+                    <td>Java / JUnit 4</td>
+                    <td><code>sc-java-test</code></td>
+                    <td>Surefire XML</td>
+                    <td>Tests: <code>/src/test/java/...</code>, Report: <code>...surefire-reports/TEST-...xml</code></td>
+                </tr>
+                <tr>
+                    <td><strong>CppLanguageTester</strong></td>
+                    <td>C++ / GoogleTest</td>
+                    <td><code>sc-cpp-test</code></td>
+                    <td>JUnit XML</td>
+                    <td>Tests: <code>/sc_test.cc</code>, Report: <code>/usr/app/build/junit.xml</code></td>
+                </tr>
+                <tr>
+                    <td><strong>JsLanguageTester</strong></td>
+                    <td>JavaScript / Jest</td>
+                    <td><code>sc-js-test</code></td>
+                    <td>Jest/JUnit XML</td>
+                    <td>Tests: <code>/test.js</code>, Report: <code>/usr/app/junit.xml</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>🔄 Механизм работы</h3>
+        <p>Каждый плагин реализует общую логику `verdict()` и использует механизм <strong>ServiceLoader</strong> (для автоматического обнаружения) для интеграции в основной тестовый раннер.</p>
+    </div>
+
+
+    <!-- Section: test-runner -->
+    <div class="section-container">
+        <h2>⚙️ 3. Test Runner (Микросервис)</h2>
+        <p>Центральный сервис, который управляет циклом тестирования: принимает задачу через Kafka, запускает Docker-контейнер и возвращает результат.</p>
+
+        <h3>🏗️ Архитектура и Стек</h3>
+        <ul>
+            <li><strong>Фреймворк</strong>: Spring Boot (Kotlin)</li>
+            <li><strong>Взаимодействие</strong>: Apache Kafka (Consumer/Producer), MinIO (Хранение артефактов)</li>
+            <li><strong>Инструменты</strong>: Docker API (Java), Kotlin, Jackson/Spring JSON</li>
+        </ul>
+
+        <h3>📋 Основные этапы работы</h3>
+        <ol>
+            <li><strong>Получение задачи</strong>: Listener подписывается на топик <code>test-topic</code> в Kafka.</li>
+            <li><strong>Подготовка артефактов</strong>: Получает тесты из MinIO (bucket: <code>problems</code>). Использует <code>TarArchiveOutputStream</code> для упаковки тестового и решения файлов в один архив.</li>
+            <li><strong>Управление контейнером (<code>Tester</code>)</strong>:
+                <ul>
+                    <li>Создаёт Docker-контейнер с заданными ресурсами (1 ядро, 400MB RAM).</li>
+                    <li>Копирует архив в контейнер.</li>
+                    <li>Запускает контейнер и ждёт его завершения или срабатывания таймаута (12 секунд).</li>
+                    <li>Сбор логов и отчётов из MinIO.</li>
+                </ul>
+            </li>
+            <li><strong>Анализ результата</strong>: Вызывает <code>languageTester.verdict(report, exitCode)</code> для преобразования сырого отчёта в структурированный объект <code>TestResult</code>.</li>
+            <li><strong>Публикация результата</strong>: Отправляет финальный результат (<code>TestResultMessage</code>) обратно в топик <code>test-result-topic</code> Kafka.</li>
+        </ol>
+
+        <h3>🌐 Схема взаимодействия модулей</h3>
+        <pre><code>┌──────────────────────────────────────────────────────────────────────┐
+│                           test-runner                                 │
+│  ┌─────────────┐    ┌──────────────────────────────────────────────┐  │
+│  │  Listener   │    │               Tester                         │  │
+│  │ (Kafka)     │───►│  createContainer()                          │  │
+│  │             │    │  createArchive()                             │  │
+│  │             │    │  copyArchiveToContainer()                   │  │
+│  │             │    │  startContainer()                           │  │
+│  │             │    │  waitContainer() ───► copyReport()         │  │
+│  └─────────────┘    │       │                                      │  │
+│                     │       ▼                                      │  │
+│                     │  languageTester.verdict()                    │  │
+│  ┌──────────────────┴──────────────────────────────────────────┐  │
+│  │          LanguagePluginService (ServiceLoader)                │  │
+│  └────────────────────────────────────────────────────────────────┘  │
+│                               ▼                                      │
+│                        plugin-sdk (Интерфейс & Парсинг)              │
+└──────────────────────────────────────────────────────────────────────┘</code></pre>
+
+    </div>
+
+
+    <!-- Section: Паттерны -->
+    <div class="section-container">
+        <h2>💡 Ключевые Паттерны Проектирования</h2>
+        <ul>
+            <li><strong>Plugin Pattern</strong>: Определен через интерфейс <code>LanguageTester</code>.</li>
+            <li><strong>ServiceLoader Pattern</strong>: Используется в <code>LanguagePluginService</code> для динамического обнаружения всех доступных плагинов без жёсткой привязки конфигурации.</li>
+            <li><strong>Strategy Pattern</strong>: Выбор конкретной стратегии тестирования (Язык) по `languageId`.</li>
+            <li><strong>Callback/Observer</strong>: Использование <code>LogCallback</code> и <code>WaitCallback</code> для асинхронного отслеживания состояния Docker-контейнера.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

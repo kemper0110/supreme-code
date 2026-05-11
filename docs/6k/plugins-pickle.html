@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модули plugin-sdk, common-plugins, test-runner</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --accent-green: #22c55e;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+            --border-color: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin: 2.5rem 0 1rem;
+            color: var(--accent-blue);
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--accent-purple);
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            margin: 1rem 0 0.5rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .module-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .module-badge {
+            background: var(--accent-purple);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .module-badge.sdk { background: var(--accent-blue); }
+        .module-badge.plugins { background: var(--accent-green); }
+        .module-badge.runner { background: var(--accent-orange); }
+
+        pre {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        code {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .code-block {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-block code {
+            background: transparent;
+            padding: 0;
+            display: block;
+            white-space: pre;
+        }
+
+        .dir-tree {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .dir-tree .comment { color: #6b7280; }
+        .dir-tree .file { color: var(--accent-green); }
+        .dir-tree .dir { color: var(--accent-blue); }
+
+        .interface-method {
+            display: flex;
+            background: var(--bg-tertiary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .interface-method .return { color: var(--accent-green); }
+        .interface-method .name { color: var(--accent-blue); font-weight: 600; }
+        .interface-method .type { color: var(--accent-orange); }
+        .interface-method .comment { color: var(--text-secondary); }
+
+        .dto-card {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent-purple);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .dto-field {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.3rem 0;
+        }
+
+        .dto-field .type { color: var(--accent-orange); }
+        .dto-field .name { color: var(--accent-blue); }
+        .dto-field .desc { color: var(--text-secondary); font-style: italic; }
+
+        .tag {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .tag.spring { border-color: var(--accent-green); color: var(--accent-green); }
+        .tag.kafka { border-color: var(--accent-blue); color: var(--accent-blue); }
+        .tag.docker { border-color: var(--accent-orange); color: var(--accent-orange); }
+        .tag.minio { border-color: var(--accent-red); color: var(--accent-red); }
+        .tag.kotlin { border-color: var(--accent-purple); color: var(--accent-purple); }
+
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .config-table th, .config-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+
+        .config-table th {
+            background: var(--bg-tertiary);
+            color: var(--accent-blue);
+        }
+
+        .config-table td:first-child {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-green);
+        }
+
+        .dependency {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            margin: 0.3rem 0;
+        }
+
+        .dependency .name { color: var(--accent-blue); }
+        .dependency .version { color: var(--accent-orange); }
+        .dependency .purpose { color: var(--text-secondary); font-size: 0.85rem; }
+
+        .flow-diagram {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .flow-step .num {
+            background: var(--accent-blue);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .flow-step .action { color: var(--text-primary); }
+        .flow-step .detail { color: var(--text-secondary); font-size: 0.85rem; }
+
+        .pattern-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .pattern-card .name {
+            color: var(--accent-purple);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .pattern-card .desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .note {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--accent-blue);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .note.warning {
+            background: rgba(249, 115, 22, 0.1);
+            border-color: var(--accent-orange);
+        }
+
+        .extensibility-step {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            margin: 1rem 0;
+        }
+
+        .extensibility-step .num {
+            background: var(--accent-green);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .extensibility-step .text {
+            color: var(--text-primary);
+            padding-top: 0.2rem;
+        }
+
+        .diagram {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .diagram .box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.5rem;
+            display: inline-block;
+        }
+
+        .diagram .accent { color: var(--accent-blue); }
+        .diagram .green { color: var(--accent-green); }
+        .diagram .purple { color: var(--accent-purple); }
+        .diagram .arrow { color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Модули plugin-sdk, common-plugins, test-runner</h1>
+
+        <h2>1. plugin-sdk</h2>
+        
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-badge sdk">SDK</span>
+                <span>Библиотека для создания плагинов тестирования кода</span>
+            </div>
+            
+            <h3>Назначение</h3>
+            <p>Библиотека, предоставляющая API для создания плагинов тестирования кода на различных языках программирования. Модуль содержит интерфейс <code>LanguageTester</code> и инструменты для парсинга отчётов о тестировании в формате JUnit XML.</p>
+            
+            <h3>Структура модуля</h3>
+            <div class="dir-tree">
+                <span class="dir">plugin-sdk/</span><br>
+                ├── <span class="dir">src/main/java/org/supremecode/pluginsdk/</span><br>
+                │   ├── <span class="file">LanguageTester.java</span>          <span class="comment"># Главный интерфейс плагина</span><br>
+                │   ├── <span class="file">JunitParser.java</span>             <span class="comment"># Парсер JUnit XML отчётов</span><br>
+                │   └── <span class="dir">result/</span><br>
+                │   │   ├── <span class="file">TestExecutionResult.java</span> <span class="comment"># DTO с результатами прогона</span><br>
+                │   │   ├── <span class="file">TestCase.java</span>            <span class="comment"># DTO с информацией о тест-кейсе</span><br>
+                │   │   └── <span class="file">Summary.java</span>             <span class="comment"># Пустая заглушка</span><br>
+                │   └── <span class="dir">junit/</span>                       <span class="comment"># JAXB классы (сгенерированы из XSD)</span><br>
+                │       ├── <span class="file">Testsuites.java</span><br>
+                │       ├── <span class="file">Testsuite.java</span><br>
+                │       ├── <span class="file">Testcase.java</span><br>
+                │       ├── <span class="file">Failure.java</span><br>
+                │       ├── <span class="file">Error.java</span><br>
+                │       ├── <span class="file">Properties.java</span><br>
+                │       ├── <span class="file">Property.java</span><br>
+                │       └── <span class="file">ObjectFactory.java</span><br>
+                └── <span class="file">pom.xml</span>
+            </div>
+            
+            <h3>Интерфейс LanguageTester</h3>
+            <p>Центральный элемент SDK определяет контракт для всех плагинов тестирования:</p>
+            <div class="code-block">
+                <code>public interface LanguageTester {
+    String languageId();           <span style="color:#6b7280">// Идентификатор языка (java, cpp, javascript)</span>
+    String imageName();            <span style="color:#6b7280">// Название Docker-образа для запуска тестов</span>
+    String testsPath();            <span style="color:#6b7280">// Путь к файлу с тестами внутри контейнера</span>
+    String solutionPath();         <span style="color:#6b7280">// Путь к файлу с решением внутри контейнера</span>
+    String reportPath();           <span style="color:#6b7280">// Путь к файлу с JUnit отчётом</span>
+    TestExecutionResult verdict(String report, int exitCode); <span style="color:#6b7280">// Анализ результата</span>
+}</code>
+            </div>
+            
+            <h3>Парсер JUnit XML (JunitParser)</h3>
+            <p>Реализует unmarshalling XML-отчётов стандарта JUnit в объектную модель:</p>
+            <div class="code-block">
+                <code>public class JunitParser {
+    protected JAXBContext jaxbContext;
+
+    public Testsuite parseTestsuite(String xmlReport) throws JAXBException, IOException
+    public Testsuites parseTestsuites(String xmlReport) throws JAXBException, IOException
+}</code>
+            </div>
+            
+            <h3>DTO классы результатов</h3>
+            
+            <div class="dto-card">
+                <h4>TestExecutionResult</h4>
+                <p style="margin-bottom:0.5rem;color:var(--text-secondary)">Агрегированный результат прогона</p>
+                <div class="code-block">
+                    <code>record TestExecutionResult(
+    int total,      <span style="color:#6b7280">// Общее число тестов</span>
+    int failures,   <span style="color:#6b7280">// Число проваленных тестов</span>
+    int errors,     <span style="color:#6b7280">// Число ошибок выполнения</span>
+    boolean solved  <span style="color:#6b7280">// Флаг успешного решения</span>
+)</code>
+                </div>
+            </div>
+            
+            <div class="dto-card">
+                <h4>TestCase</h4>
+                <p style="margin-bottom:0.5rem;color:var(--text-secondary)">Детальная информация о каждом тесте</p>
+                <div class="code-block">
+                    <code>record TestCase(
+    String id,
+    String name,
+    String status,
+    String message,
+    String errorType,
+    String errorMessage,
+    String errorDetails,
+    long executionTimeMs,
+    String stdout,
+    String stderr
+)</code>
+                </div>
+            </div>
+            
+            <h3>JAXB модель JUnit</h3>
+            <p>Классы пакета <code>org.supremecode.pluginsdk.junit</code> являются результатом code generation из XSD-схемы <code>jenkins-junit.xsd</code>. Схема определяет иерархию элементов:</p>
+            
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0.5rem;margin:1rem 0">
+                <div class="dependency"><span class="name">testsuites</span><span class="desc">— корневой контейнер (опциональный)</span></div>
+                <div class="dependency"><span class="name">testsuite</span><span class="desc">— набор тестов (name, tests, failures, errors, time...)</span></div>
+                <div class="dependency"><span class="name">testcase</span><span class="desc">— отдельный тест (name, assertions, time, classname...)</span></div>
+                <div class="dependency"><span class="name">failure</span><span class="desc">— провал теста (type, message, текст ошибки)</span></div>
+                <div class="dependency"><span class="name">error</span><span class="desc">— ошибка выполнения (type, message)</span></div>
+                <div class="dependency"><span class="name">properties</span><span class="desc">— контейнер свойств набора тестов</span></div>
+                <div class="dependency"><span class="name">property</span><span class="desc">— пара name/value для метаданных</span></div>
+                <div class="dependency"><span class="name">system-out/err</span><span class="desc">— стандартный вывод</span></div>
+            </div>
+            
+            <h3>Зависимости pom.xml</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+                <span class="tag"><code>jackson-databind</code> 2.15.3</span>
+                <span class="tag"><code>jakarta.xml.bind-api</code> 4.0.1</span>
+                <span class="tag"><code>jaxb-runtime</code> 4.0.2</span>
+                <span class="tag"><code>javax.activation</code> 1.1.1</span>
+                <span class="tag"><code>commons-io</code> 1.3.2</span>
+            </div>
+        </div>
+
+        <h2>2. common-plugins</h2>
+        
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-badge plugins">Plugins</span>
+                <span>Эталонные реализации LanguageTester для поддерживаемых языков</span>
+            </div>
+            
+            <h3>Назначение</h3>
+            <p>Библиотека с эталонными реализациями интерфейса <code>LanguageTester</code> для поддерживаемых языков программирования. Содержит три плагина: Java, C++, JavaScript.</p>
+            
+            <h3>Структура модуля</h3>
+            <div class="dir-tree">
+                <span class="dir">common-plugins/</span><br>
+                ├── <span class="dir">src/main/java/org/supremecode/commonplugins/</span><br>
+                │   ├── <span class="file">JavaLanguageTester.java</span>    <span class="comment"># Плагин для Java (JUnit 4)</span><br>
+                │   ├── <span class="file">CppLanguageTester.java</span>     <span class="comment"># Плагин для C++ (GoogleTest)</span><br>
+                │   └── <span class="file">JsLanguageTester.java</span>      <span class="comment"># Плагин для JavaScript (Jest)</span><br>
+                └── <span class="file">pom.xml</span>
+            </div>
+            
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin:1rem 0">
+                <div class="dto-card">
+                    <h4>JavaLanguageTester</h4>
+                    <p style="color:var(--text-secondary);font-size:0.9rem">Maven Surefire Plugin</p>
+                    <div style="margin-top:0.5rem">
+                        <div class="dto-field"><span class="name">imageName:</span> <code>sc-java-test</code></div>
+                        <div class="dto-field"><span class="name">testsPath:</span> <code>/src/test/java/JunitTest.java</code></div>
+                        <div class="dto-field"><span class="name">solutionPath:</span> <code>/src/main/java/org/example/Solution.java</code></div>
+                        <div class="dto-field"><span class="name">reportPath:</span> <code>/usr/app/target/surefire-reports/TEST-JunitTest.xml</code></div>
+                    </div>
+                </div>
+                
+                <div class="dto-card">
+                    <h4>CppLanguageTester</h4>
+                    <p style="color:var(--text-secondary);font-size:0.9rem">GoogleTest + CMake</p>
+                    <div style="margin-top:0.5rem">
+                        <div class="dto-field"><span class="name">imageName:</span> <code>sc-cpp-test</code></div>
+                        <div class="dto-field"><span class="name">testsPath:</span> <code>/sc_test.cc</code></div>
+                        <div class="dto-field"><span class="name">solutionPath:</span> <code>/solution.hpp</code></div>
+                        <div class="dto-field"><span class="name">reportPath:</span> <code>/usr/app/build/junit.xml</code></div>
+                    </div>
+                </div>
+                
+                <div class="dto-card">
+                    <h4>JsLanguageTester</h4>
+                    <p style="color:var(--text-secondary);font-size:0.9rem">Jest</p>
+                    <div style="margin-top:0.5rem">
+                        <div class="dto-field"><span class="name">imageName:</span> <code>sc-js-test</code></div>
+                        <div class="dto-field"><span class="name">testsPath:</span> <code>/test.js</code></div>
+                        <div class="dto-field"><span class="name">solutionPath:</span> <code>/solution.js</code></div>
+                        <div class="dto-field"><span class="name">reportPath:</span> <code>/usr/app/junit.xml</code></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="note warning">
+                <strong>Отличие JavaScript плагина:</strong> использует <code>parseTestsuites()</code> (обёртка для множества наборов тестов), тогда как Java и C++ используют <code>parseTestsuite()</code> для одиночного набора.
+            </div>
+            
+            <h3>Механизм ServiceLoader</h3>
+            <p>Класс <code>LanguagePluginService</code> в test-runner использует <code>java.util.ServiceLoader</code> для автоматического обнаружения реализаций <code>LanguageTester</code>:</p>
+            <div class="code-block">
+                <code>public class LanguagePluginService {
+    Map&lt;String, LanguageTester&gt; map = new HashMap&lt;&gt;();
+
+    LanguagePluginService() {
+        ServiceLoader&lt;LanguageTester&gt; loader = ServiceLoader.load(LanguageTester.class);
+        for (LanguageTester service : loader) {
+            map.put(service.languageId(), service);
+        }
+    }
+}</code>
+            </div>
+            <p>Для автоматического обнаружения необходимо создать файл:</p>
+            <code>META-INF/services/org.supremecode.pluginsdk.LanguageTester</code>
+        </div>
+
+        <h2>3. test-runner</h2>
+        
+        <div class="module-card">
+            <div class="module-header">
+                <span class="module-badge runner">Runner</span>
+                <span>Микросервис для тестирования пользовательских решений</span>
+            </div>
+            
+            <h3>Назначение</h3>
+            <p>Микросервис, выполняющий тестирование пользовательских решений в изолированных Docker-контейнерах. Является потребителем Kafka для получения задач и публикует результаты обратно в Kafka. Взаимодействует с MinIO для получения тестов и загрузки результатов.</p>
+            
+            <h3>Технологический стек</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+                <span class="tag spring">Spring Boot 3.2.3</span>
+                <span class="tag kafka">Spring Kafka</span>
+                <span class="tag docker">Docker Java 3.3.4</span>
+                <span class="tag minio">MinIO Java SDK 8.5.7</span>
+                <span class="tag kotlin">Kotlin 1.9.24</span>
+            </div>
+            
+            <h3>Структура модуля</h3>
+            <div class="dir-tree">
+                <span class="dir">test-runner/</span><br>
+                ├── <span class="dir">src/main/java/org/supremecode/testrunner/</span><br>
+                │   ├── <span class="file">TestRunnerApplication.java</span>         <span class="comment"># Точка входа</span><br>
+                │   ├── <span class="file">Listener.java</span>                      <span class="comment"># Kafka consumer</span><br>
+                │   ├── <span class="file">Tester.java</span>                        <span class="comment"># Логика запуска контейнеров</span><br>
+                │   ├── <span class="file">LanguagePluginService.java</span>         <span class="comment"># ServiceLoader integration</span><br>
+                │   ├── <span class="file">LogCallback.java</span>                   <span class="comment"># Callback для сбора логов</span><br>
+                │   ├── <span class="file">WaitCallback.java</span>                  <span class="comment"># Callback для ожидания контейнера</span><br>
+                │   ├── <span class="file">SetTimeout.java</span>                    <span class="comment"># Future для timeout</span><br>
+                │   ├── <span class="file">dto/TestResult.kt</span>                  <span class="comment"># DTO результата</span><br>
+                │   └── <span class="dir">configuration/</span><br>
+                │       ├── <span class="file">SupremeCodeConfiguration.kt</span>    <span class="comment"># Свойства</span><br>
+                │       ├── <span class="file">MinioConfig.java</span>               <span class="comment"># Bean MinIO client</span><br>
+                │       └── <span class="file">MinioProperties.java</span>           <span class="comment"># Свойства подключения</span><br>
+                └── <span class="dir">src/main/resources/</span><br>
+                    ├── <span class="file">application.yaml</span>                   <span class="comment"># Конфигурация</span><br>
+                    ├── <span class="dir">xsd/</span><br>
+                    │   └── <span class="file">jenkins-junit.xsd</span>              <span class="comment"># XSD схема</span><br>
+                    └── <span class="file">*.xml</span>                              <span class="comment"># Примеры JUnit отчётов</span>
+            </div>
+            
+            <h3>Конфигурация Kafka</h3>
+            <table class="config-table">
+                <tr>
+                    <th>Параметр</th>
+                    <th>Producer</th>
+                    <th>Consumer</th>
+                </tr>
+                <tr>
+                    <td>bootstrap.servers</td>
+                    <td colspan="2" style="text-align:center">localhost:9092</td>
+                </tr>
+                <tr>
+                    <td>key.serializer/deserializer</td>
+                    <td>StringSerializer</td>
+                    <td>StringDeserializer</td>
+                </tr>
+                <tr>
+                    <td>value.serializer/deserializer</td>
+                    <td>JsonSerializer (TestResultMessage)</td>
+                    <td>JsonDeserializer (TestMessage)</td>
+                </tr>
+                <tr>
+                    <td>group.id</td>
+                    <td>-</td>
+                    <td>test-group</td>
+                </tr>
+                <tr>
+                    <td>topic</td>
+                    <td>test-result-topic</td>
+                    <td>test-topic</td>
+                </tr>
+            </table>
+            
+            <h3>Конфигурация Docker</h3>
+            <div class="code-block">
+                <code>DockerClient создаётся с кастомным HTTP-клиентом (Apache 5):
+.withDockerHost("tcp://localhost:2375")     <span style="color:#6b7280">// Windows</span>
+<span style="color:#6b7280">// или unix:///var/run/docker.sock для Linux</span>
+.maxConnections(100)
+.connectionTimeout(Duration.ofSeconds(30))
+.responseTimeout(Duration.ofSeconds(45))</code>
+            </div>
+            
+            <h3>Listener (Kafka Consumer)</h3>
+            <p>Основной обработчик входящих сообщений:</p>
+            <div class="code-block">
+                <code>@KafkaListener(topics = "test-topic", groupId = "test-group")
+protected void listen(@Payload TestMessage testMessage, ...) {
+    <span style="color:#6b7280">// 1. Получает тесты из MinIO (bucket: problems)</span>
+    <span style="color:#6b7280">// 2. Получает решение из MinIO (bucket: solutions)</span>
+    <span style="color:#6b7280">// 3. Находит LanguageTester по languageId</span>
+    <span style="color:#6b7280">// 4. Создаёт Tester и запускает test()</span>
+    <span style="color:#6b7280">// 5. Сохраняет logs.txt и report.txt обратно в MinIO</span>
+    <span style="color:#6b7280">// 6. Публикует TestResultMessage в resultTopic</span>
+}</code>
+            </div>
+            
+            <h3>Tester (Container Orchestration)</h3>
+            
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem">
+                <div class="dto-card">
+                    <h4>1. Создание архива (createArchive)</h4>
+                    <p style="color:var(--text-secondary)">Формирует TAR-файл, содержащий файл тестов и файл решения. Использует <code>TarArchiveOutputStream</code> из Apache Commons Compress.</p>
+                </div>
+                
+                <div class="dto-card">
+                    <h4>2. Создание контейнера (createContainer)</h4>
+                    <p style="color:var(--text-secondary)">
+                        Memory: 400 MB<br>
+                        Swap: 1 GB<br>
+                        CPU: 1 ядро<br>
+                        Network: none (изоляция)
+                    </p>
+                </div>
+                
+                <div class="dto-card">
+                    <h4>3. Процесс тестирования (test)</h4>
+                    <p style="color:var(--text-secondary)">
+                        1. Создать контейнер<br>
+                        2. Скопировать TAR-архив в /usr/app<br>
+                        3. Запустить контейнер<br>
+                        4. Подписаться на логи<br>
+                        5. Дождаться или timeout (12 сек)<br>
+                        6. Скопировать отчёт<br>
+                        7. Вызвать verdict()<br>
+                        8. Убить и удалить контейнер
+                    </p>
+                </div>
+            </div>
+            
+            <h3>DTO TestResult</h3>
+            <div class="code-block">
+                <code><span style="color:#a855f7">data class</span> <span style="color:#3b82f6">TestResult</span>(
+    val total: Int,         <span style="color:#6b7280">// Всего тестов</span>
+    val failures: Int,      <span style="color:#6b7280">// Провалы</span>
+    val errors: Int,        <span style="color:#6b7280">// Ошибки</span>
+    val solved: Boolean,    <span style="color:#6b7280">// Решение принято</span>
+    val statusCode: Int,    <span style="color:#6b7280">// Код завершения (-1 если timeout)</span>
+    val report: String,     <span style="color:#6b7280">// JUnit XML отчёт</span>
+    val logs: String,       <span style="color:#6b7280">// Логи контейнера</span>
+)</code>
+            </div>
+            
+            <h3>XSD Code Generation</h3>
+            <p>В <code>pom.xml</code> настроен плагин Apache CXF XJC для генерации JAXB классов из XSD:</p>
+            <div class="code-block">
+                <code>&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.cxf&lt;/groupId&gt;
+    &lt;artifactId&gt;cxf-xjc-plugin&lt;/artifactId&gt;
+    &lt;version&gt;4.0.0&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;sourceRoot&gt;${basedir}/target/generated-sources/xsd&lt;/sourceRoot&gt;
+        &lt;xsdDir&gt;${basedir}/src/main/resources/xsd&lt;/xsdDir&gt;
+        &lt;packagename&gt;net.danil.generated.junit&lt;/packagename&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;</code>
+            </div>
+            <div class="note">
+                Генерирует классы в <code>target/generated-sources/xsd/net/danil/generated/junit/</code>, однако используются классы из <code>org.supremecode.pluginsdk.junit</code>.
+            </div>
+            
+            <h3>Взаимодействие с MinIO</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:1rem">
+                <div class="dependency" style="flex:1">
+                    <span class="name">GET:</span>
+                    <code>GetObjectArgs.builder().bucket("problems").object(...)</code>
+                </div>
+                <div class="dependency" style="flex:1">
+                    <span class="name">PUT:</span>
+                    <code>PutObjectArgs.builder().bucket("solutions").object(...).stream(...)</code>
+                </div>
+            </div>
+        </div>
+
+        <h2>Схема взаимодействия модулей</h2>
+        
+        <div class="flow-diagram">
+            <pre class="diagram">
+┌──────────────────────────────────────────────────────────────────────┐
+│                           <span class="accent">test-runner</span>                                 │
+│  ┌─────────────┐    ┌──────────────────────────────────────────────┐  │
+│  │  Listener   │    │               <span class="accent">Tester</span>                        │  │
+│  │ (Kafka)     │───►│  createContainer()                             │  │
+│  │             │    │  createArchive()                              │  │
+│  │             │    │  copyArchiveToContainer()                     │  │
+│  │             │    │  startContainer()                             │  │
+│  │             │    │  waitContainer() ───► copyReport()          │  │
+│  └─────────────┘    │       │                                      │  │
+│                     │       ▼                                      │  │
+│                     │  languageTester.verdict()                    │  │
+│  ┌──────────────────┴──────────────────────────────────────────┐  │
+│  │          <span class="purple">LanguagePluginService</span> (ServiceLoader)              │  │
+│  │  map: { <span class="green">"java"</span> → JavaLanguageTester, <span class="green">"cpp"</span> → CppLanguageTester }  │  │
+│  └────────────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                           <span class="accent">plugin-sdk</span>                                  │
+│  ┌─────────────────┐    ┌─────────────────────────────────────────┐   │
+│  │ <span class="purple">LanguageTester</span>  │◄───│ JunitParser                             │   │
+│  │ (interface)     │    │ parseTestsuite(xml) → Testsuite           │   │
+│  │                 │    │ parseTestsuites(xml) → Testsuites        │   │
+│  └─────────────────┘    └─────────────────────────────────────────┘   │
+│                                    │                                  │
+│                                    ▼                                  │
+│                           org.supremecode.pluginsdk.junit            │
+│                           (JAXB model: Testsuites, Testsuite, etc.)  │
+└──────────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                         <span class="accent">common-plugins</span>                                │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌─────────────────┐    │
+│  │<span class="green">JavaLanguageTester</span> │  │<span class="green">CppLanguageTester</span>  │  │<span class="green">JsLanguageTester</span> │    │
+│  │ image: sc-java   │  │ image: sc-cpp     │  │ image: sc-js     │    │
+│  │ report: surefire │  │ report: CMake     │  │ report: Jest    │    │
+│  └──────────────────┘  └──────────────────┘  └─────────────────┘    │
+└──────────────────────────────────────────────────────────────────────┘</pre>
+        </div>
+
+        <h2>Паттерны проектирования</h2>
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem">
+            <div class="pattern-card">
+                <div class="name">Plugin Pattern</div>
+                <div class="desc">LanguageTester — точка расширения для новых языков</div>
+            </div>
+            <div class="pattern-card">
+                <div class="name">ServiceLoader Pattern</div>
+                <div class="desc">Динамическая загрузка плагинов без конфигурации</div>
+            </div>
+            <div class="pattern-card">
+                <div class="name">Strategy Pattern</div>
+                <div class="desc">Выбор LanguageTester по languageId</div>
+            </div>
+            <div class="pattern-card">
+                <div class="name">Template Method</div>
+                <div class="desc">Tester.test() определяет общую последовательность</div>
+            </div>
+            <div class="pattern-card">
+                <div class="name">Callback/Observer</div>
+                <div class="desc">LogCallback, WaitCallback для асинхронных событий Docker</div>
+            </div>
+            <div class="pattern-card">
+                <div class="name">DTO/Record</div>
+                <div class="desc">Неизменяемые объекты данных</div>
+            </div>
+        </div>
+
+        <h2>Расширяемость</h2>
+        
+        <div class="module-card">
+            <p>Для добавления нового языка необходимо:</p>
+            <div class="extensibility-step">
+                <div class="num">1</div>
+                <div class="text">Создать реализацию <code>LanguageTester</code> в отдельном модуле</div>
+            </div>
+            <div class="extensibility-step">
+                <div class="num">2</div>
+                <div class="text">Добавить JAR в classpath test-runner</div>
+            </div>
+            <div class="extensibility-step">
+                <div class="num">3</div>
+                <div class="text">Создать файл <code>META-INF/services/org.supremecode.pluginsdk.LanguageTester</code> с полным именем класса</div>
+            </div>
+            <div class="extensibility-step">
+                <div class="num">4</div>
+                <div class="text">Подготовить Docker-образ с тестовым фреймворком для языка</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
