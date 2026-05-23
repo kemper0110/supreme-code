@@ -1,4 +1,4 @@
-package org.supremecode.testrunner.runner;
+package org.supremecode.testrunner;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
