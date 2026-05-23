@@ -28,6 +28,8 @@ export default function MyProblem() {
     difficulty: 'Easy',
   } as MyProblemView
 
+  const [directory, setDirectory] = useState<FileSystemDirectoryHandle | null>(null)
+
   const [state, setState] = useState(data)
   const queryClient = useQueryClient()
   const save = useMutation({
@@ -85,11 +87,48 @@ export default function MyProblem() {
             Добавление задачи
           </Text>
         </div>
-        <Button loading={save.isPending} onClick={() => {
-          save.mutate()
-        }}>
-          Сохранить
-        </Button>
+        <div className={'flex gap-3'}>
+          <Button onClick={async () => {
+            const dirHandle: FileSystemDirectoryHandle = await window.showDirectoryPicker();
+            setDirectory(dirHandle)
+          }}>
+            Подключить директорию
+          </Button>
+          {
+            directory ? (
+              <>
+                <Button onClick={async () => {
+                  const file = await directory!.getFileHandle('description.md')
+                  const writable = await file.createWritable({keepExistingData: false})
+                  await writable.write(state.description)
+                  await writable.close()
+                }}>
+                  Экспорт
+                </Button>
+                <Button onClick={async () => {
+                  for await (const entry of directory.values()) {
+                    console.log(entry.kind, entry.name);
+                    if (entry.kind === 'file' && entry.name === 'description.md') {
+                      const file = await entry.getFile()
+                      const content = await file.text()
+                      setState(p => ({
+                        ...p,
+                        description: content
+                      }))
+                    }
+                  }
+                }}>
+                  Импорт
+                </Button>
+              </>
+            ) : null
+          }
+          <Button loading={save.isPending} onClick={() => {
+            save.mutate()
+          }}>
+            Сохранить
+          </Button>
+        </div>
       </div>
 
       <div className={'mt-4 h-[400px] flex gap-4'}>
@@ -115,6 +154,7 @@ export default function MyProblem() {
         <Paper withBorder className={'w-full h-full p-2'}>
           <Editor className={'w-full h-full'}
                   value={state.description}
+                  language={'markdown'}
                   onChange={v => {
                     console.log('change')
                     if (v)
@@ -143,7 +183,7 @@ export default function MyProblem() {
               Object.entries(state.languages).map(([id]) => (
                 <Tabs.Tab value={id} rightSection={
                   <ActionIcon variant={'light'} onClick={() => deleteLang(id)}>
-                    <IconX />
+                    <IconX/>
                   </ActionIcon>
                 }>
                   <div className={'flex gap-2 items-center'}>
@@ -163,7 +203,7 @@ export default function MyProblem() {
                     <Text>
                       Тесты
                     </Text>
-                    <Editor className={'h-full'} value={lang.test} onChange={v => {
+                    <Editor className={'h-full'} language={platformConfig!.languages[id].monacoLanguageId} value={lang.test} onChange={v => {
                       if (v) {
                         setLangText(id, 'test', v)
                       }
@@ -174,7 +214,7 @@ export default function MyProblem() {
                       <Text>
                         Решение задачи
                       </Text>
-                      <Editor value={lang.solution} onChange={v => {
+                      <Editor value={lang.solution} language={platformConfig!.languages[id].monacoLanguageId} onChange={v => {
                         if (v) {
                           setLangText(id, 'solution', v)
                         }
@@ -184,7 +224,7 @@ export default function MyProblem() {
                       <Text>
                         Шаблон решения
                       </Text>
-                      <Editor value={lang.solutionTemplate} onChange={v => {
+                      <Editor value={lang.solutionTemplate} language={platformConfig!.languages[id].monacoLanguageId}  onChange={v => {
                         if (v) {
                           setLangText(id, 'solutionTemplate', v)
                         }

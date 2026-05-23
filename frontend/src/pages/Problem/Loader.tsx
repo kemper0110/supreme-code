@@ -54,6 +54,7 @@ export const problemQueryKey = (slug: string) =>
 
 
 export const ProblemLoader = async (params: LoaderFunctionArgs) => {
+  console.log('problem loader', performance.now())
   const slug = params.params.slug
   const queryKey = problemQueryKey(slug!)
   return await Promise.all([

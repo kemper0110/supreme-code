@@ -25,6 +25,7 @@ export const problemsQueryKey = (searchParams: string) => {
 };
 
 export const ProblemsLoader = async ({request}: {request: Request}) => {
+  console.log('problems loader', performance.now())
   const [,searchParams = ''] = request.url.split("?");
   // const state = new URLSearchParams(searchParams)
   // const [name, difficulty, language, tags] = [state.get('name'), state.get('difficulty'), state.getAll('language'), state.getAll('tags')]

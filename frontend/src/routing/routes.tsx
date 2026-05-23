@@ -17,9 +17,13 @@ import {MyProblemsLoader} from "../pages/MyProblems/MyProblemsLoader.ts";
 import MyProblem from "../pages/MyProblem/MyProblem.tsx";
 import {MyProblemCreateLoader, MyProblemUpdateLoader} from "../pages/MyProblem/MyProblemLoader.ts";
 
+import {KeycloakLoader} from "../keycloak-router.tsx";
+
 export const routes = [
   {
     // errorElement: <ProtectedErrorBoundary/>,
+    loader: KeycloakLoader,
+    serialLoader: true,
     children: [
       {
         element: <BaseLayout/>,

@@ -18,7 +18,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(undefined, (error) => {
   if (isAxiosError(error) && error.response?.status == 401) {
     console.info("401 error")
-    keycloak.login()
+    // keycloak.login()
     // useUser.getState().invalidateUser()
   }
   return Promise.reject(error)

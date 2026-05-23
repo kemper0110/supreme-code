@@ -4,6 +4,7 @@ import {isAxiosError} from "axios";
 
 export const protectionLoader = () => {
   const user = useUser.getState().user
+  console.log('auth protection', user, performance.now())
   const logged = !!user
 
   if (!logged) {
@@ -15,6 +16,7 @@ export const protectionLoader = () => {
 export const Protected = (routeObject: RouteObject, ...other: RouteObject[]): RouteObject => {
   return {
     loader: protectionLoader,
+    serialLoader: true,
     children: [routeObject, ...other]
   }
 }
