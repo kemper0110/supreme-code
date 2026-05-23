@@ -6,9 +6,11 @@ import lombok.RequiredArgsConstructor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
+import org.supremecode.web.domain.User
 import org.supremecode.web.repository.JdbcProblemRepositoryImpl
 import org.supremecode.web.repository.ProblemRepository
 import org.supremecode.web.service.MinioPathService
@@ -59,8 +61,10 @@ class ProblemController(
     @Transactional(readOnly = true)
     fun view(
         @PathVariable problemId: Long,
-        @AuthenticationPrincipal(expression = "id") userId: Long
+        auth: Authentication
     ): Mono<ProblemSolveView?> {
+        val authUser = auth.details as User
+        val userId = authUser.id!!
         val problem = this.problemRepository.findById(problemId).get()
         return Mono.just(
             ProblemSolveView(

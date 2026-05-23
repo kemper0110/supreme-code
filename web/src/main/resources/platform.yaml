@@ -11,3 +11,9 @@ languages:
     monacoLanguageId: java
     fileExtension: java
     ephemeralFileName: Main.java
+  javascript:
+    name: JavaScript
+    iconPath: /plugins/javascript.svg
+    monacoLanguageId: javascript
+    fileExtension: js
+    ephemeralFileName: index.js
