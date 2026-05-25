@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TestRunnerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+    <module name="test-runner" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.supremecode.testrunner.TestRunnerApplication" />
+    <option name="VM_PARAMETERS" value="-javaagent:&quot;otel/opentelemetry-javaagent.jar&quot;" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
