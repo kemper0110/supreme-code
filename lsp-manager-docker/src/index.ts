@@ -7,6 +7,7 @@ import Docker, {type Container} from 'dockerode';
 import * as fs from "node:fs";
 import * as stream from "node:stream";
 import {PassThrough} from "node:stream";
+import {pipeline} from "node:stream/promises";
 import {type IWebSocket, WebSocketMessageReader, WebSocketMessageWriter} from "vscode-ws-jsonrpc";
 import {createConnection, createStreamConnection} from "vscode-ws-jsonrpc/server";
 import * as http from "node:http";
@@ -70,28 +71,45 @@ async function createLSP(language: string): Promise<LSP> {
         StdinOnce: false,
     });
 
-    await container.start();
     const attach = await container.attach({
         stream: true,
         stdin: true,
         stdout: true,
         stderr: true,
+        hijack: true,
     });
-    const stdout = new PassThrough();
-    const stderr = new PassThrough();
-    container.modem.demuxStream(attach, stdout, stderr);
+    await container.start();
 
-    stderr.on('data', d => {
-        console.error('[LSP stderr]', d.toString());
-    });
+    const stdoutSplit = new PassThrough();
+    const stderrSplit = new PassThrough();
+    container.modem.demuxStream(attach, stdoutSplit, stderrSplit);
 
     await waitForContainerReady(container)
+
+    const stdin = new PassThrough()
+    pipeline(stdin, async function* (source) {
+        for await (const chunk of source) {
+            console.log('stdin chunk', chunk.length)
+            yield chunk
+        }
+    }, attach).catch((e: Error) => {
+        console.log('stdin pipeline error', e)
+    })
+
+    const stdout = new PassThrough()
+    pipeline(stdoutSplit, async function* (source) {
+        for await (const chunk of source) {
+            console.log('stdout chunk', chunk.length)
+            yield chunk
+        }
+    }, stdout).catch((e: Error) => {
+        console.log('stdout pipeline error', e)
+    })
 
     return {
         container,
         stdout,
-        // convert `attach` as WritableStream to Writable :)
-        stdin: stream.Writable.fromWeb(stream.Writable.toWeb(attach)),
+        stdin,
     };
 }
 
@@ -161,23 +179,29 @@ function launchLanguageServer(socket: IWebSocket, lsp: LSP) {
 
         return message;
     });
-    socketConnection.onClose(() => serverConnection.dispose());
-    serverConnection.onClose(() => socketConnection.dispose());
+    socketConnection.onClose(() => {
+        console.log('socket dispose')
+        return serverConnection.dispose();
+    });
+    serverConnection.onClose(() => {
+        console.log('server dispose')
+        return socketConnection.dispose();
+    });
 }
 
 server.on('upgrade', async (request: IncomingMessage, socket: Socket, head: Buffer) => {
     const url = new URL(request.url!, `http://${request.headers.host}/`);
-    const lsp = await createLSP(url.searchParams.get('language')!);
+    const lsp = await createLSP(url.searchParams.get('language')!)
     console.log('created lsp', lsp.container.id)
+    socket.on('close', () => {
+        clearLSP(lsp.container).catch(e => {
+            console.error('Не удалось удалить LSP', e)
+        })
+    })
 
     wss.handleUpgrade(request, socket, head, (webSocket) => {
-        webSocket.on('close', () => {
-            clearLSP(lsp.container).catch(e => {
-                console.error('Не удалось удалить LSP', e)
-            })
-        })
         lsp.container.wait().then(() => {
-            webSocket.close(1101, 'container killed')
+            webSocket.close(1000, 'container killed')
         })
         const socket: IWebSocket = {
             send: (content) =>

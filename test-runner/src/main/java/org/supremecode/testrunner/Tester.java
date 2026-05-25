@@ -1,18 +1,18 @@
 package org.supremecode.testrunner;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.*;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.supremecode.pluginsdk.LanguageTester;
-import org.supremecode.pluginsdk.result.TestExecutionResult;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
+import io.opentelemetry.context.Context;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
+import org.supremecode.pluginsdk.result.TestExecutionResult;
 import org.supremecode.testrunner.dto.TestResult;
 
 import java.io.*;
@@ -27,6 +27,7 @@ public class Tester {
     protected final int ttk;
     protected final LanguageTester languageTester;
 
+    @WithSpan
     protected byte[] createArchive(String tests, String code) {
         try (
                 InputStream codeInputStream = IOUtils.toInputStream(code, "UTF-8");
@@ -52,7 +53,7 @@ public class Tester {
             throw new RuntimeException(e);
         }
     }
-
+    @WithSpan
     protected CreateContainerResponse createContainer() {
         final var cmd = dockerClient.createContainerCmd(languageTester.imageName());
         cmd.withHostConfig(
@@ -74,7 +75,7 @@ public class Tester {
         cmd.withNetworkDisabled(true);
         return cmd.exec();
     }
-
+    @WithSpan
     protected String copyReport(String containerId) {
         try (
                 final var testResultXmlStream = dockerClient.copyArchiveFromContainerCmd(containerId, languageTester.reportPath()).exec();
@@ -89,7 +90,32 @@ public class Tester {
         }
     }
 
+    @WithSpan
+    protected TestExecutionResult getVerdict(String report, int exitCode) {
+        return languageTester.verdict(report, exitCode);
+    }
 
+    @WithSpan
+    protected TestResult handleWaitResult(Object result, LogCallback logCallback, String containerId) {
+        TestResult testResultBuilder;
+        final var logs = logCallback.getLogs();
+        if (result instanceof WaitResult waitResult) {
+            final var report = copyReport(containerId);
+            final var verdict = getVerdict(report, waitResult.exitCode());
+            testResultBuilder = new TestResult(verdict.total(), verdict.failures(), verdict.errors(), verdict.solved(), waitResult.exitCode(), report, logs);
+        } else {
+            testResultBuilder = new TestResult(0, 0, 0, false, -1, "", logs);
+        }
+        try {
+            dockerClient.removeContainerCmd(containerId).withForce(true).exec();
+            log.error("container({}): removed", containerId.substring(0, 8));
+        } catch (Exception e) {
+            log.error("container({}): not found to remove {}", containerId.substring(0, 8), e.getMessage());
+        }
+        return testResultBuilder;
+    }
+
+    @WithSpan
     public CompletableFuture<TestResult> test(String tests, String code) {
         final var container = createContainer();
         final var containerId = container.getId();
@@ -103,6 +129,7 @@ public class Tester {
 
         dockerClient.startContainerCmd(containerId).exec();
 
+        final var context = Context.current();
         final var logCallback = new LogCallback(containerId);
         dockerClient.logContainerCmd(containerId)
                 .withStdOut(true)
@@ -117,29 +144,6 @@ public class Tester {
                 .exec(new WaitCallback(containerId, waitCF));
 
         return CompletableFuture.anyOf(timeoutCF, waitCF)
-                .thenApply(result -> {
-                    TestResult testResultBuilder;
-                    final var logs = logCallback.getLogs();
-                    if (result instanceof WaitResult waitResult) {
-                        final var report = copyReport(containerId);
-                        final var verdict = languageTester.verdict(report, waitResult.exitCode());
-                        testResultBuilder = new TestResult(verdict.total(), verdict.failures(), verdict.errors(), verdict.solved(), waitResult.exitCode(), report, logs);
-                    } else {
-                        testResultBuilder = new TestResult(0, 0, 0, false, -1, "", logs);
-                    }
-                    try {
-                        dockerClient.killContainerCmd(containerId).exec();
-                        log.error("container({}): killed", containerId.substring(0, 8));
-                    } catch (Exception e) {
-                        log.error("container({}): not found to kill {}", containerId.substring(0, 8), e.getMessage());
-                    }
-                    try {
-                        dockerClient.removeContainerCmd(containerId).exec();
-                        log.error("container({}): removed", containerId.substring(0, 8));
-                    } catch (Exception e) {
-                        log.error("container({}): not found to remove {}", containerId.substring(0, 8), e.getMessage());
-                    }
-                    return testResultBuilder;
-                });
+                .thenApply(context.wrapFunction(result -> handleWaitResult(result, logCallback, containerId)));
     }
 }

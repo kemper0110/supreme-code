@@ -4,8 +4,10 @@ data class LanguageConfig(
     val name: String,
     val iconPath: String,
     val monacoLanguageId: String,
-    val fileExtension: String,
+    val monacoFile: String,
+    val extensions: List<String>,
     val ephemeralFileName: String,
+    val playgroundInitialCode: String,
 )
 
 data class PlatformConfig(

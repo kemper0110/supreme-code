@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="app_name" source="spring.application.name" defaultValue="web"/>
+
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>http://localhost:3100/loki/api/v1/push</url>
+        </http>
+        <format>
+            <label>
+                <pattern>application=${app_name},level=%level</pattern>
+            </label>
+            <message>
+                <pattern>
+                    {
+                        "level":"%level",
+                        "app":"${app_name}",
+                        "trace_id":"%X{trace_id:-}",
+                        "span_id":"%X{span_id:-}",
+                        "logger":"%logger",
+                        "thread":"%thread",
+                        "message":"%msg",
+                        "exception":"%ex"
+                    }
+                </pattern>
+            </message>
+        </format>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) [%X{trace_id:-},%X{span_id:-}] %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="LOKI"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

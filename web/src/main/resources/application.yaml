@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: web
   aop:
     proxy-target-class: true
   main:
@@ -58,3 +60,19 @@ debug: on
 
 client_id: backend
 client_secret: Klrnw7XigrmxXzYQY1mWqPdC13QYSHII
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus, metrics, info
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [%X{trace_id:-},%X{span_id:-}]"

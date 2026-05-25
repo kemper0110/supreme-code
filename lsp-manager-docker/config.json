@@ -8,6 +8,9 @@
     },
     "typescript": {
       "image": "denols"
+    },
+    "javascript": {
+      "image": "denols"
     }
   }
 }

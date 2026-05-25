@@ -1,3 +1,10 @@
+spring:
+  application:
+    name: test-runner
+
+server:
+  port: 8091
+
 supreme-code:
   test-runner:
     container:
@@ -10,3 +17,19 @@ minio:
   bucket: my-bucket
 
 debug: on
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus, metrics, info
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [%X{trace_id:-},%X{span_id:-}]"

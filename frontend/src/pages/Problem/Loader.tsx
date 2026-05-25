@@ -16,7 +16,9 @@ export type PlatformLanguage = {
   name: string
   iconPath: string
   monacoLanguageId: string
-  fileExtension: string
+  monacoFile: string
+  extensions: string[]
+  playgroundInitialCode: string
 }
 
 export type ProblemData = {

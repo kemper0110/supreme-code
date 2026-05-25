@@ -4,6 +4,9 @@ import com.github.dockerjava.api.DockerClient;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.opentelemetry.context.Context;
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.supremecode.shared.TestMessage;
 import org.supremecode.shared.TestResultMessage;
 import org.supremecode.testrunner.configuration.TestRunnerProperties;
+import org.supremecode.testrunner.dto.TestResult;
 
 import java.io.ByteArrayInputStream;
 
@@ -29,6 +33,36 @@ public class Listener {
     final private LanguagePluginService languagePluginService;
     private final DockerClient dockerClient;
     private final TestRunnerProperties testRunnerProperties;
+
+    @WithSpan
+    protected void handleResult(TestResult testResult, String messageId, TestMessage testMessage) {
+        log.info("Tests for id {} finished", messageId);
+        try {
+            final var logsBytes = testResult.getLogs().getBytes();
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket("solutions")
+                    .object(testMessage.getSolutionFolderPath() + "logs.txt")
+                    .contentType("text/plain")
+                    .stream(new ByteArrayInputStream(logsBytes), logsBytes.length, -1)
+                    .build());
+
+            final var reportBytes = testResult.getReport().getBytes();
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket("solutions")
+                    .object(testMessage.getSolutionFolderPath() + "report.txt")
+                    .contentType("text/plain")
+                    .stream(new ByteArrayInputStream(reportBytes), reportBytes.length, -1)
+                    .build());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        final var trm = new TestResultMessage(
+                testResult.getTotal(), testResult.getFailures(), testResult.getErrors(), testResult.getSolved(), testResult.getStatusCode(),
+                testMessage.getUserId(), testMessage.getProblemId(),
+                testMessage.getLanguageId(), testMessage.getSolutionId()
+        );
+        kafka.send(resultTopic, messageId, trm);
+    }
 
     @KafkaListener(topics = "test-topic", groupId = "test-group")
     protected void listen(
@@ -57,34 +91,7 @@ public class Listener {
         log.info("Delegating to {}", languageTester.getClass().getSimpleName());
 
         final var tester = new Tester(dockerClient, testRunnerProperties.getContainer().getTtk(), languageTester);
-        tester.test(tests, solution).thenAccept(testResult -> {
-            log.info("Tests for id {} finished after {}ms", messageId, System.currentTimeMillis() - runnerStart);
-
-            try {
-                final var logsBytes = testResult.getLogs().getBytes();
-                minioClient.putObject(PutObjectArgs.builder()
-                        .bucket("solutions")
-                        .object(testMessage.getSolutionFolderPath() + "logs.txt")
-                        .contentType("text/plain")
-                        .stream(new ByteArrayInputStream(logsBytes), logsBytes.length, -1)
-                        .build());
-
-                final var reportBytes = testResult.getReport().getBytes();
-                minioClient.putObject(PutObjectArgs.builder()
-                        .bucket("solutions")
-                        .object(testMessage.getSolutionFolderPath() + "report.txt")
-                        .contentType("text/plain")
-                        .stream(new ByteArrayInputStream(reportBytes), reportBytes.length, -1)
-                        .build());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            final var trm = new TestResultMessage(
-                    testResult.getTotal(), testResult.getFailures(), testResult.getErrors(), testResult.getSolved(), testResult.getStatusCode(),
-                    testMessage.getUserId(), testMessage.getProblemId(),
-                    testMessage.getLanguageId(), testMessage.getSolutionId()
-            );
-            kafka.send(resultTopic, messageId, trm);
-        });
+        tester.test(tests, solution)
+                .thenAccept(Context.current().wrapConsumer(testResult -> handleResult(testResult, messageId, testMessage)));
     }
 }

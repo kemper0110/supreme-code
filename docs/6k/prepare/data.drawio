@@ -1,6 +1,6 @@
-<mxfile host="drawio-plugin" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" modified="2026-04-27T21:12:51.799Z" etag="32n91YHK-_CE5-gLGTqa" version="22.1.22" type="embed">
+<mxfile host="drawio-plugin" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" modified="2026-05-23T14:40:25.895Z" etag="6Uubr2hNYyCAR5wglUuT" version="22.1.22" type="embed">
   <diagram id="23iRSUPoRavnBvh4doch" name="Page-1">
-    <mxGraphModel dx="-60" dy="470" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="885" dy="783" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -76,7 +76,7 @@
         <mxCell id="42" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;запуск контейнера и проверка&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="1790" y="1290" width="210" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="45" target="67">
+        <mxCell id="69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" source="45" target="67" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="45" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;lsp manager&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -116,19 +116,37 @@
           <mxGeometry x="2670" y="1680" width="210" height="50" as="geometry" />
         </mxCell>
         <mxCell id="0Jz-nHNJkC9Z-2wRwA5i-68" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;background-color: rgb(251, 251, 251);&quot;&gt;Блокирование сайта, пока keycloak не загрузится&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="2370" y="1060" width="330" height="140" as="geometry" />
+          <mxGeometry x="2309.5" y="670" width="270" height="50" as="geometry" />
         </mxCell>
         <mxCell id="0Jz-nHNJkC9Z-2wRwA5i-69" value="&lt;font color=&quot;#000000&quot;&gt;&lt;span style=&quot;background-color: rgb(251, 251, 251);&quot;&gt;Отображение тегов на странице с задачами&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1940" y="630" width="210" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="70" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="67" target="68">
+        <mxCell id="70" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="67" target="68" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="67" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Пересобрать образы&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="3110" y="1370" width="130" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="68" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Запустить новый ts&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="68" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Запустить новый ts&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="3230" y="1490" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="71" value="&lt;li data-end=&quot;486&quot; data-start=&quot;471&quot; data-section-id=&quot;cf7g8j&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;OpenTelemetry&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li data-end=&quot;499&quot; data-start=&quot;487&quot; data-section-id=&quot;2pnjll&quot;&gt;Micrometer&lt;br&gt;&lt;/li&gt;&lt;li data-end=&quot;512&quot; data-start=&quot;500&quot; data-section-id=&quot;961ble&quot;&gt;Prometheus&lt;br&gt;&lt;/li&gt;&lt;li data-end=&quot;522&quot; data-start=&quot;513&quot; data-section-id=&quot;wkmoms&quot;&gt;Grafana&lt;br&gt;&lt;/li&gt;&lt;li data-end=&quot;529&quot; data-start=&quot;523&quot; data-section-id=&quot;1j3uiqx&quot;&gt;Loki&lt;/li&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+          <mxGeometry x="1180" y="1560" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="72" value="&lt;b&gt;compose&lt;/b&gt;&lt;br&gt;grafana&lt;br&gt;prometheus&lt;br&gt;loki&lt;br&gt;tempo" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1380" y="1560" width="140" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="73" value="logback" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1590" y="1555" width="140" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="74" value="&lt;b&gt;kafka propagation&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1385" y="1704" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="75" value="&lt;b&gt;мониторинг&lt;/b&gt;&lt;br&gt;бизнесовые и инфра метрики" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1180" y="1680" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="76" value="ловить походы в &lt;br&gt;jdbc, minio, docker-engine&lt;br&gt;&lt;br&gt;прокидывает трейсы через http, kafka" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1200" y="1840" width="250" height="110" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

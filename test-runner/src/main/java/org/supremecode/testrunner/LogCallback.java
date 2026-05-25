@@ -11,7 +11,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-class LogCallback implements ResultCallback<Frame> {
+public class LogCallback implements ResultCallback<Frame> {
     final protected String containerId;
 
     final protected StringBuilder builder = new StringBuilder();

@@ -1,7 +1,7 @@
 import {z} from "zod";
 
 export const EnvSchema = z.object({
-    PORT: z.coerce.number().default(3000),
+    PORT: z.coerce.number().default(3005),
     NAMESPACE: z.string().default('default'),
 });
 

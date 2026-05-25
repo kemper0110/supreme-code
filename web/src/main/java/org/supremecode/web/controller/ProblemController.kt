@@ -51,8 +51,10 @@ class ProblemController(
     fun submit(
         @PathVariable problemId: Long,
         @RequestBody testRequest: TestRequest,
-        @AuthenticationPrincipal(expression = "id") userId: Long
+        auth: Authentication
     ): Mono<Long> {
+        val authUser = auth.details as User
+        val userId = authUser.id!!
         logger.debug("submitted solution for {} with {}", problemId, testRequest)
         return testRunnerSenderService.send(userId, testRequest.code, problemId, testRequest.language)
     }

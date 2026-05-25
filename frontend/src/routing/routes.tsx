@@ -18,6 +18,7 @@ import MyProblem from "../pages/MyProblem/MyProblem.tsx";
 import {MyProblemCreateLoader, MyProblemUpdateLoader} from "../pages/MyProblem/MyProblemLoader.ts";
 
 import {KeycloakLoader} from "../keycloak-router.tsx";
+import {PlaygroundLoader} from "../pages/Playground/PlaygroundLoader.ts";
 
 export const routes = [
   {
@@ -83,6 +84,7 @@ export const routes = [
         },
         {
           path: "/playground",
+          loader: PlaygroundLoader,
           lazy: async () => ({
             Component: (await import("../pages/Playground/Playground.tsx")).default
           })

@@ -1,5 +1,6 @@
 import axios, {isAxiosError} from "axios";
 import {keycloak} from "../keycloak.ts";
+import {useUser} from "../store/useUser.tsx";
 
 
 export const api = axios.create({
@@ -18,8 +19,8 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(undefined, (error) => {
   if (isAxiosError(error) && error.response?.status == 401) {
     console.info("401 error")
-    // keycloak.login()
-    // useUser.getState().invalidateUser()
+    useUser.getState().invalidateUser()
+    keycloak.login()
   }
   return Promise.reject(error)
 })

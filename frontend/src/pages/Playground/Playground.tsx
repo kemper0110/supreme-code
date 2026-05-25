@@ -1,78 +1,18 @@
 import React, {useEffect, useRef, useState} from "react";
+import MonacoEditor from "react-monaco-editor";
 import {Badge, Button, Flex, Group, SegmentedControl, Text} from "@mantine/core";
 import {LanguageValue} from "../../types/LanguageValue.tsx";
-import {codeExamples} from "./CodeExamples.tsx";
-import {IconArrowAutofitLeft, IconBrain, IconCoin, IconGripVertical, IconMoodCrazyHappy} from "@tabler/icons-react";
+import {IconArrowAutofitLeft, IconGripVertical} from "@tabler/icons-react";
 import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import {Link} from "react-router-dom";
 import {SSE} from "sse.js";
-import { MonacoEditorReactComp } from '@typefox/monaco-editor-react';
-import {EditorAppConfig} from "monaco-languageclient/editorApp";
-import * as vscode from "vscode";
-import {LanguageClientConfig} from "monaco-languageclient/lcwrapper";
-import {configureDefaultWorkerFactory} from "monaco-languageclient/workerFactory";
-import {MonacoVscodeApiConfig} from "monaco-languageclient/vscodeApiWrapper";
+import * as monaco from 'monaco-editor';
+import {CloseAction, ErrorAction, MonacoLanguageClient, MonacoServices,} from 'monaco-languageclient';
+import {toSocket, WebSocketMessageReader, WebSocketMessageWriter} from "vscode-ws-jsonrpc";
+import {createMessageConnection} from "vscode-jsonrpc";
+import {usePlatformConfigQuery} from "../shared/PlatformConfig.ts";
 
-const languageId = 'typescript';
-const code = 'const a = [];a.pu';
-const codeUri = '/workspace/test.ts';
-
-// Monaco VSCode API configuration
-const vscodeApiConfig: MonacoVscodeApiConfig = {
-  $type: 'extended',
-  viewsConfig: {
-    $type: 'EditorService'
-  },
-  userConfiguration: {
-    json: JSON.stringify({
-      'workbench.colorTheme': 'Default Dark Modern',
-      'editor.guides.bracketPairsHorizontal': 'active',
-      'editor.lightbulb.enabled': 'On',
-      'editor.wordBasedSuggestions': 'off',
-      'editor.experimental.asyncTokenization': true,
-      // Включите suggestions
-      'editor.quickSuggestions': {
-        'other': true,
-        'comments': false,
-        'strings': true
-      },
-      'editor.suggestOnTriggerCharacters': true,
-      'editor.acceptSuggestionOnEnter': 'on'
-    })
-  },
-  monacoWorkerFactory: configureDefaultWorkerFactory
-};
-
-// Language client configuration
-const languageClientConfig: LanguageClientConfig = {
-  languageId,
-  connection: {
-    options: {
-      $type: 'WebSocketUrl',
-      // at this url the language server for myLang must be reachable
-      url: 'ws://localhost:30002/denols'
-    }
-  },
-  clientOptions: {
-    documentSelector: [languageId],
-    workspaceFolder: {
-      index: 0,
-      name: 'workspace',
-      uri: vscode.Uri.file('/workspace')
-    }
-  }
-};
-
-// editor app / monaco-editor configuration
-const editorAppConfig: EditorAppConfig = {
-  codeResources: {
-    modified: {
-      text: code,
-      uri: codeUri
-    }
-  }
-};
-
+const baseUrl = 'ws://localhost:3005/';
 type RunRequest = {
   code: string
   language: string
@@ -93,21 +33,24 @@ type InfoEvent = {
 type RunnerEvent = LogEvent | ErrorEvent | InfoEvent
 
 export default function Playground() {
-  const [language, setLanguage] = useState<LanguageValue>("Javascript")
-  const editorRef = useRef<any>()
+  const {data: platformConfig} = usePlatformConfigQuery()
+
+  const [languageId, setLanguageId] = useState<string>(Object.keys(platformConfig!.languages)[0])
+  const language = platformConfig!.languages[languageId]!
 
   const [messages, setMessages] = useState<RunnerEvent[]>([])
   const [running, setRunning] = useState(false)
+  const [value, setValue] = useState(language.playgroundInitialCode)
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
 
   const handleRun = async () => {
-    const code = editorRef.current?.getValue() ?? ''
     setMessages([])
     setRunning(true)
     const source = new SSE('/api/playground', {
       headers: {
         'Content-Type': 'application/json',
       },
-      payload: JSON.stringify({code, language} as RunRequest),
+      payload: JSON.stringify({code: value, language: languageId} as RunRequest),
       method: 'POST',
     })
     const handler = (event: MessageEvent, type: RunnerEvent['type']) => {
@@ -118,8 +61,8 @@ export default function Playground() {
     source.addEventListener('log', (e: MessageEvent) => handler(e, 'log'))
     source.addEventListener('error', (e: MessageEvent) => handler(e, 'error'))
     source.addEventListener('info', (e: MessageEvent) => handler(e, 'info'))
-    source.addEventListener('readystatechange', (e: {readyState: number}) => {
-      if(e.readyState !== source.OPEN) {
+    source.addEventListener('readystatechange', (e: { readyState: number }) => {
+      if (e.readyState !== source.OPEN) {
         setRunning(false)
       }
     })
@@ -131,28 +74,94 @@ export default function Playground() {
     }
   }
 
-  const onLanguageChange = (value: string) => {
-    setLanguage(value as LanguageValue)
-    editorRef.current?.setValue(codeExamples[value as LanguageValue])
-  };
-  const onEditorMount = (editor: any) => {
-    console.warn('editor initialized', editor)
-    editorRef.current = editor
-  }
+  console.log(monaco.editor.getModels())
 
-  // const single = useRef(false)
-  // useEffect(() => {
-  //   if (single.current) {
-  //     return
-  //   }
-  //   single.current = true
-  //   runExtendedClient({
-  //     port: 30002,
-  //     path: '/denols',
-  //     languageId: 'typescript',
-  //     useExternalWebSocket: false
-  //   }, 'const a = [1, 2, 3]; a.pu')
-  // }, []);
+  const onLanguageChange = (value: string) => {
+    const newLanguage = platformConfig!.languages[value]
+    editorRef.current!.getModel()?.dispose()
+    editorRef.current!.setModel(monaco.editor.createModel(newLanguage.playgroundInitialCode, value, monaco.Uri.parse(newLanguage.monacoFile)))
+
+    setLanguageId(value as LanguageValue)
+    setValue(newLanguage.playgroundInitialCode)
+  };
+
+  const singleRun = useRef(false)
+  useEffect(() => {
+    if (singleRun.current) {
+      return
+    }
+    singleRun.current = true
+    MonacoServices.install();
+    for (const key in platformConfig!.languages) {
+      const language = platformConfig!.languages[key]
+      const languageId = language.monacoLanguageId
+      monaco.languages.register({
+        id: languageId,
+        extensions: language.extensions,
+        aliases: [languageId],
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      const url = new URL(baseUrl)
+      url.searchParams.set('language', language.monacoLanguageId)
+      const webSocket = new WebSocket(url.toString());
+
+      let languageClient: MonacoLanguageClient
+      webSocket.onopen = () => {
+        const socket = toSocket(webSocket);
+        const messageReader = new WebSocketMessageReader(socket);
+        const messageWriter = new WebSocketMessageWriter(socket);
+        const connection = createMessageConnection(messageReader, messageWriter, console);
+        connection.onClose(() => connection.dispose());
+        console.log('Connection established');
+        languageClient = new MonacoLanguageClient({
+          name: language.monacoLanguageId + ' Language Server',
+          clientOptions: {
+            workspaceFolder: {
+              uri: monaco.Uri.file('/workspace'),
+              index: 0,
+              name: 'workspace',
+            },
+            documentSelector: [language.monacoLanguageId],
+            errorHandler: {
+              error: (error, message) => {
+                console.error(message, error);
+                return {
+                  action: ErrorAction.Continue,
+                };
+              },
+              closed: () => {
+                return {
+                  action: CloseAction.Restart,
+                }
+              },
+            },
+          },
+          connectionProvider: {
+            get: () => Promise.resolve({
+              reader: messageReader,
+              writer: messageWriter,
+            }),
+          },
+        });
+        languageClient.start();
+      };
+
+      webSocket.onerror = (evt) => {
+        console.error(evt)
+      }
+      return () => {
+        webSocket.close()
+        languageClient?.stop();
+      }
+    } catch (e) {
+      console.error(e)
+      return
+    }
+  }, [languageId, language]);
 
   return (
     <div onKeyDown={keyboardHandler}
@@ -177,33 +186,26 @@ export default function Playground() {
         </Group>
 
         <SegmentedControl
-          data={[
-            {
-              value: 'Cpp',
-              label: <Flex align={'center'} gap={4}><IconBrain/><Text size={'lg'}>C++17 gcc:13.2.0</Text></Flex>
-            },
-            {
-              value: 'Java',
-              label: <Flex align={'center'} gap={4}><IconCoin/><Text size={'lg'}>Java 21 corretto</Text></Flex>,
-            },
-            {
-              value: 'Javascript',
-              label: <Flex align={'center'} gap={4}><IconMoodCrazyHappy/><Text size={'lg'}>node.js
-                20</Text></Flex>,
-            }
-          ]} value={language} onChange={onLanguageChange}
+          data={Object.entries(platformConfig!.languages).map(([key, lang]) => ({
+            value: key,
+            label: <Text size={'lg'}>{lang.name}</Text>
+          }))}
+          value={languageId} onChange={onLanguageChange}
         />
       </Flex>
       <PanelGroup className={'mt-1'} autoSaveId={'playground-panel-group'} direction={'horizontal'}>
         <Panel defaultSize={70} className={'pt-1 rounded-xl bg-white'}>
-          <MonacoEditorReactComp
-            vscodeApiConfig={vscodeApiConfig}
-            editorAppConfig={editorAppConfig}
-            languageClientConfig={languageClientConfig}
-            style={{ height: '100%' }}
-            onError={(e) => {
-              console.error(e);
+          <MonacoEditor
+            value={value}
+            onChange={(value) => setValue(value)}
+            editorDidMount={(editor) => {
+              editorRef.current = editor
+              editor.setModel(monaco.editor.createModel(value, languageId, monaco.Uri.parse(language.monacoFile)))
             }}
+            language={language.monacoLanguageId}
+            height={"100vh"}
+            width={"calc(100vw - 50px)"}
+            options={{automaticLayout: true}}
           />
         </Panel>
         <PanelResizeHandle className={'flex items-center justify-center'}>
