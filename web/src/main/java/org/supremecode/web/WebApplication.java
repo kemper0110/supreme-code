@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.supremecode.shared.PlatformConfig;
 import org.supremecode.web.repository.SolutionRepository;
 import org.supremecode.web.repository.SolutionResultRepository;
+import org.supremecode.web.service.BusinessMetrics;
 import org.supremecode.web.service.MinioPathService;
 import org.supremecode.web.service.TestRunnerChannelService;
 
@@ -32,9 +33,10 @@ public class WebApplication {
     @Bean
     public TestRunnerChannelService testRunnerChannelService(
             SolutionRepository solutionRepository,
-            SolutionResultRepository solutionResultRepository
+            SolutionResultRepository solutionResultRepository,
+            BusinessMetrics businessMetrics
     ) {
-        return new TestRunnerChannelService(solutionRepository, solutionResultRepository);
+        return new TestRunnerChannelService(solutionRepository, solutionResultRepository, businessMetrics);
     }
 
     @Bean

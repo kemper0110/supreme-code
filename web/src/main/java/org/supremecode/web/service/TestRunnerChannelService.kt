@@ -15,6 +15,7 @@ import org.supremecode.web.repository.SolutionResultRepository
 open class TestRunnerChannelService(
     val solutionRepository: SolutionRepository,
     val solutionResultRepository: SolutionResultRepository,
+    val businessMetrics: BusinessMetrics,
 ) {
     val logger: Logger = LoggerFactory.getLogger(TestRunnerChannelService::class.java)
 
@@ -35,6 +36,11 @@ open class TestRunnerChannelService(
             testResult.failures, testResult.errors
         )
         solutionResultRepository.save(solutionResult)
+
+        val language = solution.problemLanguage.languageId
+        val latencyMillis = solutionResult.createdAt.time - solution.createdAt.time
+        businessMetrics.recordResult(language, testResult.solved, testResult.statusCode)
+        businessMetrics.recordResultLatency(language, testResult.solved, testResult.statusCode, latencyMillis)
     }
 
     companion object {

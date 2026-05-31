@@ -21,13 +21,15 @@ class TestRunnerSenderService(
     private val userRepository: UserRepository,
     private val problemLanguageRepository: ProblemLanguageRepository,
     private val minioClient: MinioClient,
-    private val minioPathService: MinioPathService
+    private val minioPathService: MinioPathService,
+    private val businessMetrics: BusinessMetrics
 ) {
 
     fun send(userId: Long, code: String, problemId: Long, language: String): Mono<Long> {
         val user = userRepository.getReferenceById(userId)
         val problemLanguage = problemLanguageRepository.findByProblemIdAndLanguageId(problemId, language)
         val solution = solutionRepository.save(Solution(user, problemLanguage))
+        businessMetrics.recordSubmission(language)
 
         val bytes = code.toByteArray()
         val solutionPaths = minioPathService.buildSolutionPaths(userId, problemId, language, solution.id!!)

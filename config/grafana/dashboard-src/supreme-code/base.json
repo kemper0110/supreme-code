@@ -1,0 +1,166 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": [
+    "supreme-code"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(application)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Application",
+        "multi": true,
+        "name": "application",
+        "options": [],
+        "query": {
+          "query": "label_values(application)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "loki",
+          "uid": "loki"
+        },
+        "definition": "label_values({application=~\"${application:regex}\"}, level)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Level",
+        "multi": true,
+        "name": "level",
+        "options": [],
+        "query": {
+          "label": "level",
+          "refId": "LokiVariableQueryEditor-VariableQuery",
+          "stream": "{application=~\"${application:regex}\"}",
+          "type": 1
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "All useful traces",
+          "value": "duration >= 0ms"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Trace preset",
+        "multi": false,
+        "name": "trace_preset",
+        "options": [
+          {
+            "selected": true,
+            "text": "All useful traces",
+            "value": "duration >= 0ms"
+          },
+          {
+            "selected": false,
+            "text": "Slow > 500 ms",
+            "value": "duration >= 500ms"
+          },
+          {
+            "selected": false,
+            "text": "Very slow > 1.5 s",
+            "value": "duration >= 1.5s"
+          },
+          {
+            "selected": false,
+            "text": "Errors only",
+            "value": "status = error"
+          },
+          {
+            "selected": false,
+            "text": "Submissions/tests",
+            "value": "name =~ \".*(submission|solution|test|runner).*\""
+          },
+          {
+            "selected": false,
+            "text": "HTTP API",
+            "value": "name =~ \".*(GET|POST|PUT|DELETE|/api).*\""
+          }
+        ],
+        "query": "All useful traces : duration >= 0ms, Slow > 500 ms : duration >= 500ms, Very slow > 1.5 s : duration >= 1.5s, Errors only : status = error, Submissions/tests : name =~ \".*(submission|solution|test|runner).*\", HTTP API : name =~ \".*(GET|POST|PUT|DELETE|/api).*\"",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Trace ID contains",
+        "name": "trace_id",
+        "options": [],
+        "query": "",
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Span contains",
+        "name": "span_search",
+        "options": [],
+        "query": "",
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Log contains",
+        "name": "log_search",
+        "options": [],
+        "query": "",
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Supreme Code",
+  "uid": "supreme-code",
+  "version": 3,
+  "weekStart": ""
+}

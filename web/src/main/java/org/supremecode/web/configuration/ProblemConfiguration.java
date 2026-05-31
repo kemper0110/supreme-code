@@ -4,12 +4,14 @@ import org.supremecode.shared.TestMessage;
 import org.supremecode.shared.TestResultMessage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.MicrometerConsumerListener;
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import reactor.kafka.sender.SenderOptions;
@@ -44,18 +46,22 @@ public class ProblemConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<String, TestResultMessage> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(
+    public ConsumerFactory<String, TestResultMessage> consumerFactory(MeterRegistry meterRegistry) {
+        DefaultKafkaConsumerFactory<String, TestResultMessage> factory = new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new StringDeserializer(),
                 new JsonDeserializer<>(TestResultMessage.class, false));
+        factory.addListener(new MicrometerConsumerListener<>(meterRegistry));
+        return factory;
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, TestResultMessage> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, TestResultMessage> kafkaListenerContainerFactory(
+            ConsumerFactory<String, TestResultMessage> consumerFactory
+    ) {
         ConcurrentKafkaListenerContainerFactory<String, TestResultMessage> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactory);
         return factory;
     }
 }

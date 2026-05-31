@@ -35,6 +35,7 @@ public class Listener {
     private final DockerClient dockerClient;
     private final TestRunnerProperties testRunnerProperties;
     private final PlatformConfig platformConfig;
+    private final TestRunnerMetrics metrics;
 
     @WithSpan
     protected void handleResult(TestResult testResult, String messageId, TestMessage testMessage) {
@@ -56,6 +57,7 @@ public class Listener {
                     .stream(new ByteArrayInputStream(reportBytes), reportBytes.length, -1)
                     .build());
         } catch (Exception e) {
+            metrics.recordFailure(testMessage.getLanguageId(), "result_artifact_upload");
             throw new RuntimeException(e);
         }
         final var trm = new TestResultMessage(
@@ -63,7 +65,11 @@ public class Listener {
                 testMessage.getUserId(), testMessage.getProblemId(),
                 testMessage.getLanguageId(), testMessage.getSolutionId()
         );
-        kafka.send(resultTopic, messageId, trm);
+        kafka.send(resultTopic, messageId, trm).whenComplete((result, exception) -> {
+            if (exception != null) {
+                metrics.recordFailure(testMessage.getLanguageId(), "result_send");
+            }
+        });
     }
 
     @KafkaListener(topics = "test-topic", groupId = "test-group")
@@ -74,27 +80,56 @@ public class Listener {
         log.info("Consumed record with key: {}", messageId);
 
         final var runnerStart = System.currentTimeMillis();
+        final var language = testMessage.getLanguageId();
 
-        log.debug("Parsed record with key: {}, value: {}", messageId, testMessage);
+        try {
+            log.debug("Parsed record with key: {}, value: {}", messageId, testMessage);
 
-        final var tests = new String(minioClient.getObject(GetObjectArgs.builder()
-                .bucket("problems")
-                .object(testMessage.getProblemTestPath())
-                .build()).readAllBytes());
-        final var solution = new String(minioClient.getObject(GetObjectArgs.builder()
-                .bucket("solutions")
-                .object(testMessage.getSolutionFilePath())
-                .build()).readAllBytes());
+            final var tests = new String(minioClient.getObject(GetObjectArgs.builder()
+                    .bucket("problems")
+                    .object(testMessage.getProblemTestPath())
+                    .build()).readAllBytes());
+            final var solution = new String(minioClient.getObject(GetObjectArgs.builder()
+                    .bucket("solutions")
+                    .object(testMessage.getSolutionFilePath())
+                    .build()).readAllBytes());
 
-        final var testerConfig = platformConfig.getLanguages().get(testMessage.getLanguageId()).getTesterConfig();
-        final var languageTester = languagePluginService.getLanguageTester(testerConfig.getVerdictClassName());
-        if (languageTester == null) {
-            throw new IllegalStateException("Unexpected value: " + testMessage.getLanguageId());
+            final var languageConfig = platformConfig.getLanguages().get(language);
+            if (languageConfig == null) {
+                metrics.recordFailure(language, "unknown_language");
+                throw new IllegalStateException("Unexpected value: " + language);
+            }
+            final var testerConfig = languageConfig.getTesterConfig();
+            final var languageTester = languagePluginService.getLanguageTester(testerConfig.getVerdictClassName());
+            if (languageTester == null) {
+                metrics.recordFailure(language, "unknown_language_tester");
+                throw new IllegalStateException("Unexpected value: " + language);
+            }
+            log.info("Delegating to {}", languageTester.getClass().getName());
+
+            final var tester = new Tester(dockerClient, testRunnerProperties.getContainer().getTtk(), languageTester, testerConfig);
+            tester.test(tests, solution)
+                    .thenAccept(Context.current().wrapConsumer(testResult -> {
+                        try {
+                            handleResult(testResult, messageId, testMessage);
+                            metrics.recordExecution(
+                                    language,
+                                    testResult.getSolved(),
+                                    testResult.getStatusCode(),
+                                    System.currentTimeMillis() - runnerStart
+                            );
+                        } catch (RuntimeException exception) {
+                            log.error("Failed to handle test result for id {}", messageId, exception);
+                        }
+                    }))
+                    .exceptionally(exception -> {
+                        metrics.recordFailure(language, "docker_execution");
+                        log.error("Failed to execute tests for id {}", messageId, exception);
+                        return null;
+                    });
+        } catch (Exception exception) {
+            metrics.recordFailure(language, "listen");
+            throw exception;
         }
-        log.info("Delegating to {}", languageTester.getClass().getName());
-
-        final var tester = new Tester(dockerClient, testRunnerProperties.getContainer().getTtk(), languageTester, testerConfig);
-        tester.test(tests, solution)
-                .thenAccept(Context.current().wrapConsumer(testResult -> handleResult(testResult, messageId, testMessage)));
     }
 }

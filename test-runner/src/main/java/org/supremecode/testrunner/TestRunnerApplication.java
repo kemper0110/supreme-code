@@ -3,6 +3,7 @@ package org.supremecode.testrunner;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientImpl;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -18,6 +19,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.core.MicrometerConsumerListener;
+import org.springframework.kafka.core.MicrometerProducerListener;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
@@ -48,13 +51,15 @@ public class TestRunnerApplication {
     }
 
     @Bean
-    public ProducerFactory<String, TestResultMessage> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    public ProducerFactory<String, TestResultMessage> producerFactory(MeterRegistry meterRegistry) {
+        DefaultKafkaProducerFactory<String, TestResultMessage> factory = new DefaultKafkaProducerFactory<>(producerConfigs());
+        factory.addListener(new MicrometerProducerListener<>(meterRegistry));
+        return factory;
     }
 
     @Bean
-    public KafkaTemplate<String, TestResultMessage> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, TestResultMessage> kafkaTemplate(ProducerFactory<String, TestResultMessage> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
     }
 
     @Bean
@@ -68,19 +73,23 @@ public class TestRunnerApplication {
     }
 
     @Bean
-    public ConsumerFactory<String, TestMessage> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(
+    public ConsumerFactory<String, TestMessage> consumerFactory(MeterRegistry meterRegistry) {
+        DefaultKafkaConsumerFactory<String, TestMessage> factory = new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new StringDeserializer(),
                 new JsonDeserializer<>(TestMessage.class, false)
                 );
+        factory.addListener(new MicrometerConsumerListener<>(meterRegistry));
+        return factory;
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, TestMessage> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, TestMessage> kafkaListenerContainerFactory(
+            ConsumerFactory<String, TestMessage> consumerFactory
+    ) {
         ConcurrentKafkaListenerContainerFactory<String, TestMessage> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactory);
         return factory;
     }
 

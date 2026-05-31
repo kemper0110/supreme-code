@@ -27,9 +27,5 @@ datasources:
         filterByTraceID: true
         filterBySpanID: true
         tags:
-          - key: app
+          - key: service.name
             value: application
-      tracesToMetrics:
-        datasourceUid: prometheus
-        queries:
-          - query: 'sum(rate(http_server_requests_seconds_count{application=~"$$application"}[5m]))'
