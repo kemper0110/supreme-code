@@ -104,7 +104,8 @@ public class Tester {
         if (result instanceof WaitResult waitResult) {
             final var report = copyReport(containerId);
             final var verdict = getVerdict(report, waitResult.exitCode());
-            testResultBuilder = new TestResult(verdict.total(), verdict.failures(), verdict.errors(), verdict.solved(), waitResult.exitCode(), report, logs);
+            final var summary = verdict.summary();
+            testResultBuilder = new TestResult(summary.total(), summary.failures(), summary.errors(), verdict.solved(), waitResult.exitCode(), report, logs);
         } else {
             testResultBuilder = new TestResult(0, 0, 0, false, -1, "", logs);
         }

@@ -10,13 +10,7 @@ public class PyTestLanguageTester implements LanguageTester {
         try {
             final var parser = new JunitParser();
             final var testsuites = parser.parseTestsuites(report);
-            final var testsuite = testsuites.getTestsuite().getFirst();
-
-            final var total = Integer.parseInt(testsuite.getTests());
-            final var failures = Integer.parseInt(testsuite.getFailures());
-            final var errors = testsuite.getErrors() == null ? 0 : Integer.parseInt(testsuite.getErrors());
-            final var solved = failures == 0 && errors == 0 && exitCode == 0;
-            return new TestExecutionResult(total, failures, errors, solved);
+            return JunitResultMapper.fromTestsuites(testsuites, exitCode);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

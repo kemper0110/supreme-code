@@ -10,11 +10,7 @@ public class GtestCppLanguageTester implements LanguageTester {
         try {
             final var parser = new JunitParser();
             final var testsuite = parser.parseTestsuite(report);
-            final var total = Integer.parseInt(testsuite.getTests());
-            final var failures = Integer.parseInt(testsuite.getFailures());
-            final var errors = testsuite.getErrors() == null ? 0 : Integer.parseInt(testsuite.getErrors());
-            final var solved = failures == 0 && errors == 0 && exitCode == 0;
-            return new TestExecutionResult(total, failures, errors, solved);
+            return JunitResultMapper.fromTestsuite(testsuite, exitCode);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

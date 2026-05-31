@@ -13,6 +13,8 @@
         <module>web</module>
         <module>test-runner</module>
         <module>shared</module>
+        <module>common-plugins</module>
+        <module>plugin-sdk</module>
     </modules>
 
     <properties>

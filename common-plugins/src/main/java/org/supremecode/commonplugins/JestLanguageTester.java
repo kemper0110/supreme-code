@@ -10,11 +10,7 @@ public class JestLanguageTester implements LanguageTester {
         try {
             final var parser = new JunitParser();
             final var testsuites = parser.parseTestsuites(report);
-            final var total = Integer.parseInt(testsuites.getTests());
-            final var failures = Integer.parseInt(testsuites.getFailures());
-            final var errors = testsuites.getErrors() == null ? 0 : Integer.parseInt(testsuites.getErrors());
-            final var solved = failures == 0 && errors == 0 && exitCode == 0;
-            return new TestExecutionResult(total, failures, errors, solved);
+            return JunitResultMapper.fromTestsuites(testsuites, exitCode);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

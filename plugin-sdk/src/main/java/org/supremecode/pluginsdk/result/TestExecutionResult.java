@@ -1,9 +1,10 @@
 package org.supremecode.pluginsdk.result;
 
+import java.util.List;
+
 public record TestExecutionResult(
-        int total,
-        int failures,
-        int errors,
+        Summary summary,
+        List<TestCase> testCases,
         boolean solved
 ) {
 }
