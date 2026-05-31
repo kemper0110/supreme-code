@@ -92,7 +92,9 @@ services:
       KC_HOSTNAME_STRICT_HTTPS: "false"
     ports:
       - "8070:8080"
-    command: start
+    volumes:
+      - ./config/keycloak/import:/opt/keycloak/data/import:ro
+    command: start --import-realm
 
   # Observability stack
 
