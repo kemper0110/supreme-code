@@ -8,4 +8,5 @@ data class TestResultMessage(
     val statusCode: Int,
     val userId: Long, val problemId: Long, val languageId: String,
     val solutionId: Long,
+    val testCases: List<TestCaseResult>? = emptyList(),
 )

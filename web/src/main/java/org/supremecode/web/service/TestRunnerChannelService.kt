@@ -33,7 +33,7 @@ open class TestRunnerChannelService(
         val solution = solutionRepository.findById(testResult.solutionId).get()
         val solutionResult = SolutionResult(
             solution, testResult.statusCode, testResult.solved, testResult.total,
-            testResult.failures, testResult.errors
+            testResult.failures, testResult.errors, testResult.testCases ?: emptyList()
         )
         solutionResultRepository.save(solutionResult)
 

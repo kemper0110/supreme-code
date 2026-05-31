@@ -1,6 +1,9 @@
 package org.supremecode.web.domain
 
 import jakarta.persistence.*
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
+import org.supremecode.shared.TestCaseResult
 import java.util.*
 
 
@@ -23,12 +26,24 @@ open class SolutionResult() {
 
     open var errors: Int = 0
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "test_cases", columnDefinition = "jsonb", nullable = false)
+    open var testCases: List<TestCaseResult> = emptyList()
+
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "id")
     open lateinit var solution: Solution
 
-    constructor(solution: Solution, exitCode: Int, solved: Boolean, total: Int, failures: Int, errors: Int) : this() {
+    constructor(
+        solution: Solution,
+        exitCode: Int,
+        solved: Boolean,
+        total: Int,
+        failures: Int,
+        errors: Int,
+        testCases: List<TestCaseResult>
+    ) : this() {
         this.solution = solution
         this.createdAt = Date()
         this.exitCode = exitCode
@@ -36,5 +51,6 @@ open class SolutionResult() {
         this.total = total
         this.failures = failures
         this.errors = errors
+        this.testCases = testCases
     }
 }

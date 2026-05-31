@@ -141,12 +141,6 @@ final class JunitResultMapper {
         }
     }
 
-    private static int countByStatus(List<TestCase> testCases, TestStatus status) {
-        return (int) testCases.stream()
-                .filter(testCase -> testCase.status() == status)
-                .count();
-    }
-
     private static int countByStatus(Testsuite testsuite, TestStatus status) {
         return (int) testsuite.getTestcase().stream()
                 .filter(testcase -> status(testcase) == status)

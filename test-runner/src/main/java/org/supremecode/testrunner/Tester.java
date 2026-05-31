@@ -105,9 +105,18 @@ public class Tester {
             final var report = copyReport(containerId);
             final var verdict = getVerdict(report, waitResult.exitCode());
             final var summary = verdict.summary();
-            testResultBuilder = new TestResult(summary.total(), summary.failures(), summary.errors(), verdict.solved(), waitResult.exitCode(), report, logs);
+            testResultBuilder = new TestResult(
+                    summary.total(),
+                    summary.failures(),
+                    summary.errors(),
+                    verdict.solved(),
+                    waitResult.exitCode(),
+                    report,
+                    logs,
+                    verdict.testCases()
+            );
         } else {
-            testResultBuilder = new TestResult(0, 0, 0, false, -1, "", logs);
+            testResultBuilder = new TestResult(0, 0, 0, false, -1, "", logs, List.of());
         }
         try {
             dockerClient.removeContainerCmd(containerId).withForce(true).exec();

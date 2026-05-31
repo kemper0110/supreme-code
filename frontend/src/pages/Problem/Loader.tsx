@@ -49,6 +49,15 @@ export type SolutionResult = {
   failures: number
   errors: number
   solved: boolean
+  testCases: TestCaseResult[]
+}
+
+export type TestCaseResult = {
+  name?: string
+  suiteName?: string
+  status?: 'PASSED' | 'FAILED' | 'ERROR' | 'SKIPPED' | string
+  message?: string
+  durationMs?: number
 }
 
 export const problemQueryKey = (slug: string) =>

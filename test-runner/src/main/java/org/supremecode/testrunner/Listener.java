@@ -17,12 +17,14 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.supremecode.shared.PlatformConfig;
+import org.supremecode.shared.TestCaseResult;
 import org.supremecode.shared.TestMessage;
 import org.supremecode.shared.TestResultMessage;
 import org.supremecode.testrunner.configuration.TestRunnerProperties;
 import org.supremecode.testrunner.dto.TestResult;
 
 import java.io.ByteArrayInputStream;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -60,10 +62,20 @@ public class Listener {
             metrics.recordFailure(testMessage.getLanguageId(), "result_artifact_upload");
             throw new RuntimeException(e);
         }
+        final var testCases = testResult.getTestCases().stream()
+                .map(testCase -> new TestCaseResult(
+                        testCase.name(),
+                        testCase.suiteName(),
+                        testCase.status() == null ? null : testCase.status().name(),
+                        testCase.message(),
+                        testCase.durationMs()
+                ))
+                .collect(Collectors.toList());
         final var trm = new TestResultMessage(
                 testResult.getTotal(), testResult.getFailures(), testResult.getErrors(), testResult.getSolved(), testResult.getStatusCode(),
                 testMessage.getUserId(), testMessage.getProblemId(),
-                testMessage.getLanguageId(), testMessage.getSolutionId()
+                testMessage.getLanguageId(), testMessage.getSolutionId(),
+                testCases
         );
         kafka.send(resultTopic, messageId, trm).whenComplete((result, exception) -> {
             if (exception != null) {

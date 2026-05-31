@@ -105,6 +105,7 @@ class ProblemController(
                                         solution.solutionResult!!.failures,
                                         solution.solutionResult!!.errors,
                                         solution.solutionResult!!.solved,
+                                        solution.solutionResult!!.testCases,
                                     )
                                 else null
                             )

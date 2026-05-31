@@ -1,5 +1,6 @@
 package org.supremecode.web.views
 
+import org.supremecode.shared.TestCaseResult
 import org.supremecode.web.domain.Problem
 import java.util.Date
 
@@ -56,4 +57,5 @@ data class SolutionResultSolveView(
     var failures: Int,
     var errors: Int,
     var solved: Boolean,
+    var testCases: List<TestCaseResult>,
 )
