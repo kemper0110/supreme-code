@@ -6,7 +6,7 @@ import cx from "clsx";
 import classes from "../../Problems/Problems.module.css";
 import {ResultPills} from "../components/components.tsx";
 import {usePlatformConfigQuery} from "../../shared/PlatformConfig.ts";
-import {IconChevronDown, IconChevronRight} from "@tabler/icons-react";
+import {IconChevronDown, IconChevronRight, IconCode} from "@tabler/icons-react";
 
 const statusLabels: Record<string, string> = {
   PASSED: 'Выполнен',
@@ -63,7 +63,15 @@ function TestCasesTable({testCases}: { testCases: TestCaseResult[] }) {
   )
 }
 
-export const SolutionsTable = ({languages}: { languages: LanguageMap }) => {
+export const SolutionsTable = ({
+  languages,
+  onLoadSolutionCode,
+  loadingSolutionCodeId
+}: {
+  languages: LanguageMap
+  onLoadSolutionCode: (solutionId: number) => void
+  loadingSolutionCodeId?: number
+}) => {
   const [scrolled, setScrolled] = useState(false);
   const [expandedResultIds, setExpandedResultIds] = useState<Set<string>>(new Set());
   const {data: platformConfig} = usePlatformConfigQuery()
@@ -110,6 +118,18 @@ export const SolutionsTable = ({languages}: { languages: LanguageMap }) => {
                   Тесты
                 </Button>
               )}
+              <Button
+                size="xs"
+                variant="light"
+                leftSection={<IconCode size={14}/>}
+                loading={loadingSolutionCodeId === solution.id}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  onLoadSolutionCode(solution.id)
+                }}
+              >
+                Код
+              </Button>
             </div>
           </Table.Td>
         </Table.Tr>

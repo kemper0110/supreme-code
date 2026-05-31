@@ -4,11 +4,20 @@ import {IconFileDescription, IconReport} from "@tabler/icons-react";
 import {Description} from "./Description.tsx";
 import {SolutionsTable} from "./SolutionsTable.tsx";
 
-export const ProblemTabs = ({activeTab, setActiveTab, description, languages}: {
+export const ProblemTabs = ({
+  activeTab,
+  setActiveTab,
+  description,
+  languages,
+  onLoadSolutionCode,
+  loadingSolutionCodeId
+}: {
   activeTab: string | null,
   setActiveTab: (value: 'description' | 'solutions' | null) => void,
   description: string,
-  languages: LanguageMap
+  languages: LanguageMap,
+  onLoadSolutionCode: (solutionId: number) => void,
+  loadingSolutionCodeId?: number,
 }) => {
   return (
     // @ts-ignore
@@ -30,7 +39,11 @@ export const ProblemTabs = ({activeTab, setActiveTab, description, languages}: {
       </Tabs.Panel>
 
       <Tabs.Panel className={'bg-white rounded-b-xl'} value="solutions">
-        <SolutionsTable languages={languages}/>
+        <SolutionsTable
+          languages={languages}
+          onLoadSolutionCode={onLoadSolutionCode}
+          loadingSolutionCodeId={loadingSolutionCodeId}
+        />
       </Tabs.Panel>
     </Tabs>
   )

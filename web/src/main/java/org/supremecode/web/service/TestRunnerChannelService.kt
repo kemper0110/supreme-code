@@ -7,6 +7,8 @@ import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionSynchronization
+import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.supremecode.shared.TestResultMessage
 import org.supremecode.web.domain.SolutionResult
 import org.supremecode.web.repository.SolutionRepository
@@ -16,6 +18,7 @@ open class TestRunnerChannelService(
     val solutionRepository: SolutionRepository,
     val solutionResultRepository: SolutionResultRepository,
     val businessMetrics: BusinessMetrics,
+    val solutionResultNotificationService: SolutionResultNotificationService,
 ) {
     val logger: Logger = LoggerFactory.getLogger(TestRunnerChannelService::class.java)
 
@@ -41,6 +44,20 @@ open class TestRunnerChannelService(
         val latencyMillis = solutionResult.createdAt.time - solution.createdAt.time
         businessMetrics.recordResult(language, testResult.solved, testResult.statusCode)
         businessMetrics.recordResultLatency(language, testResult.solved, testResult.statusCode, latencyMillis)
+        publishAfterCommit(testResult)
+    }
+
+    private fun publishAfterCommit(testResult: TestResultMessage) {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            solutionResultNotificationService.publish(testResult)
+            return
+        }
+
+        TransactionSynchronizationManager.registerSynchronization(object : TransactionSynchronization {
+            override fun afterCommit() {
+                solutionResultNotificationService.publish(testResult)
+            }
+        })
     }
 
     companion object {

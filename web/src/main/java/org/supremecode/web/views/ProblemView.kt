@@ -46,8 +46,12 @@ data class ProblemLanguageSolveView(
 data class SolutionSolveView(
     val id: Long,
     val createdAt: Date,
-    val code: String,
     val solutionResult: SolutionResultSolveView?,
+)
+
+data class SolutionCodeView(
+    val language: String,
+    val code: String,
 )
 
 data class SolutionResultSolveView(

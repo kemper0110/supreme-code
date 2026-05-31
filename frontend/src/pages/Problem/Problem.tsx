@@ -19,7 +19,7 @@ import {
   Title
 } from "@mantine/core";
 import {Link, useParams} from "react-router-dom";
-import {useProblemQuery, useTestMutation} from "./Loader.tsx";
+import {useProblemQuery, useSolutionCodeMutation, useTestMutation} from "./Loader.tsx";
 import {SelectedSolutionContext, SelectedSolutionTuple} from "./SelectedSolutionContext.tsx";
 import {ProblemTabs} from "./Tabs/ProblemTabs.tsx";
 import {useTabSpyLocation} from "./hooks/useTabSpyLocation.tsx";
@@ -187,6 +187,12 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
       console.log(response.data)
     }
   })
+  const solutionCodeMutation = useSolutionCodeMutation(slug!, {
+    onSuccess: (solutionCode) => {
+      setSelectedLanguage(solutionCode.language)
+      editorRef?.setValue(solutionCode.code)
+    }
+  })
 
   const onRunClick = () => {
     // @ts-ignore
@@ -290,8 +296,14 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
         <PanelGroup autoSaveId={'problem:[description-editor]'} direction={'horizontal'}>
           <Panel defaultSize={30}>
             <div className={'rounded-xl h-full'}>
-              <ProblemTabs languages={languages} activeTab={activeTab} setActiveTab={setActiveTab}
-                           description={description}/>
+              <ProblemTabs
+                languages={languages}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                description={description}
+                onLoadSolutionCode={(solutionId) => solutionCodeMutation.mutate(solutionId)}
+                loadingSolutionCodeId={solutionCodeMutation.isPending ? solutionCodeMutation.variables : undefined}
+              />
             </div>
           </Panel>
           <PanelResizeHandle className={'flex items-center justify-center'}>

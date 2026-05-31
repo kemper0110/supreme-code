@@ -42,6 +42,12 @@ export type Solution = {
   createdAt: string
   solutionResult?: SolutionResult
 }
+
+export type SolutionCode = {
+  language: string
+  code: string
+}
+
 export type SolutionResult = {
   createdAt: string
   exitCode: number
@@ -94,5 +100,13 @@ export const useTestMutation = (slug: string, selectedLanguage: string, options?
       queryClient.invalidateQueries({queryKey: key})
       options?.onSuccess?.(response, undefined, undefined)
     },
+  })
+}
+
+export const useSolutionCodeMutation = (slug: string, options?: UseMutationOptions<SolutionCode, unknown, number, any>) => {
+  return useMutation({
+    ...options,
+    mutationFn: async (solutionId: number) =>
+      (await api.get<SolutionCode>(`/api/problem/${encodeURIComponent(slug!)}/solution/${encodeURIComponent(solutionId)}/code`)).data,
   })
 }

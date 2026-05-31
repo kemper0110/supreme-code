@@ -5,12 +5,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.supremecode.shared.PlatformConfig;
 import org.supremecode.web.repository.SolutionRepository;
 import org.supremecode.web.repository.SolutionResultRepository;
 import org.supremecode.web.service.BusinessMetrics;
 import org.supremecode.web.service.MinioPathService;
+import org.supremecode.web.service.SolutionResultNotificationService;
 import org.supremecode.web.service.TestRunnerChannelService;
 
 import static org.supremecode.shared.PlatformConfigKt.readPlatformConfig;
@@ -34,13 +37,26 @@ public class WebApplication {
     public TestRunnerChannelService testRunnerChannelService(
             SolutionRepository solutionRepository,
             SolutionResultRepository solutionResultRepository,
-            BusinessMetrics businessMetrics
+            BusinessMetrics businessMetrics,
+            SolutionResultNotificationService solutionResultNotificationService
     ) {
-        return new TestRunnerChannelService(solutionRepository, solutionResultRepository, businessMetrics);
+        return new TestRunnerChannelService(
+                solutionRepository,
+                solutionResultRepository,
+                businessMetrics,
+                solutionResultNotificationService
+        );
     }
 
     @Bean
     public PlatformConfig platformConfig() {
         return readPlatformConfig();
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        return container;
     }
 }
