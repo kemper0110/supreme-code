@@ -13,7 +13,7 @@ public class LanguagePluginService {
         ServiceLoader<LanguageTester> loader = ServiceLoader.load(LanguageTester.class);
 
         for (LanguageTester service : loader) {
-            map.put(service.languageId(), service);
+            map.put(service.getClass().getName(), service);
         }
     }
 

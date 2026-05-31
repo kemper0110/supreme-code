@@ -6,11 +6,11 @@ RUN apt-get update
 RUN apt-get install -y \
         clangd-14 \
         clang-tidy-14
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/*
 
 # Создаем симлинк для удобного вызова
 RUN ln -s /usr/bin/clangd-14 /usr/bin/clangd
+
+RUN apt-get install -y --fix-missing libboost-all-dev
 
 WORKDIR /workspace
 

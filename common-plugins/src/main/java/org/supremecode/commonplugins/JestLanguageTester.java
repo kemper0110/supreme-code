@@ -4,32 +4,7 @@ import org.supremecode.pluginsdk.JunitParser;
 import org.supremecode.pluginsdk.LanguageTester;
 import org.supremecode.pluginsdk.result.TestExecutionResult;
 
-public class JsLanguageTester implements LanguageTester {
-    @Override
-    public String languageId() {
-        return "javascript";
-    }
-
-    @Override
-    public String imageName() {
-        return "sc-js-test";
-    }
-
-    @Override
-    public String testsPath() {
-        return "/test.js";
-    }
-
-    @Override
-    public String solutionPath() {
-        return "/solution.js";
-    }
-
-    @Override
-    public String reportPath() {
-        return "/usr/app/junit.xml";
-    }
-
+public class JestLanguageTester implements LanguageTester {
     @Override
     public TestExecutionResult verdict(String report, int exitCode) {
         try {

@@ -4,33 +4,7 @@ import org.supremecode.pluginsdk.JunitParser;
 import org.supremecode.pluginsdk.LanguageTester;
 import org.supremecode.pluginsdk.result.TestExecutionResult;
 
-public class CppLanguageTester implements LanguageTester {
-
-    @Override
-    public String languageId() {
-        return "cpp";
-    }
-
-    @Override
-    public String imageName() {
-        return "sc-cpp-test";
-    }
-
-    @Override
-    public String testsPath() {
-        return "/sc_test.сс";
-    }
-
-    @Override
-    public String solutionPath() {
-        return "/solution.hpp";
-    }
-
-    @Override
-    public String reportPath() {
-        return "/usr/app/build/junit.xml";
-    }
-
+public class JunitLanguageTester implements LanguageTester {
     @Override
     public TestExecutionResult verdict(String report, int exitCode) {
         try {

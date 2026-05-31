@@ -1,3 +1,4 @@
-org.supremecode.commonplugins.CppLanguageTester
-org.supremecode.commonplugins.JavaLanguageTester
-org.supremecode.commonplugins.JsLanguageTester
+org.supremecode.commonplugins.GtestCppLanguageTester
+org.supremecode.commonplugins.JunitLanguageTester
+org.supremecode.commonplugins.JestLanguageTester
+org.supremecode.commonplugins.PyTestLanguageTester

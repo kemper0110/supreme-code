@@ -23,12 +23,15 @@ import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.supremecode.shared.PlatformConfig;
 import org.supremecode.shared.TestMessage;
 import org.supremecode.shared.TestResultMessage;
 
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.supremecode.shared.PlatformConfigKt.readPlatformConfig;
 
 @SpringBootApplication
 @EnableConfigurationProperties
@@ -107,6 +110,11 @@ public class TestRunnerApplication {
     @Bean
     public LanguagePluginService languagePluginTesters() {
         return new LanguagePluginService();
+    }
+
+    @Bean
+    public PlatformConfig platformConfig() {
+        return readPlatformConfig();
     }
 
     public static void main(String... args) {

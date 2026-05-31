@@ -16,6 +16,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.supremecode.shared.PlatformConfig;
 import org.supremecode.shared.TestMessage;
 import org.supremecode.shared.TestResultMessage;
 import org.supremecode.testrunner.configuration.TestRunnerProperties;
@@ -33,6 +34,7 @@ public class Listener {
     final private LanguagePluginService languagePluginService;
     private final DockerClient dockerClient;
     private final TestRunnerProperties testRunnerProperties;
+    private final PlatformConfig platformConfig;
 
     @WithSpan
     protected void handleResult(TestResult testResult, String messageId, TestMessage testMessage) {
@@ -84,13 +86,14 @@ public class Listener {
                 .object(testMessage.getSolutionFilePath())
                 .build()).readAllBytes());
 
-        final var languageTester = languagePluginService.getLanguageTester(testMessage.getLanguageId());
+        final var testerConfig = platformConfig.getLanguages().get(testMessage.getLanguageId()).getTesterConfig();
+        final var languageTester = languagePluginService.getLanguageTester(testerConfig.getVerdictClassName());
         if (languageTester == null) {
             throw new IllegalStateException("Unexpected value: " + testMessage.getLanguageId());
         }
-        log.info("Delegating to {}", languageTester.getClass().getSimpleName());
+        log.info("Delegating to {}", languageTester.getClass().getName());
 
-        final var tester = new Tester(dockerClient, testRunnerProperties.getContainer().getTtk(), languageTester);
+        final var tester = new Tester(dockerClient, testRunnerProperties.getContainer().getTtk(), languageTester, testerConfig);
         tester.test(tests, solution)
                 .thenAccept(Context.current().wrapConsumer(testResult -> handleResult(testResult, messageId, testMessage)));
     }

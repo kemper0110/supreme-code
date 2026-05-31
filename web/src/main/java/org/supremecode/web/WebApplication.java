@@ -6,10 +6,13 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.supremecode.shared.PlatformConfig;
 import org.supremecode.web.repository.SolutionRepository;
 import org.supremecode.web.repository.SolutionResultRepository;
 import org.supremecode.web.service.MinioPathService;
 import org.supremecode.web.service.TestRunnerChannelService;
+
+import static org.supremecode.shared.PlatformConfigKt.readPlatformConfig;
 
 @SpringBootApplication
 @EnableConfigurationProperties
@@ -32,5 +35,10 @@ public class WebApplication {
             SolutionResultRepository solutionResultRepository
     ) {
         return new TestRunnerChannelService(solutionRepository, solutionResultRepository);
+    }
+
+    @Bean
+    public PlatformConfig platformConfig() {
+        return readPlatformConfig();
     }
 }

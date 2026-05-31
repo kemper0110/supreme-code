@@ -11,6 +11,9 @@
     },
     "javascript": {
       "image": "denols"
+    },
+    "python": {
+      "image": "pyright"
     }
   }
 }

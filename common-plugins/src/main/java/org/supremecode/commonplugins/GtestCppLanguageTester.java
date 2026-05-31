@@ -4,32 +4,7 @@ import org.supremecode.pluginsdk.JunitParser;
 import org.supremecode.pluginsdk.LanguageTester;
 import org.supremecode.pluginsdk.result.TestExecutionResult;
 
-public class JavaLanguageTester implements LanguageTester {
-    @Override
-    public String languageId() {
-        return "java";
-    }
-
-    @Override
-    public String imageName() {
-        return "sc-java-test";
-    }
-
-    @Override
-    public String testsPath() {
-        return "/src/test/java/JunitTest.java";
-    }
-
-    @Override
-    public String solutionPath() {
-        return "/src/main/java/org/example/Solution.java";
-    }
-
-    @Override
-    public String reportPath() {
-        return "/usr/app/target/surefire-reports/TEST-JunitTest.xml";
-    }
-
+public class GtestCppLanguageTester implements LanguageTester {
     @Override
     public TestExecutionResult verdict(String report, int exitCode) {
         try {

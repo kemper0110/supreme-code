@@ -1,1 +1,6 @@
-{}
+{
+  "imports": {
+    "lodash": "npm:lodash@4.17.0",
+    "@types/lodash": "npm:@types/lodash@4.17.0"
+  }
+}

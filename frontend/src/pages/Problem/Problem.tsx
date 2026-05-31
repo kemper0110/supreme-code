@@ -48,6 +48,7 @@ loader.config({monaco});
 loader.init().then(/* ... */);
 
 import ICodeEditor = editor.ICodeEditor;
+import {LanguageTitle} from "../../components/LanguageTitle.tsx";
 
 
 type State = {
@@ -268,10 +269,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
                 return ({
                   label: <HoverCard position={'top'} disabled={selectedLanguage !== l}>
                     <HoverCard.Target>
-                      <Flex align={'center'} gap={4}>
-                        <Text size={'lg'}>{languageConfig.name}</Text>
-                        <img src={languageConfig.iconPath}/>
-                      </Flex>
+                      <LanguageTitle language={languageConfig}/>
                     </HoverCard.Target>
                     <HoverCard.Dropdown>
                       <ActionIcon variant={'light'} color={'gray'}

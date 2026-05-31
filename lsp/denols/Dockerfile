@@ -4,6 +4,7 @@ LABEL authors="Danil"
 WORKDIR /workspace
 
 COPY deno.json /workspace/deno.json
+RUN deno install
 COPY index.ts /workspace/index.ts
 
 CMD ["deno", "lsp"]

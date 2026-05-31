@@ -16,8 +16,6 @@ minio:
   secret-key: minio123
   bucket: my-bucket
 
-debug: on
-
 management:
   endpoints:
     web:

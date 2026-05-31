@@ -5,7 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.supremecode.web.domain.PlatformConfig;
+import org.supremecode.shared.PlatformConfig;
 import reactor.core.publisher.Mono;
 
 @RestController

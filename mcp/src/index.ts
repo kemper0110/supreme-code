@@ -48,10 +48,10 @@ function createServer() {
             await setTimeout(100);
             const config = {
                 tags: [
-                    "math", "hashmap"
+                    "math", "hashmap", "array"
                 ],
                 languages: [
-                    "cpp", "java", "javascript"
+                    "cpp", "java", "javascript", "typescript", "python", "golang"
                 ]
             }
             return {
@@ -97,7 +97,7 @@ const httpServer = http.createServer(async (req: http.IncomingMessage, res: http
     }
 });
 
-const port = 3200;
+const port = 3300;
 
 httpServer.listen(port, () => {
     console.log(`Supreme Code MCP server running on http://localhost:${port}`);

@@ -1,14 +1,14 @@
 import {Link, useParams} from "react-router-dom";
 import {MyProblemLanguageView, MyProblemView, useMyProblemQuery} from "./MyProblemLoader.ts";
 import {useState} from "react";
-import {ActionIcon, Button, MultiSelect, Paper, Select, Tabs, Text, TextInput} from "@mantine/core";
+import {ActionIcon, Button, HoverCard, List, MultiSelect, Paper, Tabs, Text, TextInput} from "@mantine/core";
 import {useTags} from "../shared/tags.ts";
 import {Editor, loader} from "@monaco-editor/react";
 import * as monaco from 'monaco-editor';
 import {usePlatformConfigQuery} from "../shared/PlatformConfig.ts";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {api} from "../../api/api.ts";
-import {IconArrowAutofitLeft, IconX} from "@tabler/icons-react";
+import {IconArrowAutofitLeft, IconPlus, IconX} from "@tabler/icons-react";
 import {myProblemsQueryKey} from "../MyProblems/MyProblemsLoader.ts";
 
 loader.config({monaco});
@@ -43,6 +43,12 @@ export default function MyProblem() {
       })
     }
   })
+  // Object.keys(state.languages)[0]
+  const [tab, setTab] = useState<string | null>(null)
+  const onTabChange = (value: string | null) => {
+    if (value === '0') return
+    setTab(value)
+  };
 
   const addLang = (id: string) => {
     setState(state => ({
@@ -76,6 +82,66 @@ export default function MyProblem() {
     })
   }
 
+  const onExport = async () => {
+    async function writeFile(directory: FileSystemDirectoryHandle, path: string, content: string) {
+      const file = await directory.getFileHandle(path, { create: true })
+      const writable = await file.createWritable({keepExistingData: false})
+      await writable.write(content)
+      await writable.close()
+    }
+
+    await writeFile(directory!, 'description.md', state.description)
+    await writeFile(directory!, 'info.json', JSON.stringify({
+      name: state.name,
+      tags: state.tags.map(id => tags!.find(t => t.id === id)?.name).filter(Boolean),
+    }, null, 2))
+    const languagesDir = await directory!.getDirectoryHandle('languages', {create: true})
+    for (const langId in state.languages) {
+      const lang = state.languages[langId]
+      const langDir = await languagesDir.getDirectoryHandle(langId, {create: true})
+      await writeFile(langDir, 'solution.txt', lang.solution)
+      await writeFile(langDir, 'solutionTemplate.txt', lang.solutionTemplate)
+      await writeFile(langDir, 'test.txt', lang.test)
+    }
+  }
+  const onImport = async () => {
+    async function readFile(directory: FileSystemDirectoryHandle, path: string) {
+      const fileHandle = await directory!.getFileHandle(path, {create: false})
+      const file = await fileHandle.getFile()
+      return await file.text()
+    }
+
+    const description = await readFile(directory!, 'description.md').catch(() => '')
+    const info = JSON.parse(await readFile(directory!, 'info.json').catch(() => '{}'))
+
+    const languagesDir = await directory!.getDirectoryHandle('languages', {create: false}).catch<Error>(e => e)
+    if (languagesDir instanceof Error)
+      throw languagesDir
+
+    const languages: Record<string, MyProblemLanguageView> = {}
+    for await (const entry of languagesDir.values()) {
+      console.log(entry.kind, entry.name);
+      if (entry.kind !== 'directory') continue;
+      const langId = entry.name
+      if (!platformConfig!.languages[langId]) {
+        throw new Error(`Unknown language "${langId}"`)
+      }
+      const langDir = await languagesDir.getDirectoryHandle(langId, {create: false})
+      languages[langId] = {
+        solution: await readFile(langDir, 'solution.txt').catch(() => ''),
+        solutionTemplate: await readFile(langDir, 'solutionTemplate.txt').catch(() => ''),
+        test: await readFile(langDir, 'test.txt').catch(() => ''),
+      }
+    }
+    setState(p => ({
+      ...p,
+      description,
+      name: info.name ?? p.name,
+      tags: info.tags?.map((tagName: string) => tags!.find(t => t.name === tagName)?.id).filter(Boolean) ?? p.tags,
+      languages,
+    }))
+  }
+
   return (
     <div className={'p-4'}>
       <div className={'flex justify-between'}>
@@ -97,32 +163,19 @@ export default function MyProblem() {
           {
             directory ? (
               <>
-                <Button onClick={async () => {
-                  const file = await directory!.getFileHandle('description.md')
-                  const writable = await file.createWritable({keepExistingData: false})
-                  await writable.write(state.description)
-                  await writable.close()
-                }}>
+                <Button onClick={onExport}>
                   Экспорт
                 </Button>
-                <Button onClick={async () => {
-                  for await (const entry of directory.values()) {
-                    console.log(entry.kind, entry.name);
-                    if (entry.kind === 'file' && entry.name === 'description.md') {
-                      const file = await entry.getFile()
-                      const content = await file.text()
-                      setState(p => ({
-                        ...p,
-                        description: content
-                      }))
-                    }
-                  }
-                }}>
+                <Button onClick={onImport}>
                   Импорт
                 </Button>
               </>
             ) : null
           }
+          <Button onClick={() => {
+          }}>
+            Проверить
+          </Button>
           <Button loading={save.isPending} onClick={() => {
             save.mutate()
           }}>
@@ -165,23 +218,11 @@ export default function MyProblem() {
       </div>
 
       <Paper withBorder className={'p-4 mt-4'}>
-        <Select placeholder={'Добавить реализацию для языка'} data={
-          Object.entries(platformConfig!.languages)
-            .filter(([id]) => !(id in state.languages))
-            .map(([id, lang]) => ({
-              value: id,
-              label: lang.name
-            }))
-        } onChange={(id) => {
-          if (id) {
-            addLang(id)
-          }
-        }} value={null}/>
-        <Tabs className={'mt-2'} defaultValue={Object.keys(state.languages)[0]}>
+        <Tabs className={'mt-2'} value={tab} onChange={onTabChange}>
           <Tabs.List>
             {
               Object.entries(state.languages).map(([id]) => (
-                <Tabs.Tab value={id} rightSection={
+                <Tabs.Tab key={id} value={id} rightSection={
                   <ActionIcon variant={'light'} onClick={() => deleteLang(id)}>
                     <IconX/>
                   </ActionIcon>
@@ -192,48 +233,67 @@ export default function MyProblem() {
                 </Tabs.Tab>
               ))
             }
+            <Tabs.Tab value={'0'}>
+              <HoverCard shadow="md">
+                <HoverCard.Target>
+                  <IconPlus/>
+                </HoverCard.Target>
+                <HoverCard.Dropdown>
+                  <List>
+                    {
+                      Object.entries(platformConfig!.languages)
+                        .filter(([id]) => !(id in state.languages))
+                        .map(([id, lang]) => (
+                          <List.Item key={id} onClick={() => addLang(id)}>
+                            <span>{lang.name}</span>
+                          </List.Item>
+                        ))
+                    }
+                  </List>
+                </HoverCard.Dropdown>
+              </HoverCard>
+            </Tabs.Tab>
           </Tabs.List>
           {
             Object.entries(state.languages).map(([id, lang]) => (
               <Tabs.Panel key={id} value={id}>
-
-                <div className={'h-[800px] w-full flex gap-4'}>
-
-                  <div className={'w-1/2'}>
-                    <Text>
+                <Tabs defaultValue={'test'}>
+                  <Tabs.List>
+                    <Tabs.Tab value={'test'}>
                       Тесты
-                    </Text>
-                    <Editor className={'h-full'} language={platformConfig!.languages[id].monacoLanguageId} value={lang.test} onChange={v => {
+                    </Tabs.Tab>
+                    <Tabs.Tab value={'solution'}>
+                      Решение
+                    </Tabs.Tab>
+                    <Tabs.Tab value={'solutionTemplate'}>
+                      Шаблон решения
+                    </Tabs.Tab>
+                  </Tabs.List>
+                  <Tabs.Panel value={'test'} className={'h-[800px] w-full'}>
+                    <Editor className={'h-full'} language={platformConfig!.languages[id].monacoLanguageId}
+                            value={lang.test} onChange={v => {
                       if (v) {
                         setLangText(id, 'test', v)
                       }
                     }}/>
-                  </div>
-                  <div className={'w-1/2 flex flex-col'}>
-                    <div className={'h-1/2'}>
-                      <Text>
-                        Решение задачи
-                      </Text>
-                      <Editor value={lang.solution} language={platformConfig!.languages[id].monacoLanguageId} onChange={v => {
-                        if (v) {
-                          setLangText(id, 'solution', v)
-                        }
-                      }}/>
-                    </div>
-                    <div className={'mt-6 h-1/2'}>
-                      <Text>
-                        Шаблон решения
-                      </Text>
-                      <Editor value={lang.solutionTemplate} language={platformConfig!.languages[id].monacoLanguageId}  onChange={v => {
-                        if (v) {
-                          setLangText(id, 'solutionTemplate', v)
-                        }
-                      }}/>
-                    </div>
-                  </div>
-
-                </div>
-
+                  </Tabs.Panel>
+                  <Tabs.Panel value={'solution'} className={'h-[800px] w-full'}>
+                    <Editor value={lang.solution} language={platformConfig!.languages[id].monacoLanguageId}
+                            onChange={v => {
+                              if (v) {
+                                setLangText(id, 'solution', v)
+                              }
+                            }}/>
+                  </Tabs.Panel>
+                  <Tabs.Panel value={'solutionTemplate'} className={'h-[800px] w-full'}>
+                    <Editor value={lang.solutionTemplate} language={platformConfig!.languages[id].monacoLanguageId}
+                            onChange={v => {
+                              if (v) {
+                                setLangText(id, 'solutionTemplate', v)
+                              }
+                            }}/>
+                  </Tabs.Panel>
+                </Tabs>
               </Tabs.Panel>
             ))
           }

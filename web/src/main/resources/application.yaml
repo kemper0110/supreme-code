@@ -56,8 +56,6 @@ minio:
   secret-key: minio123
   bucket: my-bucket
 
-debug: on
-
 client_id: backend
 client_secret: Klrnw7XigrmxXzYQY1mWqPdC13QYSHII
 

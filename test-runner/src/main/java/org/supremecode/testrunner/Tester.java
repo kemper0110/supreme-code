@@ -13,6 +13,7 @@ import org.apache.commons.io.IOUtils;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.supremecode.pluginsdk.result.TestExecutionResult;
+import org.supremecode.shared.TesterConfig;
 import org.supremecode.testrunner.dto.TestResult;
 
 import java.io.*;
@@ -26,6 +27,7 @@ public class Tester {
     protected final DockerClient dockerClient;
     protected final int ttk;
     protected final LanguageTester languageTester;
+    protected final TesterConfig testerConfig;
 
     @WithSpan
     protected byte[] createArchive(String tests, String code) {
@@ -35,13 +37,13 @@ public class Tester {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 TarArchiveOutputStream tarOutput = new TarArchiveOutputStream(byteArrayOutputStream);
         ) {
-            TarArchiveEntry testsTarEntry = new TarArchiveEntry(languageTester.testsPath());
+            TarArchiveEntry testsTarEntry = new TarArchiveEntry(testerConfig.getTestPath());
             testsTarEntry.setSize(testsInputStream.available());
             tarOutput.putArchiveEntry(testsTarEntry);
             IOUtils.copy(testsInputStream, tarOutput);
             tarOutput.closeArchiveEntry();
 
-            TarArchiveEntry codeTarEntry = new TarArchiveEntry(languageTester.solutionPath());
+            TarArchiveEntry codeTarEntry = new TarArchiveEntry(testerConfig.getSolutionPath());
             codeTarEntry.setSize(codeInputStream.available());
             tarOutput.putArchiveEntry(codeTarEntry);
             IOUtils.copy(codeInputStream, tarOutput);
@@ -55,7 +57,7 @@ public class Tester {
     }
     @WithSpan
     protected CreateContainerResponse createContainer() {
-        final var cmd = dockerClient.createContainerCmd(languageTester.imageName());
+        final var cmd = dockerClient.createContainerCmd(testerConfig.getImageName());
         cmd.withHostConfig(
                 new HostConfig()
                         .withMemory(1024L * 1024L * 400L)
@@ -78,7 +80,7 @@ public class Tester {
     @WithSpan
     protected String copyReport(String containerId) {
         try (
-                final var testResultXmlStream = dockerClient.copyArchiveFromContainerCmd(containerId, languageTester.reportPath()).exec();
+                final var testResultXmlStream = dockerClient.copyArchiveFromContainerCmd(containerId, testerConfig.getReportPath()).exec();
                 final var tarArchiveInputStream = new TarArchiveInputStream(testResultXmlStream);
                 final var byteArrayOutputStream = new ByteArrayOutputStream();
         ) {
@@ -119,31 +121,39 @@ public class Tester {
     public CompletableFuture<TestResult> test(String tests, String code) {
         final var container = createContainer();
         final var containerId = container.getId();
+        try {
+            final var archive = createArchive(tests, code);
 
-        final var archive = createArchive(tests, code);
+            dockerClient.copyArchiveToContainerCmd(containerId)
+                    .withTarInputStream(new ByteArrayInputStream(archive))
+                    .withRemotePath("/usr/app")
+                    .exec();
 
-        dockerClient.copyArchiveToContainerCmd(containerId)
-                .withTarInputStream(new ByteArrayInputStream(archive))
-                .withRemotePath("/usr/app")
-                .exec();
+            dockerClient.startContainerCmd(containerId).exec();
 
-        dockerClient.startContainerCmd(containerId).exec();
+            final var logCallback = new LogCallback(containerId);
+            dockerClient.logContainerCmd(containerId)
+                    .withStdOut(true)
+                    .withStdErr(true)
+                    .withFollowStream(true)
+                    .exec(logCallback);
 
-        final var context = Context.current();
-        final var logCallback = new LogCallback(containerId);
-        dockerClient.logContainerCmd(containerId)
-                .withStdOut(true)
-                .withStdErr(true)
-                .withFollowStream(true)
-                .exec(logCallback);
+            final var timeoutCF = new SetTimeout().setTimeout(ttk);
 
-        final var timeoutCF = new SetTimeout().setTimeout(ttk);
-
-        final var waitCF = new CompletableFuture<WaitResult>();
-        dockerClient.waitContainerCmd(containerId)
-                .exec(new WaitCallback(containerId, waitCF));
-
-        return CompletableFuture.anyOf(timeoutCF, waitCF)
-                .thenApply(context.wrapFunction(result -> handleWaitResult(result, logCallback, containerId)));
+            final var waitCF = new CompletableFuture<WaitResult>();
+            dockerClient.waitContainerCmd(containerId)
+                    .exec(new WaitCallback(containerId, waitCF));
+            final var context = Context.current();
+            return CompletableFuture.anyOf(timeoutCF, waitCF)
+                    .thenApply(context.wrapFunction(result -> handleWaitResult(result, logCallback, containerId)));
+        } catch (Exception exception) {
+            try {
+                dockerClient.removeContainerCmd(containerId).withForce(true).exec();
+                log.error("container({}): removed", containerId.substring(0, 8));
+            } catch (Exception e) {
+                log.error("container({}): not found to remove {}", containerId.substring(0, 8), e.getMessage());
+            }
+            throw exception;
+        }
     }
 }

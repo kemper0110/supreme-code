@@ -11,6 +11,7 @@ import {CloseAction, ErrorAction, MonacoLanguageClient, MonacoServices,} from 'm
 import {toSocket, WebSocketMessageReader, WebSocketMessageWriter} from "vscode-ws-jsonrpc";
 import {createMessageConnection} from "vscode-jsonrpc";
 import {usePlatformConfigQuery} from "../shared/PlatformConfig.ts";
+import {LanguageTitle} from "../../components/LanguageTitle.tsx";
 
 const baseUrl = 'ws://localhost:3005/';
 type RunRequest = {
@@ -188,7 +189,7 @@ export default function Playground() {
         <SegmentedControl
           data={Object.entries(platformConfig!.languages).map(([key, lang]) => ({
             value: key,
-            label: <Text size={'lg'}>{lang.name}</Text>
+            label: <LanguageTitle language={lang}/>
           }))}
           value={languageId} onChange={onLanguageChange}
         />
@@ -203,7 +204,6 @@ export default function Playground() {
               editor.setModel(monaco.editor.createModel(value, languageId, monaco.Uri.parse(language.monacoFile)))
             }}
             language={language.monacoLanguageId}
-            height={"100vh"}
             width={"calc(100vw - 50px)"}
             options={{automaticLayout: true}}
           />
