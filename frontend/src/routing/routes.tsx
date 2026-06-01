@@ -2,11 +2,12 @@ import {RouteObject,} from "react-router-dom";
 import Landing from "../pages/Landing/Landing.tsx";
 import Page404 from "../pages/Page404";
 import Page500 from "../pages/Page500";
+import Page403 from "../pages/Page403";
 import Auth from "../pages/Auth.tsx";
 import {BaseLayout} from "../pages/BaseLayout/BaseLayout.tsx";
 import {ProblemsLoader} from "../pages/Problems/Loader.tsx";
 import {ProblemLoader} from "../pages/Problem/Loader.tsx";
-import {Protected} from "./protection.tsx";
+import {Protected, withPrivilege} from "./protection.tsx";
 import {Account} from "../pages/Account/Account.tsx";
 import {Support} from "../pages/Support/Support.tsx";
 import {NotImplemented} from "./not-implemented.tsx";
@@ -44,6 +45,10 @@ export const routes = [
             element: <Page404/>
           },
           {
+            path: "/403",
+            element: <Page403/>
+          },
+          {
             path: "/500",
             element: <Page500/>
           },
@@ -52,7 +57,7 @@ export const routes = [
             lazy: async () => ({
               Component: (await import("../pages/Problems/Problems.tsx")).default
             }),
-            loader: ProblemsLoader
+            loader: withPrivilege("problem:list", ProblemsLoader)
           }),
           {
             path: "/account",
@@ -66,11 +71,11 @@ export const routes = [
           },
           Protected({
             path: "/tags",
-            loader: TagsLoader,
+            loader: withPrivilege("tag:read", TagsLoader),
             element: <Tags/>
           }, {
             path: '/my-problem',
-            loader: MyProblemsLoader,
+            loader: withPrivilege("my-problem:read", MyProblemsLoader),
             element: <MyProblems/>
           }),
         ]
@@ -82,7 +87,7 @@ export const routes = [
           lazy: async () => ({
             Component: (await import("../pages/Problem/Problem.tsx")).default
           }),
-          loader: ProblemLoader
+          loader: withPrivilege("problem:view", ProblemLoader)
         },
         {
           path: "/playground",
@@ -96,17 +101,17 @@ export const routes = [
           lazy: async () => ({
             Component: (await import("../pages/Problem/GuestProblem.tsx")).default
           }),
-          loader: ProblemLoader
+          loader: withPrivilege("problem:view", ProblemLoader)
         },
         {
           path: "/my-problem/create",
           element: <MyProblem/>,
-          loader: MyProblemCreateLoader,
+          loader: withPrivilege("my-problem:create", MyProblemCreateLoader),
         },
         {
           path: "/my-problem/update/:problemId",
           element: <MyProblem/>,
-          loader: MyProblemUpdateLoader,
+          loader: withPrivilege("my-problem:update", MyProblemUpdateLoader),
         }
       )
     ]

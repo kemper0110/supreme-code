@@ -10,6 +10,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {api} from "../../api/api.ts";
 import {IconArrowAutofitLeft, IconPlus, IconX} from "@tabler/icons-react";
 import {myProblemsQueryKey} from "../MyProblems/MyProblemsLoader.ts";
+import {hasPrivilege} from "../../auth/privileges.ts";
 
 loader.config({monaco});
 
@@ -32,6 +33,7 @@ export default function MyProblem() {
 
   const [state, setState] = useState(data)
   const queryClient = useQueryClient()
+  const canReadMyProblems = hasPrivilege("my-problem:read")
   const save = useMutation({
     mutationFn: async () => api.post('/api/my-problem', {
       ...state,
@@ -146,9 +148,11 @@ export default function MyProblem() {
     <div className={'p-4'}>
       <div className={'flex justify-between'}>
         <div className={'flex gap-2'}>
-          <Link to={'/my-problem'}>
-            <IconArrowAutofitLeft size={32}/>
-          </Link>
+          {canReadMyProblems && (
+            <Link to={'/my-problem'}>
+              <IconArrowAutofitLeft size={32}/>
+            </Link>
+          )}
           <Text size={'xl'}>
             Добавление задачи
           </Text>

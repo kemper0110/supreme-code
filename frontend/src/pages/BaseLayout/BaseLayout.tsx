@@ -30,6 +30,7 @@ import {useState} from "react";
 import {useTabs} from "../../store/useTabs.tsx";
 import {useUser} from "../../store/useUser.tsx";
 import {keycloak} from "../../keycloak.ts";
+import {hasPrivilege} from "../../auth/privileges.ts";
 
 
 export const BaseLayout = () => {
@@ -54,6 +55,9 @@ export const BaseLayout = () => {
   const invalidateUser = useUser(state => state.invalidateUser)
   console.log({user})
   const logged = !!user
+  const canListProblems = logged && hasPrivilege("problem:list")
+  const canReadTags = logged && hasPrivilege("tag:read")
+  const canReadMyProblems = logged && hasPrivilege("my-problem:read")
 
   const onLogout = () => {
     keycloak.logout()
@@ -121,6 +125,7 @@ export const BaseLayout = () => {
                     >
                       Сохраненные задачи
                     </Menu.Item>
+                    {canReadTags && (
                     <Menu.Item leftSection={
                       <IconTag style={{width: rem(16), height: rem(16)}}
                                stroke={1.5}/>
@@ -129,6 +134,8 @@ export const BaseLayout = () => {
                     }}>
                       Теги
                     </Menu.Item>
+                    )}
+                    {canReadMyProblems && (
                     <Menu.Item leftSection={
                       <IconAbacus style={{width: rem(16), height: rem(16)}}
                                stroke={1.5}/>
@@ -137,6 +144,7 @@ export const BaseLayout = () => {
                     }}>
                       Задачи
                     </Menu.Item>
+                    )}
 
                     <Menu.Label>Настройки</Menu.Label>
                     <Menu.Item
@@ -180,9 +188,11 @@ export const BaseLayout = () => {
               <Tabs.Tab value={'/'}>
                 Главная
               </Tabs.Tab>
+              {canListProblems && (
               <Tabs.Tab value={'/problem'}>
                 Задачи
               </Tabs.Tab>
+              )}
               <Tabs.Tab value={'/playground'}>
                 Компилятор
               </Tabs.Tab>
