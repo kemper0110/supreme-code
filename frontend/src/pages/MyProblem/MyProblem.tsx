@@ -214,7 +214,7 @@ export default function MyProblem() {
                   language={'markdown'}
                   onChange={v => {
                     console.log('change')
-                    if (v)
+                    if (v != null)
                       setState(state => ({...state, description: v}))
                   }}
           />
@@ -276,15 +276,14 @@ export default function MyProblem() {
                   <Tabs.Panel value={'test'} className={'h-[800px] w-full'}>
                     <Editor className={'h-full'} language={platformConfig!.languages[id].monacoLanguageId}
                             value={lang.test} onChange={v => {
-                      if (v) {
+                      if (v != null)
                         setLangText(id, 'test', v)
-                      }
                     }}/>
                   </Tabs.Panel>
                   <Tabs.Panel value={'solution'} className={'h-[800px] w-full'}>
                     <Editor value={lang.solution} language={platformConfig!.languages[id].monacoLanguageId}
                             onChange={v => {
-                              if (v) {
+                              if (v != null) {
                                 setLangText(id, 'solution', v)
                               }
                             }}/>
@@ -292,7 +291,7 @@ export default function MyProblem() {
                   <Tabs.Panel value={'solutionTemplate'} className={'h-[800px] w-full'}>
                     <Editor value={lang.solutionTemplate} language={platformConfig!.languages[id].monacoLanguageId}
                             onChange={v => {
-                              if (v) {
+                              if (v != null) {
                                 setLangText(id, 'solutionTemplate', v)
                               }
                             }}/>
