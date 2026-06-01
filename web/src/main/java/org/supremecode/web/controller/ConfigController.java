@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/config")
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasAuthority('platform-config:read')")
 @RequiredArgsConstructor
 public class ConfigController {
     final PlatformConfig platformConfig;

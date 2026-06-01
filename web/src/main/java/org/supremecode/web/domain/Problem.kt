@@ -1,6 +1,7 @@
 package org.supremecode.web.domain
 
 import jakarta.persistence.*
+import java.util.LinkedHashSet
 
 @Entity
 @Table(name = "problem")
@@ -19,18 +20,18 @@ open class Problem() {
     open lateinit var author: User
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "problem", cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var problemTags: MutableList<ProblemTag> = ArrayList()
+    open var problemTags: MutableSet<ProblemTag> = LinkedHashSet()
 
     @OneToMany(mappedBy = "problem", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
-    open var languages: MutableList<ProblemLanguage> = ArrayList()
+    open var languages: MutableSet<ProblemLanguage> = LinkedHashSet()
 
     constructor(
         id: Long?,
         name: String,
         description: String,
         difficulty: String,
-        languages: MutableList<ProblemLanguage>,
-        problemTags: MutableList<ProblemTag>,
+        languages: MutableSet<ProblemLanguage>,
+        problemTags: MutableSet<ProblemTag>,
     ) : this() {
         this.id = id
         this.name = name

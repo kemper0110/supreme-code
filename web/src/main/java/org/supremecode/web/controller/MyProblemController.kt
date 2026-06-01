@@ -3,6 +3,8 @@ package org.supremecode.web.controller
 import io.minio.GetObjectArgs
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
+import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.server.ResponseStatusException
 import org.supremecode.web.domain.Problem
 import org.supremecode.web.domain.ProblemLanguage
 import org.supremecode.web.domain.ProblemTag
@@ -23,6 +26,7 @@ import org.supremecode.web.repository.UserRepository
 import org.supremecode.web.service.MinioPathService
 import org.supremecode.web.views.ProblemView
 import org.supremecode.web.views.mapProblemToView
+import reactor.core.publisher.Mono
 import java.io.ByteArrayInputStream
 
 @RestController
@@ -36,22 +40,31 @@ class MyProblemControllerImpl(
     private val problemLanguageRepository: ProblemLanguageRepository,
 ) {
     @GetMapping
+    @PreAuthorize("hasAuthority('my-problem:read')")
     @Transactional(readOnly = true)
-    fun getMyProblems(): List<ProblemView> {
-        return problemRepository.findAll()
-            .map { p -> mapProblemToView(p) }
+    fun getMyProblems(auth: Authentication): Mono<List<ProblemView>> {
+        val authUser = auth.details as User
+        val problems = if (canAccessAnyUserProblem(auth)) {
+            problemRepository.findAll()
+        } else {
+            problemRepository.findAllByAuthorId(authUser.id!!)
+        }
+        return Mono.just(problems.map { p -> mapProblemToView(p) })
     }
 
     @DeleteMapping("/{id}")
-    fun deleteMyProblem(@PathVariable id: Long) {
-        this.problemRepository.deleteById(id)
+    @PreAuthorize("hasAuthority('my-problem:delete')")
+    fun deleteMyProblem(@PathVariable id: Long, auth: Authentication): Mono<Void> {
+        val problem = getAccessibleProblem(id, auth)
+        this.problemRepository.delete(problem)
+        return Mono.empty()
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('my-problem:read')")
     @Transactional(readOnly = true)
-    fun getMyProblem(@PathVariable id: Long): MyProblemView {
-        val problem = this.problemRepository.findById(id)
-            .orElseThrow { RuntimeException("Problem with id $id not found") }
+    fun getMyProblem(@PathVariable id: Long, auth: Authentication): Mono<MyProblemView> {
+        val problem = getAccessibleProblem(id, auth)
 
         val problemSave = MyProblemView(
             problem.id!!,
@@ -79,7 +92,7 @@ class MyProblemControllerImpl(
             problem.problemTags.map { t -> t.tag.id!! }
         )
 
-        return problemSave
+        return Mono.just(problemSave)
     }
 
     data class MyProblemView(
@@ -98,18 +111,21 @@ class MyProblemControllerImpl(
     )
 
     @PostMapping
-    fun saveMyProblem(@RequestBody problem: MyProblemView, auth: Authentication) {
+    @PreAuthorize("hasAuthority('my-problem:create') or hasAuthority('my-problem:update')")
+    fun saveMyProblem(@RequestBody problem: MyProblemView, auth: Authentication): Mono<Void> {
         val authUser = auth.details as User
-        val p = if (problem.id != null) {
-            problemRepository.findById(problem.id)
-                .orElseThrow { RuntimeException("Problem not found") }
+        val p = if (problem.id == null) {
+            requireAuthority(auth, "my-problem:create")
+            Problem().also {
+                it.author = userRepository.getReferenceById(authUser.id!!)
+            }
         } else {
-            Problem()
+            requireAuthority(auth, "my-problem:update")
+            getAccessibleProblem(problem.id, auth)
         }
         p.name = problem.name
         p.description = problem.description
         p.difficulty = problem.difficulty
-        p.author = userRepository.getReferenceById(authUser.id!!)
 
         val existingLanguages = p.languages.associateBy { it.languageId }
         problem.languages.forEach { (langId) ->
@@ -125,7 +141,6 @@ class MyProblemControllerImpl(
         p.problemTags.addAll(
             problem.tags.map { ProblemTag(p, tagRepository.getReferenceById(it)) }.toMutableList()
         )
-        p.author = userRepository.getReferenceById(authUser.id!!);
         val savedProblem = this.problemRepository.save(p)
 
         for (lang in problem.languages) {
@@ -144,6 +159,29 @@ class MyProblemControllerImpl(
             putObject(paths.test, lang.value.test)
             putObject(paths.solution, lang.value.solution)
             putObject(paths.solutionTemplate, lang.value.solutionTemplate)
+        }
+        return Mono.empty()
+    }
+
+    private fun getAccessibleProblem(id: Long, auth: Authentication): Problem {
+        val authUser = auth.details as User
+        val problem = problemRepository.findById(id)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Problem with id $id not found") }
+
+        if (!canAccessAnyUserProblem(auth) && problem.author.id != authUser.id) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Problem with id $id not found")
+        }
+
+        return problem
+    }
+
+    private fun canAccessAnyUserProblem(auth: Authentication): Boolean {
+        return auth.authorities.any { it.authority == "my-problem:any-user" }
+    }
+
+    private fun requireAuthority(auth: Authentication, authority: String) {
+        if (auth.authorities.none { it.authority == authority }) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
     }
 }

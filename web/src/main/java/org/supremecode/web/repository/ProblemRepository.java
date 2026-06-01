@@ -7,10 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
     @NotNull
     @EntityGraph(attributePaths = {"problemTags", "languages"})
     Optional<Problem> findById(@NotNull Long id);
+
+    @EntityGraph(attributePaths = {"problemTags", "languages"})
+    List<Problem> findAllByAuthorId(Long authorId);
 }

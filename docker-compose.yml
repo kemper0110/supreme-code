@@ -1,5 +1,7 @@
 services:
   kafka:
+    cpus: 1.0
+    mem_limit: 500m
     image: apache/kafka
     ports:
       - "9092:9092"
@@ -23,6 +25,8 @@ services:
       KAFKA_NUM_PARTITIONS: 3
 
   redis:
+    cpus: 0.5
+    mem_limit: 70m
     image: redis:7-alpine
     ports:
       - "6379:6379"
@@ -33,6 +37,8 @@ services:
       retries: 3
 
   postgres:
+    cpus: 1.0
+    mem_limit: 100m
     image: postgres:16-alpine
     environment:
       - POSTGRES_USER=postgres
@@ -47,7 +53,10 @@ services:
     volumes:
       - rdbms:/var/lib/postgresql/data
       - ./init-rdb:/docker-entrypoint-initdb.d
+
   minio:
+    cpus: 0.5
+    mem_limit: 200m
     image: minio/minio
     command: server /data --console-address ":9001"
     ports:
@@ -63,6 +72,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 3
+
   minio-init:
     image: minio/mc
     depends_on:
@@ -76,7 +86,10 @@ services:
       echo 'Buckets initialized';
       exit 0
       "
+
   keycloak:
+    cpus: 0.5
+    mem_limit: 400m
     image: quay.io/keycloak/keycloak:26.0.0
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
@@ -99,6 +112,8 @@ services:
   # Observability stack
 
   prometheus:
+    cpus: 0.5
+    mem_limit: 100m
     image: prom/prometheus:v2.51.0
     ports:
       - "9090:9090"
@@ -113,6 +128,8 @@ services:
       - "host.docker.internal:host-gateway"
 
   tempo:
+    cpus: 0.5
+    mem_limit: 150m
     image: grafana/tempo:2.4.1
     ports:
       - "4317:4317"
@@ -123,6 +140,8 @@ services:
       - tempo_data:/var/tempo
 
   loki:
+    cpus: 0.5
+    mem_limit: 100m
     image: grafana/loki:2.9.8
     user: root
     ports:
@@ -133,6 +152,8 @@ services:
       - loki_data:/var/lokiv
 
   grafana:
+    mem_limit: 100m
+    cpus: 0.5
     image: grafana/grafana:10.4.1
     ports:
       - "3000:3000"

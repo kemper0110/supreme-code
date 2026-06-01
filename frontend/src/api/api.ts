@@ -16,7 +16,7 @@ api.interceptors.request.use((config) => {
   return config;
 })
 
-api.interceptors.response.use(undefined, (error) => {
+api.interceptors.response.use(undefined, async (error) => {
   if (isAxiosError(error) && error.response?.status == 401) {
     console.info("401 error")
     useUser.getState().invalidateUser()

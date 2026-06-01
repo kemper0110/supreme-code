@@ -28,6 +28,10 @@ Supreme Code is an online programming-problem platform. The repository is a mixe
 
 Run from repository root unless a command says otherwise.
 
+ENV REQUIRED!!!
+
+`$env:JAVA_HOME='C:\Program Files\JetBrains\IntelliJ IDEA 2025.2.5\jbr'; `
+
 ```bash
 ./mvnw test
 ./mvnw -pl web test

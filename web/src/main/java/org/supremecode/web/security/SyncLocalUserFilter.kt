@@ -1,4 +1,4 @@
-package org.supremecode.web.user.security
+package org.supremecode.web.security
 
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
@@ -24,22 +24,25 @@ class SyncLocalUserFilter(
                     return@flatMap Mono.error(RuntimeException("no auth token"))
                 }
                 val jwt = auth.token
-                val keycloakId = jwt.subject!! // sub
+                // sub
+                val keycloakId = jwt.subject ?: return@flatMap Mono.error(RuntimeException("no keycloak id"))
                 val email = jwt.getClaimAsString("email")
                 val username = jwt.getClaimAsString("preferred_username") ?: email
 
-                // блокирующий JPA → запускаем на elastic
                 Mono.fromCallable {
                     var user = userRepository.findByKeycloakId(keycloakId)
                     if (user == null) {
-                        // создаём новую локальную запись
-                        user = User(
-                            username = username ?: "",
-                            keycloakId = keycloakId
-                        )
+                        user = userRepository.findByUsername(username)
+                        if (user == null) {
+                            user = User(
+                                username = username ?: "",
+                                keycloakId = keycloakId
+                            )
+                        } else {
+                            user.keycloakId = keycloakId
+                        }
                         userRepository.save(user)
                     }
-                    // сохраняем локальный ID в атрибуты токена
                     auth.details = user
                     auth
                 }.subscribeOn(Schedulers.boundedElastic())

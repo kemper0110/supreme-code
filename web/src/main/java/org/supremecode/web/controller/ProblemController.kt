@@ -28,7 +28,6 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("isAuthenticated()")
 @RequestMapping("/api/problem")
 class ProblemController(
     private val jdbcProblemRepository: JdbcProblemRepositoryImpl,
@@ -41,6 +40,7 @@ class ProblemController(
     var logger: Logger = LoggerFactory.getLogger(ProblemController::class.java)
 
     @GetMapping
+    @PreAuthorize("hasAuthority('problem:list')")
     fun index(
         @RequestParam(required = false) name: String?,
         @RequestParam(required = false) difficulty: String?,
@@ -53,6 +53,7 @@ class ProblemController(
     data class TestRequest(val code: String, val language: String)
 
     @PostMapping("/{problemId}")
+    @PreAuthorize("hasAuthority('solution:submit')")
     fun submit(
         @PathVariable problemId: Long,
         @RequestBody testRequest: TestRequest,
@@ -65,58 +66,59 @@ class ProblemController(
     }
 
     @GetMapping("/{problemId}")
+    @PreAuthorize("hasAuthority('problem:view')")
     @Transactional(readOnly = true)
     fun view(
         @PathVariable problemId: Long,
         auth: Authentication
-    ): Mono<ProblemSolveView?> {
+    ): Mono<ProblemSolveView> {
         val authUser = auth.details as User
         val userId = authUser.id!!
-        val problem = this.problemRepository.findById(problemId).get()
-        return Mono.just(
-            ProblemSolveView(
-                problem.id!!,
-                problem.name,
-                problem.description,
-                problem.difficulty,
-                problem.languages.associate { language ->
-                    val problemPaths = minioPathService.buildProblemPaths(problemId, language.languageId)
-                    language.languageId to ProblemLanguageSolveView(
-                        String(
-                            minioClient.getObject(
-                                GetObjectArgs.builder()
-                                    .bucket("problems")
-                                    .`object`(problemPaths.solutionTemplate)
-                                    .build()
-                            ).readBytes()
-                        ),
-                        language.solutions.filter { solution -> solution.author.id == userId }.sortedWith(
-                            compareByDescending<Solution> { it.createdAt }
-                                .thenByDescending { it.id ?: Long.MIN_VALUE }
-                        ).map { solution ->
-                            SolutionSolveView(
-                                solution.id!!, solution.createdAt,
-                                if (solution.solutionResult != null)
-                                    SolutionResultSolveView(
-                                        solution.solutionResult!!.createdAt,
-                                        solution.solutionResult!!.exitCode,
-                                        solution.solutionResult!!.total,
-                                        solution.solutionResult!!.failures,
-                                        solution.solutionResult!!.errors,
-                                        solution.solutionResult!!.solved,
-                                        solution.solutionResult!!.testCases,
-                                    )
-                                else null
-                            )
-                        }
-                    )
-                },
-                problem.problemTags.map { t -> t.tag.id!! }.toMutableList(),
-            )
-        )
+        val problem = this.problemRepository.findById(problemId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        return Mono.just(ProblemSolveView(
+            problem.id!!,
+            problem.name,
+            problem.description,
+            problem.difficulty,
+            problem.languages.associate { language ->
+                val problemPaths = minioPathService.buildProblemPaths(problemId, language.languageId)
+                language.languageId to ProblemLanguageSolveView(
+                    String(
+                        minioClient.getObject(
+                            GetObjectArgs.builder()
+                                .bucket("problems")
+                                .`object`(problemPaths.solutionTemplate)
+                                .build()
+                        ).readBytes()
+                    ),
+                    language.solutions.filter { solution -> solution.author.id == userId }.sortedWith(
+                        compareByDescending<Solution> { it.createdAt }
+                            .thenByDescending { it.id ?: Long.MIN_VALUE }
+                    ).map { solution ->
+                        SolutionSolveView(
+                            solution.id!!, solution.createdAt,
+                            if (solution.solutionResult != null)
+                                SolutionResultSolveView(
+                                    solution.solutionResult!!.createdAt,
+                                    solution.solutionResult!!.exitCode,
+                                    solution.solutionResult!!.total,
+                                    solution.solutionResult!!.failures,
+                                    solution.solutionResult!!.errors,
+                                    solution.solutionResult!!.solved,
+                                    solution.solutionResult!!.testCases,
+                                )
+                            else null
+                        )
+                    }
+                )
+            },
+            problem.problemTags.map { t -> t.tag.id!! }.toMutableList(),
+        ))
     }
 
     @GetMapping("/{problemId}/solution/{solutionId}/code")
+    @PreAuthorize("hasAuthority('solution:view')")
     @Transactional(readOnly = true)
     fun solutionCode(
         @PathVariable problemId: Long,
@@ -138,18 +140,16 @@ class ProblemController(
             problemLanguage.languageId,
             solution.id!!
         )
-        return Mono.just(
-            SolutionCodeView(
-                problemLanguage.languageId,
-                String(
-                    minioClient.getObject(
-                        GetObjectArgs.builder()
-                            .bucket("solutions")
-                            .`object`(solutionPath.file)
-                            .build()
+        return Mono.just(SolutionCodeView(
+            problemLanguage.languageId,
+            String(
+                minioClient.getObject(
+                    GetObjectArgs.builder()
+                        .bucket("solutions")
+                        .`object`(solutionPath.file)
+                        .build()
                     ).readAllBytes()
-                )
             )
-        )
+        ))
     }
 }

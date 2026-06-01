@@ -14,7 +14,7 @@ import reactor.core.publisher.Flux
 import java.time.Duration
 
 @RestController
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasAuthority('solution:view')")
 @RequestMapping("/api/solution-results")
 class SolutionResultNotificationController(
     private val notificationService: SolutionResultNotificationService,

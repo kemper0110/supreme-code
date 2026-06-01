@@ -3,62 +3,98 @@
   <ID>JAVA</ID>
   <OriginalElement>C:/Users/Danil/IdeaProjects/supreme-code/test-runner/src/main/java/org/supremecode/testrunner</OriginalElement>
   <nodes>
-    <node x="446.1850311850312" y="1280.7798336798337">org.supremecode.testrunner.WaitResult</node>
-    <node x="220.1122661122663" y="1444.8991683991685">org.supremecode.testrunner.WaitCallback</node>
-    <node x="-275.2860222709537" y="1050.635550935551">org.supremecode.testrunner.LogCallback</node>
-    <node x="70.49085239085241" y="1151.1054054054055">org.supremecode.testrunner.SetTimeout</node>
-    <node x="236.2962577962578" y="1837.0">org.supremecode.testrunner.LanguagePluginService</node>
-    <node x="-286.6018711018711" y="1774.0">org.supremecode.testrunner.Tester</node>
-    <node x="-264.24220374220374" y="1350.0">org.supremecode.testrunner.dto.TestResult</node>
-    <node x="249.5446985446988" y="1691.5">org.supremecode.testrunner.configuration.TestRunnerProperties</node>
-    <node x="-47.5" y="2008.5">org.supremecode.testrunner.Listener</node>
+    <node x="984.5" y="729.5">org.supremecode.testrunner.LogCallback</node>
+    <node x="-285.5" y="1066.0">org.supremecode.testrunner.configuration.TestRunnerProperties.ContainerProperties</node>
+    <node x="756.0" y="500.0">org.supremecode.testrunner.WaitResult</node>
+    <node x="-66.0" y="1340.0">org.supremecode.testrunner.configuration.TestRunnerProperties</node>
+    <node x="615.0" y="1024.0">org.supremecode.testrunner.WaitCallback</node>
+    <node x="-286.5" y="1540.0">org.supremecode.testrunner.LanguagePluginService</node>
+    <node x="366.5" y="1470.0">org.supremecode.testrunner.Tester</node>
+    <node x="225.5" y="1826.0">org.supremecode.testrunner.Listener</node>
+    <node x="199.5" y="1080.0">org.supremecode.testrunner.SetTimeout</node>
+    <node x="-108.5" y="702.0">org.supremecode.testrunner.dto.TestResult</node>
   </nodes>
   <notes />
   <edges>
     <edge source="org.supremecode.testrunner.Tester" target="org.supremecode.testrunner.dto.TestResult" relationship="CREATE">
-      <point x="17.359667359667355" y="-93.5" />
-      <point x="0.0" y="135.5" />
+      <point x="0.0" y="-122.0" />
+      <point x="603.0" y="1432.0" />
+      <point x="583.0" y="1432.0" />
+      <point x="583.0" y="1252.0" />
+      <point x="123.0" y="1252.0" />
+      <point x="0.0" y="150.0" />
+    </edge>
+    <edge source="org.supremecode.testrunner.configuration.TestRunnerProperties.ContainerProperties" target="org.supremecode.testrunner.configuration.TestRunnerProperties" relationship="INNER_CLASS">
+      <point x="-74.25" y="66.0" />
+      <point x="-211.25" y="1312.0" />
+      <point x="28.5" y="1312.0" />
+      <point x="-94.5" y="-52.0" />
     </edge>
     <edge source="org.supremecode.testrunner.Tester" target="org.supremecode.testrunner.LogCallback" relationship="CREATE">
-      <point x="-216.5" y="0.0" />
-      <point x="-304.1018711018711" y="1867.5" />
-      <point x="-304.1018711018711" y="1173.135550935551" />
-      <point x="-118.5" y="0.0" />
+      <point x="0.0" y="-122.0" />
+      <point x="603.0" y="1432.0" />
+      <point x="583.0" y="1432.0" />
+      <point x="583.0" y="1252.0" />
+      <point x="1103.0" y="1252.0" />
+      <point x="0.0" y="122.5" />
     </edge>
     <edge source="org.supremecode.testrunner.WaitCallback" target="org.supremecode.testrunner.WaitResult" relationship="CREATE">
-      <point x="85.07276507276492" y="-107.5" />
-      <point x="0.0" y="51.5" />
+      <point x="0.0" y="-108.0" />
+      <point x="0.0" y="52.0" />
     </edge>
     <edge source="org.supremecode.testrunner.Tester" target="org.supremecode.testrunner.SetTimeout" relationship="CREATE">
-      <point x="216.5" y="0.0" />
-      <point x="202.6122661122663" y="1867.5" />
-      <point x="-51.37858627858611" y="51.5" />
+      <point x="0.0" y="-122.0" />
+      <point x="603.0" y="1432.0" />
+      <point x="583.0" y="1432.0" />
+      <point x="583.0" y="1252.0" />
+      <point x="383.0" y="1252.0" />
+      <point x="0.0" y="52.0" />
+    </edge>
+    <edge source="org.supremecode.testrunner.configuration.TestRunnerProperties" target="org.supremecode.testrunner.configuration.TestRunnerProperties.ContainerProperties" relationship="TO_ONE">
+      <point x="94.5" y="-52.0" />
+      <point x="217.5" y="1272.0" />
+      <point x="-62.75" y="1272.0" />
+      <point x="74.25" y="66.0" />
     </edge>
     <edge source="org.supremecode.testrunner.Tester" target="org.supremecode.testrunner.WaitCallback" relationship="CREATE">
-      <point x="32.359667359667355" y="-93.5" />
-      <point x="-37.74220374220374" y="1638.5" />
-      <point x="-228.0" y="86.1008316008315" />
+      <point x="0.0" y="-122.0" />
+      <point x="603.0" y="1432.0" />
+      <point x="583.0" y="1432.0" />
+      <point x="583.0" y="992.0" />
+      <point x="843.0" y="992.0" />
+      <point x="0.0" y="-108.0" />
     </edge>
     <edge source="org.supremecode.testrunner.Listener" target="org.supremecode.testrunner.Tester" relationship="CREATE">
-      <point x="-234.0" y="-51.5" />
-      <point x="30.101871101871097" y="93.5" />
+      <point x="118.75" y="-66.0" />
+      <point x="581.75" y="1792.0" />
+      <point x="863.0" y="1792.0" />
+      <point x="863.0" y="1412.0" />
+      <point x="603.0" y="1412.0" />
+      <point x="0.0" y="-122.0" />
     </edge>
     <edge source="org.supremecode.testrunner.Listener" target="org.supremecode.testrunner.configuration.TestRunnerProperties" relationship="TO_ONE">
-      <point x="241.5" y="0.0" />
-      <point x="693.6122661122663" y="2060.0" />
-      <point x="693.6122661122663" y="1743.0" />
-      <point x="189.0" y="0.0" />
+      <point x="-118.75" y="-66.0" />
+      <point x="344.25" y="1792.0" />
+      <point x="343.0" y="1792.0" />
+      <point x="343.0" y="1312.0" />
+      <point x="217.5" y="1312.0" />
+      <point x="94.5" y="-52.0" />
     </edge>
     <edge source="org.supremecode.testrunner.Listener" target="org.supremecode.testrunner.LanguagePluginService" relationship="TO_ONE">
-      <point x="231.7962577962578" y="-51.5" />
-      <point x="0.0" y="51.5" />
+      <point x="-118.75" y="-66.0" />
+      <point x="344.25" y="1792.0" />
+      <point x="343.0" y="1792.0" />
+      <point x="343.0" y="1772.0" />
+      <point x="-97.0" y="1772.0" />
+      <point x="0.0" y="52.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Compact" zoom="0.8890942698706104" showDependencies="true" x="428.6723257211536" y="1601.3930126039506" />
+  <settings layout="Hierarchic Compact" zoom="0.638700947225981" showDependencies="true" x="477.5" y="1239.0" />
   <SelectedNodes />
   <Categories>
     <Category>Constructors</Category>
     <Category>Fields</Category>
+    <Category>Inner Classes</Category>
     <Category>Methods</Category>
     <Category>Properties</Category>
   </Categories>

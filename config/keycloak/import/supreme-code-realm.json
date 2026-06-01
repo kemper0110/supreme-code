@@ -13,14 +13,139 @@
   "roles": {
     "realm": [
       {
+        "name": "default-roles-supreme-code",
+        "description": "${role_default-roles}",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "user"
+          ]
+        }
+      },
+      {
         "name": "user",
-        "description": "Default Supreme Code user"
+        "description": "Default Supreme Code user",
+        "composite": true,
+        "composites": {
+          "client": {
+            "backend": [
+              "platform-config:read",
+              "problem:list",
+              "problem:view",
+              "solution:submit",
+              "solution:view",
+              "tag:read",
+              "my-problem:create",
+              "my-problem:read",
+              "my-problem:update",
+              "my-problem:delete"
+            ]
+          }
+        }
+      },
+      {
+        "name": "moderator",
+        "description": "Supreme Code content moderator",
+        "composite": true,
+        "composites": {
+          "client": {
+            "backend": [
+              "platform-config:read",
+              "problem:list",
+              "problem:view",
+              "solution:submit",
+              "solution:view",
+              "tag:create",
+              "tag:read",
+              "tag:update",
+              "tag:delete",
+              "my-problem:create",
+              "my-problem:read",
+              "my-problem:update",
+              "my-problem:delete",
+              "my-problem:any-user"
+            ]
+          }
+        }
       },
       {
         "name": "admin",
-        "description": "Supreme Code administrator"
+        "description": "Supreme Code administrator",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "moderator"
+          ]
+        }
       }
-    ]
+    ],
+    "client": {
+      "backend": [
+        {
+          "name": "platform-config:read",
+          "description": "Read platform configuration"
+        },
+        {
+          "name": "problem:list",
+          "description": "List published problems"
+        },
+        {
+          "name": "problem:view",
+          "description": "View published problem details"
+        },
+        {
+          "name": "solution:submit",
+          "description": "Submit a solution for testing"
+        },
+        {
+          "name": "solution:view",
+          "description": "View own solution details and results"
+        },
+        {
+          "name": "tag:create",
+          "description": "Create tags"
+        },
+        {
+          "name": "tag:read",
+          "description": "Read tags"
+        },
+        {
+          "name": "tag:update",
+          "description": "Update tags"
+        },
+        {
+          "name": "tag:delete",
+          "description": "Delete tags"
+        },
+        {
+          "name": "my-problem:create",
+          "description": "Create own problems"
+        },
+        {
+          "name": "my-problem:read",
+          "description": "Read own problems"
+        },
+        {
+          "name": "my-problem:update",
+          "description": "Update own problems"
+        },
+        {
+          "name": "my-problem:delete",
+          "description": "Delete own problems"
+        },
+        {
+          "name": "my-problem:any-user",
+          "description": "Manage problems owned by any user"
+        }
+      ]
+    }
+  },
+  "defaultRole": {
+    "name": "default-roles-supreme-code",
+    "description": "${role_default-roles}",
+    "composite": true,
+    "clientRole": false,
+    "containerId": "supreme-code"
   },
   "clients": [
     {
@@ -31,9 +156,6 @@
       "protocol": "openid-connect",
       "publicClient": true,
       "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
-      "serviceAccountsEnabled": false,
       "frontchannelLogout": true,
       "redirectUris": [
         "http://localhost:5173/*",
@@ -49,9 +171,11 @@
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:5173/*##http://127.0.0.1:5173/*##http://localhost/*##http://127.0.0.1/*"
+        "post.logout.redirect.uris": "http://localhost:5173/*"
       },
       "defaultClientScopes": [
+        "openid",
+        "basic",
         "web-origins",
         "acr",
         "profile",
