@@ -1,0 +1,6 @@
+#include <tuple>
+#include <unordered_map>
+
+std::pair<int, int> twoSum(const std::vector<int> &nums, const int target) {
+    return {0, 0};
+}
