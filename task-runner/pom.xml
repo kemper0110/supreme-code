@@ -49,6 +49,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.supremecode</groupId>
+            <artifactId>shared</artifactId>
+            <version>0.0.1</version>
+        </dependency>
 
         <dependency>
             <groupId>com.github.docker-java</groupId>

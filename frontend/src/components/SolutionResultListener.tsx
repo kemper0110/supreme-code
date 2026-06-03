@@ -65,7 +65,7 @@ export const SolutionResultListener = () => {
 
       source.addEventListener("solution-result", (event: MessageEvent) => {
         const payload = JSON.parse(event.data) as SolutionResultEvent
-        queryClient.invalidateQueries({queryKey: ["problem", user.id, String(payload.problemId)]})
+        queryClient.invalidateQueries({queryKey: ["problem"], exact: false})
         const notificationId = `solution-result-${payload.solutionId}`
 
         notifications.show({

@@ -1,6 +1,6 @@
 import {Link, useParams} from "react-router-dom";
 import {MyProblemLanguageView, MyProblemView, useMyProblemQuery} from "./MyProblemLoader.ts";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {ActionIcon, Button, HoverCard, List, MultiSelect, Paper, Tabs, Text, TextInput} from "@mantine/core";
 import {useTags} from "../shared/tags.ts";
 import {Editor, loader} from "@monaco-editor/react";
@@ -11,16 +11,202 @@ import {api} from "../../api/api.ts";
 import {IconArrowAutofitLeft, IconPlus, IconX} from "@tabler/icons-react";
 import {myProblemsQueryKey} from "../MyProblems/MyProblemsLoader.ts";
 import {hasPrivilege} from "../../auth/privileges.ts";
+import type {PlatformConfig} from "../Problem/Loader.tsx";
+import type {Tag} from "../Tag/TagsLoader.ts";
 
 loader.config({monaco});
 
 loader.init().then(/* ... */);
 
+const mcpWebSocketUrl = 'ws://localhost:3300/frontend'
+
+const mcpMethods = ['exportCurrentProblem', 'importCurrentProblem', 'platformInfo', 'validateCurrentProblem'] as const
+
+type McpMethod = typeof mcpMethods[number]
+
+type McpRequest = {
+  id: string
+  method: McpMethod
+  params?: Record<string, unknown>
+}
+
+type McpResponse = {
+  id: string
+  result?: unknown
+  error?: string
+}
+
+type ImportedProblem = {
+  description: string
+  name?: string
+  tags?: number[]
+  difficulty?: string
+  languages: Record<string, MyProblemLanguageView>
+}
+
+const exportedFiles = (languages: Record<string, MyProblemLanguageView>) => [
+  'description.md',
+  'info.json',
+  ...Object.keys(languages).flatMap(languageId => [
+    `languages/${languageId}/solution.txt`,
+    `languages/${languageId}/solutionTemplate.txt`,
+    `languages/${languageId}/test.txt`,
+  ]),
+]
+
+async function writeFile(directory: FileSystemDirectoryHandle, path: string, content: string) {
+  const file = await directory.getFileHandle(path, {create: true})
+  const writable = await file.createWritable({keepExistingData: false})
+  await writable.write(content)
+  await writable.close()
+}
+
+async function readFile(directory: FileSystemDirectoryHandle, path: string) {
+  const fileHandle = await directory.getFileHandle(path, {create: false})
+  const file = await fileHandle.getFile()
+  return await file.text()
+}
+
+function requireValue<T>(value: T | null | undefined, message: string): T {
+  if (value == null) {
+    throw new Error(message)
+  }
+  return value
+}
+
+function parseInfo(text: string) {
+  const value = JSON.parse(text)
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : {}
+}
+
+function tagIdsToNames(tagIds: number[], availableTags: Tag[]) {
+  return tagIds
+    .map(id => availableTags.find(tag => tag.id === id)?.name)
+    .filter((name): name is string => name != null)
+}
+
+function tagNamesToIds(tagNames: unknown, availableTags: Tag[]) {
+  if (!Array.isArray(tagNames)) {
+    return undefined
+  }
+
+  return tagNames
+    .map(tagName => typeof tagName === 'string'
+      ? availableTags.find(tag => tag.name === tagName)?.id
+      : undefined)
+    .filter((id): id is number => id != null)
+}
+
+async function exportProblemToDirectory(
+  directory: FileSystemDirectoryHandle,
+  problem: MyProblemView,
+  availableTags: Tag[],
+) {
+  await writeFile(directory, 'description.md', problem.description)
+  await writeFile(directory, 'info.json', JSON.stringify({
+    name: problem.name,
+    tags: tagIdsToNames(problem.tags, availableTags),
+    difficulty: problem.difficulty,
+  }, null, 2))
+
+  const languagesDir = await directory.getDirectoryHandle('languages', {create: true})
+  for (const [languageId, language] of Object.entries(problem.languages)) {
+    const languageDir = await languagesDir.getDirectoryHandle(languageId, {create: true})
+    await writeFile(languageDir, 'solution.txt', language.solution)
+    await writeFile(languageDir, 'solutionTemplate.txt', language.solutionTemplate)
+    await writeFile(languageDir, 'test.txt', language.test)
+  }
+
+  return {
+    directoryName: directory.name,
+    files: exportedFiles(problem.languages),
+  }
+}
+
+async function importProblemFromDirectory(
+  directory: FileSystemDirectoryHandle,
+  availableTags: Tag[],
+  platformConfig: PlatformConfig,
+) {
+  const description = await readFile(directory, 'description.md').catch(() => '')
+  const info = parseInfo(await readFile(directory, 'info.json').catch(() => '{}'))
+  const languagesDir = await directory.getDirectoryHandle('languages', {create: false})
+  const languages: Record<string, MyProblemLanguageView> = {}
+
+  // @ts-ignore
+  for await (const entry of languagesDir.values()) {
+    if (entry.kind !== 'directory') {
+      continue
+    }
+
+    const languageId = entry.name
+    if (!platformConfig.languages[languageId]) {
+      throw new Error(`Unknown language "${languageId}"`)
+    }
+
+    const languageDir = await languagesDir.getDirectoryHandle(languageId, {create: false})
+    languages[languageId] = {
+      solution: await readFile(languageDir, 'solution.txt').catch(() => ''),
+      solutionTemplate: await readFile(languageDir, 'solutionTemplate.txt').catch(() => ''),
+      test: await readFile(languageDir, 'test.txt').catch(() => ''),
+    }
+  }
+
+  return {
+    directoryName: directory.name,
+    languages: Object.keys(languages),
+    problem: {
+      description,
+      name: typeof info.name === 'string' ? info.name : undefined,
+      tags: tagNamesToIds(info.tags, availableTags),
+      difficulty: typeof info.difficulty === 'string' ? info.difficulty : undefined,
+      languages,
+    } satisfies ImportedProblem,
+  }
+}
+
+function validateProblem(problem: MyProblemView, platformConfig: PlatformConfig) {
+  const errors: string[] = []
+  const languageIds = Object.keys(problem.languages)
+
+  if (!problem.name.trim()) {
+    errors.push('Name is required')
+  }
+  if (!problem.description.trim()) {
+    errors.push('Description is required')
+  }
+  if (languageIds.length === 0) {
+    errors.push('At least one language is required')
+  }
+  for (const languageId of languageIds) {
+    if (!platformConfig.languages[languageId]) {
+      errors.push(`Unknown language "${languageId}"`)
+    }
+  }
+
+  return {ok: errors.length === 0, errors}
+}
+
+function isMcpRequest(value: unknown): value is McpRequest {
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  const message = value as Partial<McpRequest>
+  return typeof message.id === 'string'
+    && typeof message.method === 'string'
+    && mcpMethods.includes(message.method as McpMethod)
+}
+
 export default function MyProblem() {
   const {problemId} = useParams()
   const {data: tags} = useTags()
   const {data: platformConfig} = usePlatformConfigQuery()
-  const data = problemId ? useMyProblemQuery(Number.parseInt(problemId)).data! : {
+  const problemIdNumber = problemId ? Number.parseInt(problemId, 10) : null
+  const problemQuery = useMyProblemQuery(problemIdNumber ?? 0, {enabled: problemIdNumber != null})
+  const data = problemIdNumber != null ? problemQuery.data! : {
     id: 0, // не важен
     name: '',
     tags: [],
@@ -30,14 +216,27 @@ export default function MyProblem() {
   } as MyProblemView
 
   const [directory, setDirectory] = useState<FileSystemDirectoryHandle | null>(null)
+  const [mcpStatus, setMcpStatus] = useState<string | null>(null)
 
   const [state, setState] = useState(data)
+
+  const stateRef = useRef(state)
+  const tagsRef = useRef(tags)
+  const platformConfigRef = useRef(platformConfig)
+  const directoryRef = useRef(directory)
+  const wsRef = useRef<WebSocket | null>(null)
+  const handleMcpRequestRef = useRef<(message: McpRequest) => Promise<void>>(async () => undefined)
+  stateRef.current = state
+  tagsRef.current = tags
+  platformConfigRef.current = platformConfig
+  directoryRef.current = directory
+
   const queryClient = useQueryClient()
   const canReadMyProblems = hasPrivilege("my-problem:read")
   const save = useMutation({
     mutationFn: async () => api.post('/api/my-problem', {
       ...state,
-      id: problemId ? problemId : null
+      id: problemIdNumber
     }),
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -79,70 +278,129 @@ export default function MyProblem() {
   }
   const deleteLang = (id: string) => {
     setState(state => {
-      const {[id]: deleted, ...other} = state.languages
-      return {...state, languages: other};
+      const languages = {...state.languages}
+      delete languages[id]
+      return {...state, languages};
     })
   }
 
-  const onExport = async () => {
-    async function writeFile(directory: FileSystemDirectoryHandle, path: string, content: string) {
-      const file = await directory.getFileHandle(path, { create: true })
-      const writable = await file.createWritable({keepExistingData: false})
-      await writable.write(content)
-      await writable.close()
-    }
-
-    await writeFile(directory!, 'description.md', state.description)
-    await writeFile(directory!, 'info.json', JSON.stringify({
-      name: state.name,
-      tags: state.tags.map(id => tags!.find(t => t.id === id)?.name).filter(Boolean),
-    }, null, 2))
-    const languagesDir = await directory!.getDirectoryHandle('languages', {create: true})
-    for (const langId in state.languages) {
-      const lang = state.languages[langId]
-      const langDir = await languagesDir.getDirectoryHandle(langId, {create: true})
-      await writeFile(langDir, 'solution.txt', lang.solution)
-      await writeFile(langDir, 'solutionTemplate.txt', lang.solutionTemplate)
-      await writeFile(langDir, 'test.txt', lang.test)
-    }
+  const reportError = (error: unknown) => {
+    setMcpStatus(error instanceof Error ? error.message : 'Unknown error')
   }
-  const onImport = async () => {
-    async function readFile(directory: FileSystemDirectoryHandle, path: string) {
-      const fileHandle = await directory!.getFileHandle(path, {create: false})
-      const file = await fileHandle.getFile()
-      return await file.text()
-    }
 
-    const description = await readFile(directory!, 'description.md').catch(() => '')
-    const info = JSON.parse(await readFile(directory!, 'info.json').catch(() => '{}'))
+  const runWithStatus = (operation: () => Promise<unknown>) => {
+    void operation().catch(reportError)
+  }
 
-    const languagesDir = await directory!.getDirectoryHandle('languages', {create: false}).catch<Error>(e => e)
-    if (languagesDir instanceof Error)
-      throw languagesDir
+  const exportCurrentProblem = async () => {
+    const currentDirectory = requireValue(directoryRef.current, 'Connect a directory first')
+    const availableTags = requireValue(tagsRef.current, 'Tags are not loaded yet')
+    const result = await exportProblemToDirectory(currentDirectory, stateRef.current, availableTags)
+    setMcpStatus(`Exported to ${result.directoryName}`)
+    return {ok: true, ...result}
+  }
 
-    const languages: Record<string, MyProblemLanguageView> = {}
-    for await (const entry of languagesDir.values()) {
-      console.log(entry.kind, entry.name);
-      if (entry.kind !== 'directory') continue;
-      const langId = entry.name
-      if (!platformConfig!.languages[langId]) {
-        throw new Error(`Unknown language "${langId}"`)
-      }
-      const langDir = await languagesDir.getDirectoryHandle(langId, {create: false})
-      languages[langId] = {
-        solution: await readFile(langDir, 'solution.txt').catch(() => ''),
-        solutionTemplate: await readFile(langDir, 'solutionTemplate.txt').catch(() => ''),
-        test: await readFile(langDir, 'test.txt').catch(() => ''),
-      }
-    }
-    setState(p => ({
-      ...p,
-      description,
-      name: info.name ?? p.name,
-      tags: info.tags?.map((tagName: string) => tags!.find(t => t.name === tagName)?.id).filter(Boolean) ?? p.tags,
-      languages,
+  const importCurrentProblem = async () => {
+    const currentDirectory = requireValue(directoryRef.current, 'Connect a directory first')
+    const availableTags = requireValue(tagsRef.current, 'Tags are not loaded yet')
+    const currentPlatformConfig = requireValue(platformConfigRef.current, 'Platform config is not loaded yet')
+    const result = await importProblemFromDirectory(currentDirectory, availableTags, currentPlatformConfig)
+
+    setState(previous => ({
+      ...previous,
+      description: result.problem.description,
+      name: result.problem.name ?? previous.name,
+      tags: result.problem.tags ?? previous.tags,
+      difficulty: result.problem.difficulty ?? previous.difficulty,
+      languages: result.problem.languages,
     }))
+    setTab(result.languages[0] ?? null)
+    setMcpStatus(`Imported from ${result.directoryName}`)
+
+    return {
+      ok: true,
+      directoryName: result.directoryName,
+      languages: result.languages,
+    }
   }
+
+  const platformInfo = () => {
+    const currentTags = requireValue(tagsRef.current, 'Tags are not loaded yet')
+    const currentPlatformConfig = requireValue(platformConfigRef.current, 'Platform config is not loaded yet')
+
+    return {
+      tags: currentTags.map(tag => tag.name),
+      tagDetails: currentTags,
+      languages: Object.keys(currentPlatformConfig.languages),
+      languageDetails: currentPlatformConfig.languages,
+    }
+  }
+
+  const validateCurrentProblem = () => {
+    const currentPlatformConfig = requireValue(platformConfigRef.current, 'Platform config is not loaded yet')
+    const result = validateProblem(stateRef.current, currentPlatformConfig)
+    setMcpStatus(result.ok ? 'Validation passed' : `Validation failed: ${result.errors.join('; ')}`)
+    return result
+  }
+  const validateFromMcp = async () => {
+    await importCurrentProblem()
+    return validateCurrentProblem()
+  }
+
+  const sendMcpResponse = (response: McpResponse) => {
+    wsRef.current?.send(JSON.stringify(response))
+  }
+
+  const handleMcpRequest = async (message: McpRequest) => {
+    try {
+      const result = message.method === 'exportCurrentProblem'
+        ? await exportCurrentProblem()
+        : message.method === 'importCurrentProblem'
+          ? await importCurrentProblem()
+          : message.method === 'platformInfo'
+            ? platformInfo()
+            : await validateFromMcp()
+
+      sendMcpResponse({id: message.id, result})
+    } catch (error) {
+      sendMcpResponse({
+        id: message.id,
+        error: error instanceof Error ? error.message : 'Unknown frontend error',
+      })
+    }
+  }
+  handleMcpRequestRef.current = handleMcpRequest
+
+  useEffect(() => {
+    const socket = new WebSocket(mcpWebSocketUrl)
+    wsRef.current = socket
+    setMcpStatus('Connecting to MCP...')
+    socket.onopen = () => setMcpStatus('MCP connected')
+    socket.onclose = () => {
+      if (wsRef.current === socket) {
+        wsRef.current = null
+        setMcpStatus('MCP disconnected')
+      }
+    }
+    socket.onerror = () => setMcpStatus('MCP connection error')
+    socket.onmessage = event => {
+      try {
+        const message = JSON.parse(event.data) as unknown
+        if (!isMcpRequest(message)) {
+          throw new Error('Invalid MCP request')
+        }
+        void handleMcpRequestRef.current(message)
+      } catch (error) {
+        setMcpStatus(`MCP message failed: ${error instanceof Error ? error.message : 'unknown error'}`)
+      }
+    }
+    return () => {
+      if (wsRef.current === socket) {
+        wsRef.current = null
+      }
+      socket.close()
+    }
+  }, [])
 
   return (
     <div className={'p-4'}>
@@ -159,25 +417,26 @@ export default function MyProblem() {
         </div>
         <div className={'flex gap-3'}>
           <Button onClick={async () => {
+            // @ts-ignore
             const dirHandle: FileSystemDirectoryHandle = await window.showDirectoryPicker();
             setDirectory(dirHandle)
+            setMcpStatus(`Directory connected: ${dirHandle.name}`)
           }}>
             Подключить директорию
           </Button>
           {
             directory ? (
               <>
-                <Button onClick={onExport}>
+                <Button onClick={() => runWithStatus(exportCurrentProblem)}>
                   Экспорт
                 </Button>
-                <Button onClick={onImport}>
+                <Button onClick={() => runWithStatus(importCurrentProblem)}>
                   Импорт
                 </Button>
               </>
             ) : null
           }
-          <Button onClick={() => {
-          }}>
+          <Button onClick={() => runWithStatus(async () => validateCurrentProblem())}>
             Проверить
           </Button>
           <Button loading={save.isPending} onClick={() => {
@@ -187,6 +446,11 @@ export default function MyProblem() {
           </Button>
         </div>
       </div>
+      {mcpStatus ? (
+        <Text size={'sm'} c={'dimmed'} className={'mt-2'}>
+          {mcpStatus}
+        </Text>
+      ) : null}
 
       <div className={'mt-4 h-[400px] flex gap-4'}>
         <Paper withBorder className={'w-[400px] p-2'}>
@@ -213,7 +477,6 @@ export default function MyProblem() {
                   value={state.description}
                   language={'markdown'}
                   onChange={v => {
-                    console.log('change')
                     if (v != null)
                       setState(state => ({...state, description: v}))
                   }}

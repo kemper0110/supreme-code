@@ -69,6 +69,7 @@ export type TestCaseResult = {
 export const problemQueryKey = (slug: string) =>
   ['problem', useUser.getState().user?.id, slug];
 
+export const problemQueryFn = async (slug: string) => (await api.get(`/api/problem/${encodeURIComponent(slug)}`)).data
 
 export const ProblemLoader = async (params: LoaderFunctionArgs) => {
   console.log('problem loader', performance.now())
@@ -77,7 +78,7 @@ export const ProblemLoader = async (params: LoaderFunctionArgs) => {
   return await Promise.all([
     queryClient.fetchQuery({
       queryKey,
-      queryFn: async () => (await api.get(`/api/problem/${encodeURIComponent(slug!)}`)).data,
+      queryFn: () => problemQueryFn(slug),
       staleTime: 10_000
     }),
     fetchPlatformConfig(),
@@ -86,7 +87,11 @@ export const ProblemLoader = async (params: LoaderFunctionArgs) => {
 }
 
 export const useProblemQuery = (slug: string, options?: UseQueryOptions<ProblemData>) =>
-  useQuery<ProblemData>({queryKey: problemQueryKey(slug), ...options})
+  useQuery<ProblemData>({
+    queryKey: problemQueryKey(slug),
+    queryFn: () => problemQueryFn(slug),
+    ...options
+  })
 
 export const useTestMutation = (slug: string, selectedLanguage: string, options?: UseMutationOptions<AxiosResponse<Solution>, unknown, unknown, any>) => {
   return useMutation({

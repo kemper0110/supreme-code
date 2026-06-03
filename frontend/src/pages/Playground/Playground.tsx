@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import MonacoEditor from "react-monaco-editor";
 import {Badge, Button, Flex, Group, SegmentedControl, Text} from "@mantine/core";
 import {LanguageValue} from "../../types/LanguageValue.tsx";
@@ -7,13 +7,10 @@ import {Panel, PanelGroup, PanelResizeHandle} from "react-resizable-panels";
 import {Link} from "react-router-dom";
 import {SSE} from "sse.js";
 import * as monaco from 'monaco-editor';
-import {CloseAction, ErrorAction, MonacoLanguageClient, MonacoServices,} from 'monaco-languageclient';
-import {toSocket, WebSocketMessageReader, WebSocketMessageWriter} from "vscode-ws-jsonrpc";
-import {createMessageConnection} from "vscode-jsonrpc";
 import {usePlatformConfigQuery} from "../shared/PlatformConfig.ts";
 import {LanguageTitle} from "../../components/LanguageTitle.tsx";
+import {useMonacoLsp} from "../../hooks/useMonacoLsp.ts";
 
-const baseUrl = 'ws://localhost:3005/';
 type RunRequest = {
   code: string
   language: string
@@ -43,6 +40,7 @@ export default function Playground() {
   const [running, setRunning] = useState(false)
   const [value, setValue] = useState(language.playgroundInitialCode)
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
+  useMonacoLsp(language, platformConfig?.languages)
 
   const handleRun = async () => {
     setMessages([])
@@ -80,89 +78,15 @@ export default function Playground() {
   const onLanguageChange = (value: string) => {
     const newLanguage = platformConfig!.languages[value]
     editorRef.current!.getModel()?.dispose()
-    editorRef.current!.setModel(monaco.editor.createModel(newLanguage.playgroundInitialCode, value, monaco.Uri.parse(newLanguage.monacoFile)))
+    editorRef.current!.setModel(monaco.editor.createModel(
+      newLanguage.playgroundInitialCode,
+      newLanguage.monacoLanguageId,
+      monaco.Uri.parse(newLanguage.monacoFile)
+    ))
 
     setLanguageId(value as LanguageValue)
     setValue(newLanguage.playgroundInitialCode)
   };
-
-  const singleRun = useRef(false)
-  useEffect(() => {
-    if (singleRun.current) {
-      return
-    }
-    singleRun.current = true
-    MonacoServices.install();
-    for (const key in platformConfig!.languages) {
-      const language = platformConfig!.languages[key]
-      const languageId = language.monacoLanguageId
-      monaco.languages.register({
-        id: languageId,
-        extensions: language.extensions,
-        aliases: [languageId],
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
-      const url = new URL(baseUrl)
-      url.searchParams.set('language', language.monacoLanguageId)
-      const webSocket = new WebSocket(url.toString());
-
-      let languageClient: MonacoLanguageClient
-      webSocket.onopen = () => {
-        const socket = toSocket(webSocket);
-        const messageReader = new WebSocketMessageReader(socket);
-        const messageWriter = new WebSocketMessageWriter(socket);
-        const connection = createMessageConnection(messageReader, messageWriter, console);
-        connection.onClose(() => connection.dispose());
-        console.log('Connection established');
-        languageClient = new MonacoLanguageClient({
-          name: language.monacoLanguageId + ' Language Server',
-          clientOptions: {
-            workspaceFolder: {
-              uri: monaco.Uri.file('/workspace'),
-              index: 0,
-              name: 'workspace',
-            },
-            documentSelector: [language.monacoLanguageId],
-            errorHandler: {
-              error: (error, message) => {
-                console.error(message, error);
-                return {
-                  action: ErrorAction.Continue,
-                };
-              },
-              closed: () => {
-                return {
-                  action: CloseAction.Restart,
-                }
-              },
-            },
-          },
-          connectionProvider: {
-            get: () => Promise.resolve({
-              reader: messageReader,
-              writer: messageWriter,
-            }),
-          },
-        });
-        languageClient.start();
-      };
-
-      webSocket.onerror = (evt) => {
-        console.error(evt)
-      }
-      return () => {
-        webSocket.close()
-        languageClient?.stop();
-      }
-    } catch (e) {
-      console.error(e)
-      return
-    }
-  }, [languageId, language]);
 
   return (
     <div onKeyDown={keyboardHandler}
@@ -201,7 +125,7 @@ export default function Playground() {
             onChange={(value) => setValue(value)}
             editorDidMount={(editor) => {
               editorRef.current = editor
-              editor.setModel(monaco.editor.createModel(value, languageId, monaco.Uri.parse(language.monacoFile)))
+              editor.setModel(monaco.editor.createModel(value, language.monacoLanguageId, monaco.Uri.parse(language.monacoFile)))
             }}
             language={language.monacoLanguageId}
             width={"calc(100vw - 50px)"}

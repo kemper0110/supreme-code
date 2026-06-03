@@ -14,6 +14,7 @@ data class LanguageConfig(
     val ephemeralFileName: String,
     val playgroundInitialCode: String,
     val testerConfig: TesterConfig,
+    val runnerConfig: RunnerConfig? = null,
 )
 
 data class TesterConfig(
@@ -22,6 +23,11 @@ data class TesterConfig(
     val solutionPath: String,
     val reportPath: String,
     val verdictClassName: String,
+)
+
+data class RunnerConfig(
+    val image: String,
+    val cmd: String,
 )
 
 data class PlatformConfig(

@@ -32,6 +32,8 @@ import {useUser} from "../../store/useUser.tsx";
 import {WebsocketProvider} from "y-websocket";
 import {Awareness} from "y-protocols/awareness";
 import {usePlatformConfigQuery} from "../shared/PlatformConfig.ts";
+import {useMonacoLsp} from "../../hooks/useMonacoLsp.ts";
+import {yjsWebSocketUrl} from "../../config.ts";
 
 
 self.MonacoEnvironment = {
@@ -81,8 +83,9 @@ const useSharedSelectedLanguage: LanguageStoreProvider = (languages: string[]) =
   const setSelectedLanguage = (language: string) => {
     state.language.value = language
   }
+  const calculatedState = languages.find(language => language === state.language.value) ?? languages[0]
   return [
-    languages.find(language => language === state.language.value) ?? languages[0],
+    calculatedState,
     setSelectedLanguage
   ] as LanguageStore
 }
@@ -100,8 +103,7 @@ const useRemoteProvider = (online: boolean, slug: string, userId: number) => {
       // webrtcProvider.current = new WebrtcProvider(topic, doc, {
       //   signaling: ["ws://localhost:4444"],
       // });
-      const websocketServer = 'ws://localhost:1234' //  'wss://demos.yjs.dev/ws'
-      websocketProvider.current = new WebsocketProvider(websocketServer, topic, doc)
+      websocketProvider.current = new WebsocketProvider(yjsWebSocketUrl, topic, doc)
 
       websocketProvider.current?.on('status', (e: any) => {
         setStatus(e.status)
@@ -129,7 +131,11 @@ const useRemoteProvider = (online: boolean, slug: string, userId: number) => {
   }
 }
 
-const useMonacoBinding = (editorRef: editor.ICodeEditor | null, awareness: Awareness | undefined) => {
+const useMonacoBinding = (
+  editorRef: editor.ICodeEditor | null,
+  awareness: Awareness | undefined,
+  selectedLanguage: string
+) => {
   const monacoBinding = useRef<MonacoBinding>()
   useEffect(() => {
     if (editorRef && awareness) {
@@ -139,7 +145,7 @@ const useMonacoBinding = (editorRef: editor.ICodeEditor | null, awareness: Aware
       monacoBinding.current?.destroy()
       monacoBinding.current = undefined
     }
-  }, [editorRef, awareness]);
+  }, [editorRef, awareness, selectedLanguage]);
   return {
     monacoBinding
   }
@@ -156,8 +162,9 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
   // const state = useSyncedStore<typeof store>(store)
   // console.log({state: JSON.stringify(state)})
 
-  const {slug} = useParams()
-  const userId = host ? useUser(state => state.user?.id) : Number.parseInt(useParams().userId!)
+  const {slug, userId: routeUserId} = useParams()
+  const currentUserId = useUser(state => state.user?.id)
+  const userId = host ? Number(currentUserId) : Number.parseInt(routeUserId!)
   const [online, setOnline] = useState(initialOnline);
   const {provider, synced, status} = useRemoteProvider(online, slug!, userId!)
   console.log({synced, status})
@@ -169,12 +176,12 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
   useTabSpyLocation(name)
 
   const [selectedLanguage, setSelectedLanguage] = useSharedSelectedLanguage(Object.keys(languages))
+  const selectedPlatformLanguage = platformConfig!.languages[selectedLanguage]
+  useMonacoLsp(selectedPlatformLanguage, platformConfig?.languages)
 
   const selectedSolutionState = useState<SelectedSolutionTuple | null>(null)
-  const [selectedSolution, setSelectedSolution] = selectedSolutionState
 
   const [editorRef, setEditorRef] = useState<ICodeEditor | null>(null)
-  useMonacoBinding(editorRef, provider.current?.awareness);
 
   const [activeTab, setActiveTab] = useState<'description' | 'solutions' | null>('description')
 
@@ -190,9 +197,39 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
   const solutionCodeMutation = useSolutionCodeMutation(slug!, {
     onSuccess: (solutionCode) => {
       setSelectedLanguage(solutionCode.language)
-      editorRef?.setValue(solutionCode.code)
+      const languageConfig = platformConfig!.languages[solutionCode.language]
+      if (editorRef) {
+        editorRef.getModel()?.dispose()
+        editorRef.setModel(monaco.editor.createModel(
+          solutionCode.code,
+          languageConfig.monacoLanguageId,
+          monaco.Uri.parse(languageConfig.monacoFile)
+        ))
+      } else {
+        console.error('no editorRef')
+      }
     }
   })
+
+  useEffect(() => {
+    if (!editorRef) {
+      return
+    }
+
+    const model = editorRef.getModel()
+    if (model?.uri.toString() === selectedPlatformLanguage.monacoFile) {
+      return
+    }
+
+    model?.dispose()
+    editorRef.setModel(monaco.editor.createModel(
+      languages[selectedLanguage]?.solutionTemplate ?? '',
+      selectedPlatformLanguage.monacoLanguageId,
+      monaco.Uri.parse(selectedPlatformLanguage.monacoFile)
+    ))
+  }, [editorRef, selectedPlatformLanguage?.monacoLanguageId])
+
+  useMonacoBinding(editorRef, provider.current?.awareness, selectedLanguage);
 
   const onRunClick = () => {
     // @ts-ignore
@@ -203,9 +240,11 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
     console.warn('editor initialized', editor)
     setEditorRef(editor)
     if (editor) {
-      if (host) {
-        editor.setValue(languages[selectedLanguage]?.solutionTemplate ?? '')
-      }
+      editor.setModel(monaco.editor.createModel(
+        host ? languages[selectedLanguage]?.solutionTemplate ?? '' : '',
+        selectedPlatformLanguage.monacoLanguageId,
+        monaco.Uri.parse(selectedPlatformLanguage.monacoFile)
+      ))
     }
   }
 
@@ -328,7 +367,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
                               </Text>
                             }
                             height="100%"
-                            language={platformConfig!.languages[selectedLanguage]?.monacoLanguageId}
+                            language={selectedPlatformLanguage.monacoLanguageId}
                     />
                   </Tabs.Panel>
                 </Tabs>

@@ -1,29 +1,53 @@
 package org.supremecode.testrunner.config;
 
 import com.github.dockerjava.api.DockerClient;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.supremecode.shared.PlatformConfig;
 import org.supremecode.testrunner.ConfigurableRunner;
+import org.supremecode.testrunner.Language;
+import org.supremecode.testrunner.Runner;
+import org.supremecode.testrunner.RunnerRegistry;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configuration
-@EnableConfigurationProperties(LanguagesProperties.class)
 public class RunnerConfiguration {
-    private final LanguagesProperties languagesProperties;
+    private final PlatformConfig platformConfig;
     private final DockerClient dockerClient;
     private final int ttk;
 
-    public RunnerConfiguration(LanguagesProperties languagesProperties, DockerClient dockerClient,
+    public RunnerConfiguration(PlatformConfig platformConfig, DockerClient dockerClient,
             @org.springframework.beans.factory.annotation.Value("${supreme-code.task-runner.container.ttk}") int ttk) {
-        this.languagesProperties = languagesProperties;
+        this.platformConfig = platformConfig;
         this.dockerClient = dockerClient;
         this.ttk = ttk;
     }
 
     @Bean
-    public Iterable<ConfigurableRunner> configurableRunners() {
-        return languagesProperties.getLanguages().values().stream()
-                .map(config -> new ConfigurableRunner(dockerClient, ttk, config))
-                .toList();
+    public RunnerRegistry runnerRegistry() {
+        final Map<Language, Runner> runners = platformConfig.getLanguages().entrySet().stream()
+                .filter(entry -> entry.getValue().getRunnerConfig() != null)
+                .map(entry -> {
+                    final var language = Language.fromPlatformId(entry.getKey())
+                            .orElseThrow(() -> new IllegalArgumentException("Unsupported task-runner language: " + entry.getKey()));
+                    final var languageConfig = entry.getValue();
+                    final var runnerConfig = languageConfig.getRunnerConfig();
+
+                    return new ConfigurableRunner(
+                            dockerClient,
+                            ttk,
+                            new LanguageConfig(
+                                    language,
+                                    runnerConfig.getImage(),
+                                    runnerConfig.getCmd(),
+                                    languageConfig.getEphemeralFileName()
+                            )
+                    );
+                })
+                .collect(Collectors.toMap(ConfigurableRunner::getLanguage, runner -> (Runner) runner));
+
+        return new RunnerRegistry(runners);
     }
 }

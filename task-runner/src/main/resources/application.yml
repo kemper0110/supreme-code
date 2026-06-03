@@ -2,18 +2,5 @@ supreme-code:
   task-runner:
     container:
       ttk: 12000
-    languages:
-      Cpp:
-        image: "gcc:13.2.0"
-        cmd: "g++ -std=c++17 -o app app.cpp && ./app"
-        codeFilename: "app.cpp"
-      Java:
-        image: "amazoncorretto:21-alpine"
-        cmd: "javac App.java && java App"
-        codeFilename: "App.java"
-      Javascript:
-        image: "node:20-alpine"
-        cmd: "node app.js"
-        codeFilename: "app.js"
 server:
   port: 8090

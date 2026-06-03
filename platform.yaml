@@ -18,6 +18,9 @@ languages:
       solutionPath: /solution.hpp
       reportPath: /usr/app/build/junit.xml
       verdictClassName: org.supremecode.commonplugins.GtestCppLanguageTester
+    runnerConfig:
+      image: "gcc:13.2.0"
+      cmd: "g++ -std=c++17 -o app main.cpp && ./app"
   java:
     name: Java
     iconPath: /plugins/java.svg
@@ -42,6 +45,9 @@ languages:
       solutionPath: /src/main/java/org/example/Solution.java
       reportPath: /usr/app/target/surefire-reports/TEST-JunitTest.xml
       verdictClassName: org.supremecode.commonplugins.PyTestLanguageTester
+    runnerConfig:
+      image: "amazoncorretto:21-alpine"
+      cmd: "javac Main.java && java App"
   javascript:
     name: JavaScript
     iconPath: /plugins/javascript.svg
@@ -56,6 +62,9 @@ languages:
       solutionPath: /solution.js
       reportPath: /usr/app/junit.xml
       verdictClassName: org.supremecode.commonplugins.JestLanguageTester
+    runnerConfig:
+      image: "node:20-alpine"
+      cmd: "node index.js"
   typescript:
     name: TypeScript
     iconPath: /plugins/typescript.svg

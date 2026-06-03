@@ -1,0 +1,22 @@
+import numpy as np
+
+
+def get_numpy_version():
+    pass
+
+
+def create_array_0_to_9():
+    pass
+
+
+def create_true_array_3x3():
+    pass
+
+
+def get_odd_numbers(arr):
+    pass
+
+
+def replace_odd_numbers(arr):
+    pass
+

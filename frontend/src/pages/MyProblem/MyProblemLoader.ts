@@ -50,7 +50,7 @@ export async function MyProblemCreateLoader() {
   return null
 }
 
-export function useMyProblemQuery(problemId: number, options?: UseQueryOptions<MyProblemView>) {
+export function useMyProblemQuery(problemId: number, options?: Partial<UseQueryOptions<MyProblemView>>) {
   return useQuery({
     queryKey: myProblemQueryKey(problemId),
     queryFn: () => myProblemQueryFn(problemId),

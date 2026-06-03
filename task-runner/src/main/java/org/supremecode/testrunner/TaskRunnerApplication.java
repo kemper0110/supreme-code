@@ -11,8 +11,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
+import org.supremecode.shared.PlatformConfig;
 
 import java.time.Duration;
+
+import static org.supremecode.shared.PlatformConfigKt.readPlatformConfig;
 
 @SpringBootApplication
 @Slf4j
@@ -43,5 +46,10 @@ public class TaskRunnerApplication {
     @Bean
     public DockerClient dockerClient() {
         return DockerClientImpl.getInstance(dockerClientConfig(), dockerHttpClient());
+    }
+
+    @Bean
+    public PlatformConfig platformConfig() {
+        return readPlatformConfig();
     }
 }
