@@ -11,7 +11,10 @@ export type Privilege =
   | "problem:list"
   | "solution:view"
   | "solution:submit"
+  | "tag:create"
   | "tag:read"
+  | "tag:update"
+  | "tag:delete"
   | "platform-config:read";
 
 type TokenWithResourceAccess = {

@@ -1,5 +1,4 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {Tag} from "./TagsLoader.ts";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {Button, Container, Modal, Table, TextInput} from "@mantine/core";
 import {IconPencil, IconX} from "@tabler/icons-react";
 import {api} from "../../api/api.ts";
@@ -7,6 +6,7 @@ import {useDisclosure} from '@mantine/hooks';
 import {useState} from "react";
 import {DotBackground} from "../../components/Background.tsx";
 import {tagsQueryKey, useTags} from "../shared/tags.ts";
+import {hasPrivilege} from "../../auth/privileges.ts";
 
 export default function Tags() {
   const {data} = useTags()
@@ -59,24 +59,36 @@ export default function Tags() {
           </Button>
         </Modal>
 
-        <Button variant="default" onClick={openCreate}>
-          Создать тег
-        </Button>
+        {
+          hasPrivilege('tag:create') ? (
+            <Button variant="default" onClick={openCreate}>
+              Создать тег
+            </Button>
+          ) : null
+        }
         <Table className={'mt-4'} data={{
           head: [
             "ID", "Название", ""
           ],
           body: data!.map(tag => [tag.id, tag.name, <div className={'flex gap-1'}>
-            <Button onClick={() => {
-              setUpdateTagId(tag.id)
-              setUpdateTagName(tag.name)
-              openUpdate()
-            }}>
-              <IconPencil/>
-            </Button>
-            <Button onClick={() => deleteTag.mutate(tag.id)}>
-              <IconX/>
-            </Button>
+            {
+              hasPrivilege('tag:update') ? (
+                <Button onClick={() => {
+                  setUpdateTagId(tag.id)
+                  setUpdateTagName(tag.name)
+                  openUpdate()
+                }}>
+                  <IconPencil/>
+                </Button>
+              ) : null
+            }
+            {
+              hasPrivilege('tag:delete') ? (
+                <Button onClick={() => deleteTag.mutate(tag.id)}>
+                  <IconX/>
+                </Button>
+              ) : null
+            }
           </div>])
         }}/>
       </Container>
