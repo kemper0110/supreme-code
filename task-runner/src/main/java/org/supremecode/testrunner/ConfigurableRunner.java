@@ -25,8 +25,10 @@ public class ConfigurableRunner extends Runner {
 
     @Override
     protected CreateContainerCmd createContainer() {
-        return dockerClient.createContainerCmd(config.getImage())
-                .withWorkingDir("/usr/app")
-                .withCmd("sh", "-c", config.getCmd());
+        var container = dockerClient.createContainerCmd(config.getImage())
+                .withWorkingDir("/usr/app");
+        if (config.getCmd() != null)
+            container = container.withCmd(config.getCmd());
+        return container;
     }
 }

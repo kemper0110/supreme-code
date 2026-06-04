@@ -1,4 +1,4 @@
 Сборка через
 ```sh
-docker build -t sc-js-test .
+docker build -t sc-java-test .
 ```

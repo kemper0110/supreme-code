@@ -10,7 +10,7 @@ RUN apt-get install -y \
 # Создаем симлинк для удобного вызова
 RUN ln -s /usr/bin/clangd-14 /usr/bin/clangd
 
-RUN apt-get install -y --fix-missing libboost-all-dev
+# RUN apt-get install -y --fix-missing libboost-all-dev
 
 WORKDIR /workspace
 

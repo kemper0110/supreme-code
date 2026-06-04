@@ -19,11 +19,16 @@ const docker = new Docker();
 
 const ConfigSchema = z.object({
     languages: z.record(z.string(), z.object({
-        image: z.string(),
+        lspConfig: z.object({
+            image: z.string(),
+            cmd: z.string().optional()
+        }).optional()
     }))
 })
 
-const config = ConfigSchema.parse(JSON.parse(fs.readFileSync('./config.json', 'utf8')))
+const config = ConfigSchema.parse(JSON.parse(
+    fs.readFileSync('../platform.yaml', 'utf8')
+))
 
 const querySchema = z.object({
     language: z.string(),
@@ -60,9 +65,12 @@ async function createLSP(language: string): Promise<LSP> {
     const languageConfig = config.languages[language]
     if (!languageConfig)
         throw new Error("language not found")
+    if (!languageConfig.lspConfig)
+        throw new Error("lspConfig not found")
 
     const container = await docker.createContainer({
-        Image: languageConfig.image,
+        Image: languageConfig.lspConfig.image,
+        Cmd: languageConfig.lspConfig.cmd?.split(' '),
         Tty: false,
         AttachStdout: true,
         AttachStdin: true,

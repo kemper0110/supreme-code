@@ -1,0 +1,1 @@
+docker build -t supremecode-java-lsp .

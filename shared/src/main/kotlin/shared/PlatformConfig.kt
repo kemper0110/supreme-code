@@ -13,8 +13,9 @@ data class LanguageConfig(
     val extensions: List<String>,
     val ephemeralFileName: String,
     val playgroundInitialCode: String,
-    val testerConfig: TesterConfig,
+    val testerConfig: TesterConfig? = null,
     val runnerConfig: RunnerConfig? = null,
+    val lspConfig: LspConfig? = null,
 )
 
 data class TesterConfig(
@@ -23,11 +24,18 @@ data class TesterConfig(
     val solutionPath: String,
     val reportPath: String,
     val verdictClassName: String,
+    val cmd: String? = null,
 )
 
 data class RunnerConfig(
     val image: String,
-    val cmd: String,
+    val filePath: String,
+    val cmd: String? = null,
+)
+
+data class LspConfig(
+    val image: String,
+    val cmd: String? = null,
 )
 
 data class PlatformConfig(

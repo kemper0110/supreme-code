@@ -1,19 +1,18 @@
 {
   "languages": {
     "cpp": {
-      "image": "clangdls"
+      "image": "supremecode-cpp-lsp"
     },
     "go": {
-      "image": "gopls"
+      "image": "supremecode-go-lsp"
     },
     "typescript": {
-      "image": "denols"
+      "image": "supremecode-ts-lsp"
     },
     "javascript": {
-      "image": "denols"
     },
     "python": {
-      "image": "pyright"
+
     }
   }
 }
