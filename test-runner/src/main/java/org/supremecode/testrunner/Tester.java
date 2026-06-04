@@ -57,8 +57,9 @@ public class Tester {
     }
     @WithSpan
     protected CreateContainerResponse createContainer() {
-        final var cmd = dockerClient.createContainerCmd(testerConfig.getImageName());
-        cmd.withHostConfig(
+        var cmd = dockerClient.createContainerCmd(testerConfig.getImageName());
+        if (testerConfig.getCmd() != null) cmd = cmd.withCmd(testerConfig.getCmd());
+        cmd = cmd.withHostConfig(
                 new HostConfig()
                         .withMemory(1024L * 1024L * 400L)
                         .withMemorySwap(1024L * 1024L * 1024L)
@@ -74,7 +75,7 @@ public class Tester {
                         .withCapDrop(Capability.NET_ADMIN)
                         .withNetworkMode("none")
         );
-        cmd.withNetworkDisabled(true);
+        cmd = cmd.withNetworkDisabled(true);
         return cmd.exec();
     }
     @WithSpan

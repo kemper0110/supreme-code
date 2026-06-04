@@ -17,9 +17,11 @@ public class RunnerController {
 
     @PostMapping
     public Flux<ServerSentEvent<?>> run(@RequestBody RunnerRequest request) {
-        return runnerService.run(request).map(evt -> ServerSentEvent.builder()
-                .event(evt.getEventType())
-                .data(evt.getMessage().toString())
-                .build());
+        return runnerService.run(request).map(evt -> {
+            return ServerSentEvent.builder()
+                    .event(evt.getEventType())
+                    .data(evt.getMessage().toString())
+                    .build();
+        });
     }
 }

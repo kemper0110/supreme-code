@@ -19,7 +19,7 @@ public class RunnerConfiguration {
     private final int ttk;
 
     public RunnerConfiguration(PlatformConfig platformConfig, DockerClient dockerClient,
-            @org.springframework.beans.factory.annotation.Value("${supreme-code.task-runner.container.ttk}") int ttk) {
+                               @org.springframework.beans.factory.annotation.Value("${supreme-code.task-runner.container.ttk}") int ttk) {
         this.platformConfig = platformConfig;
         this.dockerClient = dockerClient;
         this.ttk = ttk;
@@ -27,23 +27,17 @@ public class RunnerConfiguration {
 
     @Bean
     public RunnerRegistry runnerRegistry() {
-        final Map<Language, Runner> runners = platformConfig.getLanguages().entrySet().stream()
+        final Map<String, Runner> runners = platformConfig.getLanguages().entrySet().stream()
                 .filter(entry -> entry.getValue().getRunnerConfig() != null)
                 .map(entry -> {
-                    final var language = Language.fromPlatformId(entry.getKey())
-                            .orElseThrow(() -> new IllegalArgumentException("Unsupported task-runner language: " + entry.getKey()));
                     final var languageConfig = entry.getValue();
                     final var runnerConfig = languageConfig.getRunnerConfig();
 
                     return new ConfigurableRunner(
                             dockerClient,
                             ttk,
-                            new LanguageConfig(
-                                    language,
-                                    runnerConfig.getImage(),
-                                    runnerConfig.getCmd(),
-                                    languageConfig.getEphemeralFileName()
-                            )
+                            entry.getKey(),
+                            runnerConfig
                     );
                 })
                 .collect(Collectors.toMap(ConfigurableRunner::getLanguage, runner -> (Runner) runner));

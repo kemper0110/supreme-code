@@ -13,6 +13,7 @@ import {myProblemsQueryKey} from "../MyProblems/MyProblemsLoader.ts";
 import {hasPrivilege} from "../../auth/privileges.ts";
 import type {PlatformConfig} from "../Problem/Loader.tsx";
 import type {Tag} from "../Tag/TagsLoader.ts";
+import {sortedLanguageEntries, sortedLanguageIdsByName} from "../shared/languageSorting.ts";
 
 loader.config({monaco});
 
@@ -156,7 +157,7 @@ async function importProblemFromDirectory(
 
   return {
     directoryName: directory.name,
-    languages: Object.keys(languages),
+    languages: sortedLanguageIdsByName(Object.keys(languages), platformConfig.languages),
     problem: {
       description,
       name: typeof info.name === 'string' ? info.name : undefined,
@@ -331,7 +332,7 @@ export default function MyProblem() {
     return {
       tags: currentTags.map(tag => tag.name),
       tagDetails: currentTags,
-      languages: Object.keys(currentPlatformConfig.languages),
+      languages: sortedLanguageEntries(currentPlatformConfig.languages).map(([id]) => id),
       languageDetails: currentPlatformConfig.languages,
     }
   }
@@ -401,6 +402,8 @@ export default function MyProblem() {
       socket.close()
     }
   }, [])
+
+  const sortedStateLanguageIds = sortedLanguageIdsByName(Object.keys(state.languages), platformConfig!.languages)
 
   return (
     <div className={'p-4'}>
@@ -488,7 +491,7 @@ export default function MyProblem() {
         <Tabs className={'mt-2'} value={tab} onChange={onTabChange}>
           <Tabs.List>
             {
-              Object.entries(state.languages).map(([id]) => (
+              sortedStateLanguageIds.map(id => (
                 <Tabs.Tab key={id} value={id} rightSection={
                   <ActionIcon variant={'light'} onClick={() => deleteLang(id)}>
                     <IconX/>
@@ -508,7 +511,7 @@ export default function MyProblem() {
                 <HoverCard.Dropdown>
                   <List>
                     {
-                      Object.entries(platformConfig!.languages)
+                      sortedLanguageEntries(platformConfig!.languages)
                         .filter(([id]) => !(id in state.languages))
                         .map(([id, lang]) => (
                           <List.Item key={id} onClick={() => addLang(id)}>
@@ -522,7 +525,9 @@ export default function MyProblem() {
             </Tabs.Tab>
           </Tabs.List>
           {
-            Object.entries(state.languages).map(([id, lang]) => (
+            sortedStateLanguageIds.map(id => {
+              const lang = state.languages[id]
+              return (
               <Tabs.Panel key={id} value={id}>
                 <Tabs defaultValue={'test'}>
                   <Tabs.List>
@@ -561,7 +566,8 @@ export default function MyProblem() {
                   </Tabs.Panel>
                 </Tabs>
               </Tabs.Panel>
-            ))
+              )
+            })
           }
         </Tabs>
       </Paper>

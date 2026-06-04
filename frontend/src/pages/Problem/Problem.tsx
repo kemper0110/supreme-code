@@ -34,6 +34,7 @@ import {Awareness} from "y-protocols/awareness";
 import {usePlatformConfigQuery} from "../shared/PlatformConfig.ts";
 import {useMonacoLsp} from "../../hooks/useMonacoLsp.ts";
 import {yjsWebSocketUrl} from "../../config.ts";
+import {sortedLanguageIdsByName} from "../shared/languageSorting.ts";
 
 
 self.MonacoEnvironment = {
@@ -175,7 +176,8 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
   const solved = Object.values(languages).some(lang => lang.solutions.some(solution => solution.solutionResult?.solved))
   useTabSpyLocation(name)
 
-  const [selectedLanguage, setSelectedLanguage] = useSharedSelectedLanguage(Object.keys(languages))
+  const sortedLanguageIds = sortedLanguageIdsByName(Object.keys(languages), platformConfig!.languages)
+  const [selectedLanguage, setSelectedLanguage] = useSharedSelectedLanguage(sortedLanguageIds)
   const selectedPlatformLanguage = platformConfig!.languages[selectedLanguage]
   useMonacoLsp(selectedPlatformLanguage, platformConfig?.languages)
 
@@ -309,7 +311,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
           </Group>
           <Flex p={'16px 16px 8px'} justify={'end'} gap={12} align={'center'} pr={20}>
             <SegmentedControl size={'xs'} data={
-              Object.keys(languages).map(l => {
+              sortedLanguageIds.map(l => {
                 const languageConfig = platformConfig!.languages[l]
                 return ({
                   label: <HoverCard position={'top'} disabled={selectedLanguage !== l}>

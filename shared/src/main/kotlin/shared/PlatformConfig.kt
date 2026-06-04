@@ -24,18 +24,18 @@ data class TesterConfig(
     val solutionPath: String,
     val reportPath: String,
     val verdictClassName: String,
-    val cmd: String? = null,
+    val cmd: List<String>? = null,
 )
 
 data class RunnerConfig(
     val image: String,
     val filePath: String,
-    val cmd: String? = null,
+    val cmd: List<String>? = null,
 )
 
 data class LspConfig(
     val image: String,
-    val cmd: String? = null,
+    val cmd: List<String>? = null,
 )
 
 data class PlatformConfig(
@@ -46,7 +46,7 @@ fun readPlatformConfig(): PlatformConfig {
     val objectMapper = ObjectMapper(YAMLFactory())
         .registerKotlinModule()
 
-    val content = FileReader("C:\\Users\\Danil\\IdeaProjects\\supreme-code\\platform.yaml").readText()
+    val content = FileReader("C:\\Users\\danil\\IdeaProjects\\supreme-code\\platform.yaml").readText()
     val config = objectMapper.readValue(content, PlatformConfig::class.java)
 
     return config

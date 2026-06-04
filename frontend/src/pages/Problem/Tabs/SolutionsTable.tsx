@@ -7,6 +7,7 @@ import classes from "../../Problems/Problems.module.css";
 import {ResultPills} from "../components/components.tsx";
 import {usePlatformConfigQuery} from "../../shared/PlatformConfig.ts";
 import {IconChevronDown, IconChevronRight, IconCode} from "@tabler/icons-react";
+import {sortedLanguageIdsByName} from "../../shared/languageSorting.ts";
 
 const statusLabels: Record<string, string> = {
   PASSED: 'Выполнен',
@@ -155,9 +156,11 @@ export const SolutionsTable = ({
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {Object.entries(languages).flatMap(([langId, lang]) => lang.solutions.map(solution =>
-            <Row key={langId + solution.id} languageId={langId} solution={solution}/>
-          ))}
+          {sortedLanguageIdsByName(Object.keys(languages), platformConfig!.languages).flatMap(langId =>
+            languages[langId].solutions.map(solution =>
+              <Row key={langId + solution.id} languageId={langId} solution={solution}/>
+            )
+          )}
         </Table.Tbody>
       </Table>
     </ScrollArea>

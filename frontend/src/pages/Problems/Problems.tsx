@@ -13,6 +13,7 @@ import floor from './assets/floor.jpg'
 import {Legend} from "recharts";
 import {PlatformConfig} from "../Problem/Loader.tsx";
 import {useTags} from "../shared/tags.ts";
+import {sortedLanguageEntries, sortedLanguageIdsByName} from "../shared/languageSorting.ts";
 
 export default function Problems() {
   const navigate = useNavigate()
@@ -75,7 +76,7 @@ export default function Problems() {
         <div className={'w-1/4'}>
           <div className={'flex flex-row-reverse gap-2'}>
             {
-              problem.languages.map(lang => (
+              sortedLanguageIdsByName(problem.languages, platformConfig.languages).map(lang => (
                 <div key={lang} className={'bg-slate-200 p-2 flex items-center justify-center rounded-md'}>
                   {lang}
                 </div>
@@ -144,7 +145,7 @@ export default function Problems() {
           />
 
           <MultiSelect label={'Языки'} defaultValue={['Любой']} data={
-            Object.entries(platformConfig.languages).map(([languageId, language]) => ({
+            sortedLanguageEntries(platformConfig.languages).map(([languageId, language]) => ({
               value: languageId,
               label: language.name,
             }))

@@ -1,7 +1,7 @@
 services:
   kafka:
     cpus: 1.0
-    mem_limit: 500m
+    mem_limit: 700m
     image: apache/kafka
     ports:
       - "9092:9092"
@@ -89,7 +89,7 @@ services:
 
   keycloak:
     cpus: 0.5
-    mem_limit: 400m
+    mem_limit: 500m
     image: quay.io/keycloak/keycloak:26.0.0
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
@@ -129,7 +129,7 @@ services:
 
   tempo:
     cpus: 0.5
-    mem_limit: 150m
+    mem_limit: 200m
     image: grafana/tempo:2.4.1
     ports:
       - "4317:4317"

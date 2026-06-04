@@ -8,6 +8,7 @@ import {api} from "../../api/api.ts";
 import {usePlatformConfigQuery} from "../shared/PlatformConfig.ts";
 import {useTags} from "../shared/tags.ts";
 import {hasPrivilege} from "../../auth/privileges.ts";
+import {sortedLanguageIdsByName} from "../shared/languageSorting.ts";
 
 export default function MyProblems() {
   const navigate = useNavigate()
@@ -39,7 +40,9 @@ export default function MyProblems() {
         body: data!.map(p => [
           p.id, p.name, p.difficulty,
           p.tags.map(t => tags!.find(tag => tag.id === t)?.name).join(', '),
-          p.languages.map(id => platformConfig!.languages[id].name).join(', '),
+          sortedLanguageIdsByName(p.languages, platformConfig!.languages)
+            .map(id => platformConfig!.languages[id].name)
+            .join(', '),
           <div className={'flex gap-1'}>
             {hasPrivilege("my-problem:update") && (
               <Button onClick={() => {

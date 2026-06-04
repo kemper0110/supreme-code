@@ -19,7 +19,7 @@ public class PlaygroundController {
                         .path("/api/playground")
                         .and()
                         .predicate(p -> p.getRequest().getMethod().matches("POST"))
-                        .uri("http://localhost:8090/api/task")
+                        .uri("http://localhost:8090/api/playground")
                 )
                 .build();
     }

@@ -10,6 +10,8 @@ import * as monaco from 'monaco-editor';
 import {usePlatformConfigQuery} from "../shared/PlatformConfig.ts";
 import {LanguageTitle} from "../../components/LanguageTitle.tsx";
 import {useMonacoLsp} from "../../hooks/useMonacoLsp.ts";
+import {sortedLanguageEntries} from "../shared/languageSorting.ts";
+import {keycloak} from "../../keycloak.ts";
 
 type RunRequest = {
   code: string
@@ -33,7 +35,7 @@ type RunnerEvent = LogEvent | ErrorEvent | InfoEvent
 export default function Playground() {
   const {data: platformConfig} = usePlatformConfigQuery()
 
-  const [languageId, setLanguageId] = useState<string>(Object.keys(platformConfig!.languages)[0])
+  const [languageId, setLanguageId] = useState<string>(sortedLanguageEntries(platformConfig!.languages)[0][0])
   const language = platformConfig!.languages[languageId]!
 
   const [messages, setMessages] = useState<RunnerEvent[]>([])
@@ -48,6 +50,7 @@ export default function Playground() {
     const source = new SSE('/api/playground', {
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${keycloak.token}`
       },
       payload: JSON.stringify({code: value, language: languageId} as RunRequest),
       method: 'POST',
@@ -111,7 +114,7 @@ export default function Playground() {
         </Group>
 
         <SegmentedControl
-          data={Object.entries(platformConfig!.languages).map(([key, lang]) => ({
+          data={sortedLanguageEntries(platformConfig!.languages).map(([key, lang]) => ({
             value: key,
             label: <LanguageTitle language={lang}/>
           }))}

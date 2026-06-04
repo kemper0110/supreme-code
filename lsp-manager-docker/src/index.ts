@@ -14,6 +14,7 @@ import * as http from "node:http";
 import {IncomingMessage} from "node:http";
 import {Socket} from "node:net";
 import {URL} from "node:url";
+import { parse } from 'yaml'
 
 const docker = new Docker();
 
@@ -21,12 +22,12 @@ const ConfigSchema = z.object({
     languages: z.record(z.string(), z.object({
         lspConfig: z.object({
             image: z.string(),
-            cmd: z.string().optional()
+            cmd: z.array(z.string()).optional()
         }).optional()
     }))
 })
 
-const config = ConfigSchema.parse(JSON.parse(
+const config = ConfigSchema.parse(parse(
     fs.readFileSync('../platform.yaml', 'utf8')
 ))
 
@@ -70,7 +71,7 @@ async function createLSP(language: string): Promise<LSP> {
 
     const container = await docker.createContainer({
         Image: languageConfig.lspConfig.image,
-        Cmd: languageConfig.lspConfig.cmd?.split(' '),
+        Cmd: languageConfig.lspConfig.cmd,
         Tty: false,
         AttachStdout: true,
         AttachStdin: true,
