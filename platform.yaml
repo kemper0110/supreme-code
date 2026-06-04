@@ -13,17 +13,18 @@ languages:
         std::cout << "Hello, SupremeCode, from C++";
       }
     testerConfig:
-      imageName: supremecode-cpp-test
-      testPath: /sc_test.сс
-      solutionPath: /solution.hpp
-      reportPath: /usr/app/build/junit.xml
+      imageName: supremecode-cpp
+      cmd: ["sh", "-c", "cmake -S . -B build && cmake --build build && cd build && ctest --output-junit junit.xml"]
+      testPath: /usr/test/sc_test.cc
+      solutionPath: /usr/test/solution.hpp
+      reportPath: /usr/test/build/junit.xml
       verdictClassName: org.supremecode.commonplugins.GtestCppLanguageTester
     runnerConfig:
-      image: supremecode-cpp-run
-      cmd: ["g++", "-std=c++17", "-o", "app", "main.cpp", "&&", "./app"]
+      image: supremecode-cpp
+      cmd: ["sh", "-c", "cmake -S . -B build && cmake --build build && ./build/app"]
       filePath: main.cpp
     lspConfig:
-      image: supremecode-cpp-lsp
+      image: supremecode-cpp
   java:
     name: Java
     iconPath: /plugins/java.svg
@@ -53,42 +54,27 @@ languages:
       filePath: Main.java
     lspConfig:
       image: supremecode-java-lsp
-  javascript:
-    name: JavaScript
-    iconPath: /plugins/javascript.svg
-    monacoLanguageId: javascript
-    extensions: [.js,.jsx]
-    monacoFile: /workspace/index.js
-    ephemeralFileName: index.js
-    playgroundInitialCode: 'console.log("Hello, SupremeCode, from JavaScript")'
-    testerConfig:
-      imageName: supremecode-js-test
-      cmd: ["npm", "run", "test"]
-      testPath: /test.js
-      solutionPath: /solution.js
-      reportPath: /usr/app/junit.xml
-      verdictClassName: org.supremecode.commonplugins.JestLanguageTester
-    runnerConfig:
-      image: supremecode-js-run
-      filePath: index.js
-    lspConfig:
-      image: supremecode-ts-lsp
   typescript:
-    name: TypeScript
+    name: JS/TS
     iconPath: /plugins/typescript.svg
     monacoLanguageId: typescript
-    monacoFile: /workspace/index.ts
+    monacoFile: /usr/run/index.ts
     extensions: [.js,.jsx,.ts,.tsx]
     ephemeralFileName: index.ts
-    playgroundInitialCode: 'console.log("Hello, SupremeCode, from TypeScript")'
+    playgroundInitialCode: 'console.log("Hello, SupremeCode, from JS/TS")'
     testerConfig:
-      imageName: supremecode-js-test
-      testPath: /test.js
-      solutionPath: /solution.js
-      reportPath: /usr/app/junit.xml
+      imageName: supremecode-typescript
+      cmd: ["deno", "test", "--junit-path=report.xml"]
+      testPath: /usr/test/test.ts
+      solutionPath: /usr/test/solution.ts
+      reportPath: /usr/test/report.xml
       verdictClassName: org.supremecode.commonplugins.JestLanguageTester
+    runnerConfig:
+      image: supremecode-typescript
+      cmd: ["deno", "run", "index.ts"]
+      filePath: index.ts
     lspConfig:
-      image: supremecode-ts-lsp
+      image: supremecode-typescript
       cmd: ["deno", "lsp"]
   python:
     name: Python

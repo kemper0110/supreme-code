@@ -24,6 +24,9 @@ import java.util.concurrent.*;
 @RequiredArgsConstructor
 @Slf4j
 public class Tester {
+    private static final String TEST_WORK_DIR = "/usr/test";
+    private static final String CONTAINER_ROOT = "/";
+
     protected final DockerClient dockerClient;
     protected final int ttk;
     protected final LanguageTester languageTester;
@@ -59,6 +62,7 @@ public class Tester {
     protected CreateContainerResponse createContainer() {
         var cmd = dockerClient.createContainerCmd(testerConfig.getImageName());
         if (testerConfig.getCmd() != null) cmd = cmd.withCmd(testerConfig.getCmd());
+        cmd = cmd.withWorkingDir(TEST_WORK_DIR);
         cmd = cmd.withHostConfig(
                 new HostConfig()
                         .withMemory(1024L * 1024L * 400L)
@@ -137,7 +141,7 @@ public class Tester {
 
             dockerClient.copyArchiveToContainerCmd(containerId)
                     .withTarInputStream(new ByteArrayInputStream(archive))
-                    .withRemotePath("/usr/app")
+                    .withRemotePath(CONTAINER_ROOT)
                     .exec();
 
             dockerClient.startContainerCmd(containerId).exec();

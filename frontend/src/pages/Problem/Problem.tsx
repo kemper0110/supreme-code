@@ -36,6 +36,10 @@ import {useMonacoLsp} from "../../hooks/useMonacoLsp.ts";
 import {yjsWebSocketUrl} from "../../config.ts";
 import {sortedLanguageIdsByName} from "../shared/languageSorting.ts";
 
+const TEST_WORK_DIR = '/usr/test';
+
+const solutionModelPath = (languageConfig: { testerConfig?: { solutionPath: string }, ephemeralFileName: string }) =>
+  languageConfig.testerConfig?.solutionPath ?? `${TEST_WORK_DIR}/${languageConfig.ephemeralFileName}`;
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -179,7 +183,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
   const sortedLanguageIds = sortedLanguageIdsByName(Object.keys(languages), platformConfig!.languages)
   const [selectedLanguage, setSelectedLanguage] = useSharedSelectedLanguage(sortedLanguageIds)
   const selectedPlatformLanguage = platformConfig!.languages[selectedLanguage]
-  useMonacoLsp(selectedPlatformLanguage, platformConfig?.languages)
+  useMonacoLsp(selectedPlatformLanguage, platformConfig?.languages, 'test')
 
   const selectedSolutionState = useState<SelectedSolutionTuple | null>(null)
 
@@ -205,7 +209,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
         editorRef.setModel(monaco.editor.createModel(
           solutionCode.code,
           languageConfig.monacoLanguageId,
-          monaco.Uri.parse(languageConfig.monacoFile)
+          monaco.Uri.file(solutionModelPath(languageConfig))
         ))
       } else {
         console.error('no editorRef')
@@ -219,7 +223,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
     }
 
     const model = editorRef.getModel()
-    if (model?.uri.toString() === selectedPlatformLanguage.monacoFile) {
+    if (model?.uri.toString() === monaco.Uri.file(solutionModelPath(selectedPlatformLanguage)).toString()) {
       return
     }
 
@@ -227,9 +231,9 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
     editorRef.setModel(monaco.editor.createModel(
       languages[selectedLanguage]?.solutionTemplate ?? '',
       selectedPlatformLanguage.monacoLanguageId,
-      monaco.Uri.parse(selectedPlatformLanguage.monacoFile)
+      monaco.Uri.file(solutionModelPath(selectedPlatformLanguage))
     ))
-  }, [editorRef, selectedPlatformLanguage?.monacoLanguageId])
+  }, [editorRef, languages, selectedLanguage, selectedPlatformLanguage])
 
   useMonacoBinding(editorRef, provider.current?.awareness, selectedLanguage);
 
@@ -245,7 +249,7 @@ export default function Problem({host = true, initialOnline = false}: { host: bo
       editor.setModel(monaco.editor.createModel(
         host ? languages[selectedLanguage]?.solutionTemplate ?? '' : '',
         selectedPlatformLanguage.monacoLanguageId,
-        monaco.Uri.parse(selectedPlatformLanguage.monacoFile)
+        monaco.Uri.file(solutionModelPath(selectedPlatformLanguage))
       ))
     }
   }

@@ -10,6 +10,8 @@ import org.supremecode.testrunner.config.LanguageConfig;
 
 @Slf4j
 public class ConfigurableRunner extends Runner {
+    private static final String RUN_WORK_DIR = "/usr/run";
+
     private final RunnerConfig config;
     @Getter
     private final String language;
@@ -28,7 +30,7 @@ public class ConfigurableRunner extends Runner {
     @Override
     protected CreateContainerCmd createContainer() {
         var container = dockerClient.createContainerCmd(config.getImage())
-                .withWorkingDir("/usr/app");
+                .withWorkingDir(RUN_WORK_DIR);
         if (config.getCmd() != null)
             container = container.withCmd(config.getCmd());
         return container;

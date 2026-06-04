@@ -18,7 +18,16 @@ export type PlatformLanguage = {
   monacoLanguageId: string
   monacoFile: string
   extensions: string[]
+  ephemeralFileName: string
   playgroundInitialCode: string
+  testerConfig?: {
+    testPath: string
+    solutionPath: string
+    reportPath: string
+  }
+  runnerConfig?: {
+    filePath: string
+  }
 }
 
 export type ProblemData = {
@@ -73,8 +82,8 @@ export const problemQueryFn = async (slug: string) => (await api.get(`/api/probl
 
 export const ProblemLoader = async (params: LoaderFunctionArgs) => {
   console.log('problem loader', performance.now())
-  const slug = params.params.slug
-  const queryKey = problemQueryKey(slug!)
+  const slug = params.params.slug!
+  const queryKey = problemQueryKey(slug)
   return await Promise.all([
     queryClient.fetchQuery({
       queryKey,

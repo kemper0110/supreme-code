@@ -33,7 +33,15 @@ const config = ConfigSchema.parse(parse(
 
 const querySchema = z.object({
     language: z.string(),
+    mode: z.enum(['run', 'test']).default('run'),
 })
+
+type LspMode = z.infer<typeof querySchema>['mode']
+
+const workDirByMode: Record<LspMode, string> = {
+    run: '/usr/run',
+    test: '/usr/test',
+}
 
 async function waitForContainerReady(container: Docker.Container): Promise<void> {
     while (true) {
@@ -62,7 +70,7 @@ type LSP = {
     stdout: stream.Readable
 }
 
-async function createLSP(language: string): Promise<LSP> {
+async function createLSP(language: string, mode: LspMode): Promise<LSP> {
     const languageConfig = config.languages[language]
     if (!languageConfig)
         throw new Error("language not found")
@@ -78,6 +86,7 @@ async function createLSP(language: string): Promise<LSP> {
         AttachStderr: true,
         OpenStdin: true,
         StdinOnce: false,
+        WorkingDir: workDirByMode[mode],
     });
 
     const attach = await container.attach({
@@ -200,7 +209,11 @@ function launchLanguageServer(socket: IWebSocket, lsp: LSP) {
 
 server.on('upgrade', async (request: IncomingMessage, socket: Socket, head: Buffer) => {
     const url = new URL(request.url!, `http://${request.headers.host}/`);
-    const lsp = await createLSP(url.searchParams.get('language')!)
+    const query = querySchema.parse({
+        language: url.searchParams.get('language') ?? undefined,
+        mode: url.searchParams.get('mode') ?? undefined,
+    })
+    const lsp = await createLSP(query.language, query.mode)
     console.log('created lsp', lsp.container.id)
     socket.on('close', () => {
         clearLSP(lsp.container).catch(e => {

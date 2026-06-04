@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Slf4j
 public abstract class Runner {
+    private static final String RUN_WORK_DIR = "/usr/run";
+
     protected final DockerClient dockerClient;
     protected final int ttk;
 
@@ -109,7 +111,7 @@ public abstract class Runner {
 
         dockerClient.copyArchiveToContainerCmd(containerId)
                 .withTarInputStream(new ByteArrayInputStream(archive))
-                .withRemotePath("/usr/app")
+                .withRemotePath(RUN_WORK_DIR)
                 .exec();
 
         dockerClient.startContainerCmd(containerId).exec();

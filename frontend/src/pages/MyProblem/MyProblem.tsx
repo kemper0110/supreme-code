@@ -217,6 +217,7 @@ export default function MyProblem() {
   } as MyProblemView
 
   const [directory, setDirectory] = useState<FileSystemDirectoryHandle | null>(null)
+  console.log('directory name', directory?.name)
   const [mcpStatus, setMcpStatus] = useState<string | null>(null)
 
   const [state, setState] = useState(data)

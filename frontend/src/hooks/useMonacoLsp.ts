@@ -8,10 +8,17 @@ import {lspWebSocketUrl} from "../config.ts";
 
 let monacoServicesInstalled = false;
 const registeredLanguages = new Set<string>();
+export type LspMode = 'run' | 'test';
+
+const lspWorkspaceByMode: Record<LspMode, string> = {
+  run: '/usr/run',
+  test: '/usr/test',
+};
 
 export function useMonacoLsp(
   language: PlatformLanguage | undefined,
-  languages: Record<string, PlatformLanguage> | undefined
+  languages: Record<string, PlatformLanguage> | undefined,
+  mode: LspMode = 'run'
 ) {
   useEffect(() => {
     if (!languages) {
@@ -46,6 +53,7 @@ export function useMonacoLsp(
     try {
       const url = new URL(lspWebSocketUrl);
       url.searchParams.set('language', language.monacoLanguageId);
+      url.searchParams.set('mode', mode);
       const webSocket = new WebSocket(url.toString());
 
       let languageClient: MonacoLanguageClient | undefined;
@@ -60,9 +68,9 @@ export function useMonacoLsp(
           name: language.monacoLanguageId + ' Language Server',
           clientOptions: {
             workspaceFolder: {
-              uri: monaco.Uri.file('/workspace'),
+              uri: monaco.Uri.file(lspWorkspaceByMode[mode]),
               index: 0,
-              name: 'workspace',
+              name: mode,
             },
             documentSelector: [language.monacoLanguageId],
             errorHandler: {
@@ -100,5 +108,5 @@ export function useMonacoLsp(
       console.error(e);
       return;
     }
-  }, [language]);
+  }, [language, mode]);
 }

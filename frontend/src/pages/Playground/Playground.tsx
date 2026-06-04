@@ -13,6 +13,11 @@ import {useMonacoLsp} from "../../hooks/useMonacoLsp.ts";
 import {sortedLanguageEntries} from "../shared/languageSorting.ts";
 import {keycloak} from "../../keycloak.ts";
 
+const RUN_WORK_DIR = '/usr/run';
+
+const playgroundModelPath = (language: { runnerConfig?: { filePath: string }, ephemeralFileName: string }) =>
+  `${RUN_WORK_DIR}/${language.runnerConfig?.filePath ?? language.ephemeralFileName}`;
+
 type RunRequest = {
   code: string
   language: string
@@ -42,7 +47,7 @@ export default function Playground() {
   const [running, setRunning] = useState(false)
   const [value, setValue] = useState(language.playgroundInitialCode)
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
-  useMonacoLsp(language, platformConfig?.languages)
+  useMonacoLsp(language, platformConfig?.languages, 'run')
 
   const handleRun = async () => {
     setMessages([])
@@ -84,7 +89,7 @@ export default function Playground() {
     editorRef.current!.setModel(monaco.editor.createModel(
       newLanguage.playgroundInitialCode,
       newLanguage.monacoLanguageId,
-      monaco.Uri.parse(newLanguage.monacoFile)
+      monaco.Uri.file(playgroundModelPath(newLanguage))
     ))
 
     setLanguageId(value as LanguageValue)
@@ -128,7 +133,7 @@ export default function Playground() {
             onChange={(value) => setValue(value)}
             editorDidMount={(editor) => {
               editorRef.current = editor
-              editor.setModel(monaco.editor.createModel(value, language.monacoLanguageId, monaco.Uri.parse(language.monacoFile)))
+              editor.setModel(monaco.editor.createModel(value, language.monacoLanguageId, monaco.Uri.file(playgroundModelPath(language))))
             }}
             language={language.monacoLanguageId}
             width={"calc(100vw - 50px)"}
