@@ -8,6 +8,7 @@ import 'reactflow/dist/style.css';
 import {ReactFlow, Node, Edge} from "reactflow";
 import {IconBrandReact} from "@tabler/icons-react";
 import dockerjava from './assets/dockerjava.png';
+import {keycloak} from "../../keycloak.ts";
 
 function Landing() {
   const navigate = useNavigate()
@@ -18,7 +19,7 @@ function Landing() {
     if (logged) {
       navigate('/problem')
     } else {
-      navigate('/auth')
+      keycloak.login()
     }
   }
   const initialNodes = [

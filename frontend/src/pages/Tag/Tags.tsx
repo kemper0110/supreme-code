@@ -68,7 +68,7 @@ export default function Tags() {
         }
         <Table className={'mt-4'} data={{
           head: [
-            "ID", "Название", ""
+            "ID", "Название", "Действия"
           ],
           body: data!.map(tag => [tag.id, tag.name, <div className={'flex gap-1'}>
             {

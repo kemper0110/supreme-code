@@ -7,12 +7,11 @@ export type Tag = {
 }
 
 export async function TagsLoader () {
-  await queryClient.fetchQuery({
+  return await queryClient.fetchQuery({
     queryKey: tagsQueryKey,
     queryFn: tagsQueryFn,
     staleTime: 100_000
   })
-  return null
 }
 
 

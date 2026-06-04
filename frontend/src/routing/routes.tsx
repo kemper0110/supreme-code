@@ -37,10 +37,6 @@ export const routes = [
             element: <Landing/>
           },
           {
-            path: "/auth",
-            element: <Auth/>
-          },
-          {
             path: "/404",
             element: <Page404/>
           },

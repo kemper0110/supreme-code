@@ -15,9 +15,6 @@ export default function MyProblems() {
   const queryClient = useQueryClient()
   const {data: platformConfig} = usePlatformConfigQuery()
   const {data: tags} = useTags()
-  const canCreateProblem = hasPrivilege("my-problem:create")
-  const canUpdateProblem = hasPrivilege("my-problem:update")
-  const canDeleteProblem = hasPrivilege("my-problem:delete")
   const deleteProblem = useMutation({
     mutationFn: async (id: number) => (await api.delete(`/api/my-problem/${id}`)).data,
     onSettled: () => {
@@ -29,7 +26,7 @@ export default function MyProblems() {
 
   return <DotBackground className={'py-8 h-[calc(100dvh-99px)]'}>
     <Container size={'xl'} className={'h-full p-4 mx-auto bg-white shadow-lg'}>
-      {canCreateProblem && (
+      {hasPrivilege("my-problem:create") && (
         <Button variant="default" onClick={() => {
           navigate("/my-problem/create")
         }}>
@@ -44,14 +41,14 @@ export default function MyProblems() {
           p.tags.map(t => tags!.find(tag => tag.id === t)?.name).join(', '),
           p.languages.map(id => platformConfig!.languages[id].name).join(', '),
           <div className={'flex gap-1'}>
-            {canUpdateProblem && (
+            {hasPrivilege("my-problem:update") && (
               <Button onClick={() => {
                 navigate(`/my-problem/update/${p.id}`)
               }}>
                 <IconPencil/>
               </Button>
             )}
-            {canDeleteProblem && (
+            {hasPrivilege("my-problem:delete") && (
               <Button loading={deleteProblem.isPending} onClick={() => deleteProblem.mutate(p.id)}>
                 <IconX/>
               </Button>
