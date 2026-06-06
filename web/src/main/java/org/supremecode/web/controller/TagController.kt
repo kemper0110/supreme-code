@@ -7,15 +7,11 @@ import org.supremecode.web.repository.TagRepository
 import org.supremecode.web.views.TagView
 import reactor.core.publisher.Mono
 
-interface TagController {
-
-}
-
 @RestController
 @RequestMapping("/api/tag")
 class TagControllerImpl(
     private val tagRepository: TagRepository
-) : TagController {
+) {
 
     @GetMapping
     @PreAuthorize("hasAuthority('tag:read')")

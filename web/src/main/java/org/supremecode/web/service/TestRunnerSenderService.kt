@@ -2,7 +2,6 @@ package org.supremecode.web.service
 
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
-import lombok.RequiredArgsConstructor
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
 import org.springframework.stereotype.Service
 import org.supremecode.shared.TestMessage
@@ -14,7 +13,6 @@ import reactor.core.publisher.Mono
 import java.io.ByteArrayInputStream
 
 @Service
-@RequiredArgsConstructor
 class TestRunnerSenderService(
     private val kafka: ReactiveKafkaProducerTemplate<String, TestMessage>,
     private val solutionRepository: SolutionRepository,

@@ -19,7 +19,6 @@ import org.supremecode.web.domain.Problem
 import org.supremecode.web.domain.ProblemLanguage
 import org.supremecode.web.domain.ProblemTag
 import org.supremecode.web.domain.User
-import org.supremecode.web.repository.ProblemLanguageRepository
 import org.supremecode.web.repository.ProblemRepository
 import org.supremecode.web.repository.TagRepository
 import org.supremecode.web.repository.UserRepository
@@ -37,7 +36,6 @@ class MyProblemControllerImpl(
     private val minioClient: MinioClient,
     private val userRepository: UserRepository,
     private val minioPathService: MinioPathService,
-    private val problemLanguageRepository: ProblemLanguageRepository,
 ) {
     @GetMapping
     @PreAuthorize("hasAuthority('my-problem:read')")
@@ -65,34 +63,7 @@ class MyProblemControllerImpl(
     @Transactional(readOnly = true)
     fun getMyProblem(@PathVariable id: Long, auth: Authentication): Mono<MyProblemView> {
         val problem = getAccessibleProblem(id, auth)
-
-        val problemSave = MyProblemView(
-            problem.id!!,
-            problem.name,
-            problem.description,
-            problem.difficulty,
-            problem.languages.associate { l ->
-                val pathPrefix = "/problems/${problem.id}/languages/${l.languageId}/"
-                val readFile = { path: String ->
-                    String(
-                        minioClient.getObject(
-                            GetObjectArgs.builder()
-                                .bucket("problems")
-                                .`object`(pathPrefix + path)
-                                .build()
-                        ).readBytes()
-                    )
-                }
-                l.languageId to MyProblemLanguageView(
-                    readFile("test.txt"),
-                    readFile("solution.txt"),
-                    readFile("solution-template.txt"),
-                )
-            },
-            problem.problemTags.map { t -> t.tag.id!! }
-        )
-
-        return Mono.just(problemSave)
+        return Mono.just(mapProblemToMyProblemView(problem))
     }
 
     data class MyProblemView(
@@ -123,44 +94,85 @@ class MyProblemControllerImpl(
             requireAuthority(auth, "my-problem:update")
             getAccessibleProblem(problem.id, auth)
         }
-        p.name = problem.name
-        p.description = problem.description
-        p.difficulty = problem.difficulty
 
-        val existingLanguages = p.languages.associateBy { it.languageId }
-        problem.languages.forEach { (langId) ->
-            val existingLang = existingLanguages[langId]
-            if (existingLang == null) {
-                p.languages.add(ProblemLanguage(langId, p))
-            }
-        }
-        // Удаляем языки, которых нет в запросе
-        p.languages.removeAll { it.languageId !in problem.languages.keys }
-
-        p.problemTags.clear()
-        p.problemTags.addAll(
-            problem.tags.map { ProblemTag(p, tagRepository.getReferenceById(it)) }.toMutableList()
-        )
+        applyProblemView(p, problem)
         val savedProblem = this.problemRepository.save(p)
 
-        for (lang in problem.languages) {
-            val paths = minioPathService.buildProblemPaths(savedProblem.id!!, lang.key)
-            val putObject = { path: String, content: String ->
-                val bytes = content.toByteArray()
-                minioClient.putObject(
-                    PutObjectArgs.builder()
-                        .bucket("problems")
-                        .`object`(path)
-                        .contentType("text/plain")
-                        .stream(ByteArrayInputStream(bytes), bytes.size.toLong(), -1)
-                        .build()
-                )
-            }
-            putObject(paths.test, lang.value.test)
-            putObject(paths.solution, lang.value.solution)
-            putObject(paths.solutionTemplate, lang.value.solutionTemplate)
+        for ((languageId, languageView) in problem.languages) {
+            writeProblemFiles(savedProblem.id!!, languageId, languageView)
         }
         return Mono.empty()
+    }
+
+    private fun mapProblemToMyProblemView(problem: Problem): MyProblemView {
+        return MyProblemView(
+            problem.id!!,
+            problem.name,
+            problem.description,
+            problem.difficulty,
+            problem.languages.associate { language ->
+                language.languageId to readProblemLanguageView(problem.id!!, language.languageId)
+            },
+            problem.problemTags.map { tag -> tag.tag.id!! }
+        )
+    }
+
+    private fun readProblemLanguageView(problemId: Long, languageId: String): MyProblemLanguageView {
+        val paths = minioPathService.buildProblemPaths(problemId, languageId)
+        return MyProblemLanguageView(
+            readProblemFile(paths.test),
+            readProblemFile(paths.solution),
+            readProblemFile(paths.solutionTemplate),
+        )
+    }
+
+    private fun applyProblemView(problem: Problem, view: MyProblemView) {
+        problem.name = view.name
+        problem.description = view.description
+        problem.difficulty = view.difficulty
+
+        val existingLanguages = problem.languages.associateBy { it.languageId }
+        view.languages.forEach { (languageId) ->
+            if (existingLanguages[languageId] == null) {
+                problem.languages.add(ProblemLanguage(languageId, problem))
+            }
+        }
+        problem.languages.removeAll { it.languageId !in view.languages.keys }
+
+        problem.problemTags.clear()
+        problem.problemTags.addAll(
+            view.tags.map { ProblemTag(problem, tagRepository.getReferenceById(it)) }.toMutableList()
+        )
+    }
+
+    private fun readProblemFile(path: String): String {
+        return String(
+            minioClient.getObject(
+                GetObjectArgs.builder()
+                    .bucket(PROBLEMS_BUCKET)
+                    .`object`(path)
+                    .build()
+            ).readBytes()
+        )
+    }
+
+    private fun writeProblemFiles(problemId: Long, languageId: String, languageView: MyProblemLanguageView) {
+        val paths = minioPathService.buildProblemPaths(problemId, languageId)
+        writeProblemFile(paths.test, languageView.test)
+        writeProblemFile(paths.solution, languageView.solution)
+        writeProblemFile(paths.solutionTemplate, languageView.solutionTemplate)
+    }
+
+    private fun writeProblemFile(path: String, content: String) {
+        val bytes = content.toByteArray()
+        minioClient.putObject(
+            PutObjectArgs.builder()
+                .bucket(PROBLEMS_BUCKET)
+                .`object`(path)
+                .contentType("text/plain")
+                .stream(ByteArrayInputStream(bytes), bytes.size.toLong(), -1)
+                .build()
+        )
     }
 
     private fun getAccessibleProblem(id: Long, auth: Authentication): Problem {
@@ -183,5 +195,9 @@ class MyProblemControllerImpl(
         if (auth.authorities.none { it.authority == authority }) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN)
         }
+    }
+
+    companion object {
+        private const val PROBLEMS_BUCKET = "problems"
     }
 }

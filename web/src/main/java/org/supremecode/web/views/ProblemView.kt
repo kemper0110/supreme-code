@@ -56,10 +56,10 @@ data class SolutionCodeView(
 
 data class SolutionResultSolveView(
     val createdAt: Date,
-    var exitCode: Int,
-    var total: Int,
-    var failures: Int,
-    var errors: Int,
-    var solved: Boolean,
-    var testCases: List<TestCaseResult>,
+    val exitCode: Int,
+    val total: Int,
+    val failures: Int,
+    val errors: Int,
+    val solved: Boolean,
+    val testCases: List<TestCaseResult>,
 )

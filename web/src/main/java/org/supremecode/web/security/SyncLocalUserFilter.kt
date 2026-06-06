@@ -24,7 +24,6 @@ class SyncLocalUserFilter(
                     return@flatMap Mono.error(RuntimeException("no auth token"))
                 }
                 val jwt = auth.token
-                // sub
                 val keycloakId = jwt.subject ?: return@flatMap Mono.error(RuntimeException("no keycloak id"))
                 val email = jwt.getClaimAsString("email")
                 val username = jwt.getClaimAsString("preferred_username") ?: email
