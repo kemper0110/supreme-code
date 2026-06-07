@@ -32,7 +32,7 @@ class WaitCallback implements ResultCallback<WaitResponse> {
         int statusCode = waitResponse.getStatusCode();
         log.debug("container({})-wait: complete", containerId);
         resultFuture.complete(new WaitResult(statusCode));
-        log.info("container({})-wait: status-code={}", containerId, waitResponse.getStatusCode());
+        log.debug("container({})-wait: status-code={}", containerId, waitResponse.getStatusCode());
     }
 
     @Override

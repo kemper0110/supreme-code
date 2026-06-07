@@ -76,11 +76,14 @@ export default function Problems() {
         <div className={'w-1/4'}>
           <div className={'flex flex-row-reverse gap-2'}>
             {
-              sortedLanguageIdsByName(problem.languages, platformConfig.languages).map(lang => (
-                <div key={lang} className={'bg-slate-200 p-2 flex items-center justify-center rounded-md'}>
-                  {lang}
-                </div>
-              ))
+              sortedLanguageIdsByName(problem.languages, platformConfig.languages).map(lang => {
+                const language = platformConfig.languages[lang]
+                return (
+                  <div key={lang} className={'bg-slate-200 p-2 flex items-center justify-center rounded-md'}>
+                    <img className={'shrink-0 w-[40px]'} src={language.iconPath} alt={language.name}/>
+                  </div>
+                );
+              })
             }
           </div>
         </div>

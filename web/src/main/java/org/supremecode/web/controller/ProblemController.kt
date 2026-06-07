@@ -2,7 +2,6 @@ package org.supremecode.web.controller
 
 import io.minio.GetObjectArgs
 import io.minio.MinioClient
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
@@ -34,8 +33,6 @@ class ProblemController(
     private val minioClient: MinioClient,
     private val minioPathService: MinioPathService,
 ) {
-    private val logger = LoggerFactory.getLogger(ProblemController::class.java)
-
     @GetMapping
     @PreAuthorize("hasAuthority('problem:list')")
     fun index(
@@ -58,7 +55,6 @@ class ProblemController(
     ): Mono<Long> {
         val authUser = auth.details as User
         val userId = authUser.id!!
-        logger.debug("submitted solution for {} with {}", problemId, testRequest)
         return testRunnerSenderService.send(userId, testRequest.code, problemId, testRequest.language)
     }
 

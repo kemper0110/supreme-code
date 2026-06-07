@@ -125,9 +125,9 @@ public class Tester {
         }
         try {
             dockerClient.removeContainerCmd(containerId).withForce(true).exec();
-            log.error("container({}): removed", containerId.substring(0, 8));
+            log.debug("container({}): removed", containerId.substring(0, 8));
         } catch (Exception e) {
-            log.error("container({}): not found to remove {}", containerId.substring(0, 8), e.getMessage());
+            log.warn("container({}): not found to remove {}", containerId.substring(0, 8), e.getMessage());
         }
         return testResultBuilder;
     }
@@ -164,9 +164,9 @@ public class Tester {
         } catch (Exception exception) {
             try {
                 dockerClient.removeContainerCmd(containerId).withForce(true).exec();
-                log.error("container({}): removed", containerId.substring(0, 8));
+                log.debug("container({}): removed", containerId.substring(0, 8));
             } catch (Exception e) {
-                log.error("container({}): not found to remove {}", containerId.substring(0, 8), e.getMessage());
+                log.warn("container({}): not found to remove {}", containerId.substring(0, 8), e.getMessage());
             }
             throw exception;
         }

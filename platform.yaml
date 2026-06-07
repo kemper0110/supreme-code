@@ -87,9 +87,9 @@ languages:
     testerConfig:
       imageName: supremecode-python
       cmd: ["pytest", "--junitxml=report.xml"]
-      testPath: /test_solution.py
-      solutionPath: /solution.py
-      reportPath: /usr/app/report.xml
+      testPath: /usr/test/test_solution.py
+      solutionPath: /usr/test/solution.py
+      reportPath: /usr/test/report.xml
       verdictClassName: org.supremecode.commonplugins.PyTestLanguageTester
     runnerConfig:
       image: supremecode-python
