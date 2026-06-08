@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/Danil/IdeaProjects/supreme-code/shared/src/main/kotlin/shared/PlatformConfig.kt</OriginalElement>
+  <nodes>
+    <node x="-237.0" y="497.56071931337715">org.supremecode.shared.PlatformConfig</node>
+    <node x="-176.5" y="1028.4652928416485">org.supremecode.shared.TesterConfig</node>
+    <node x="129.15347071583528" y="1112.4652928416485">org.supremecode.shared.RunnerConfig</node>
+    <node x="-482.03362255965294" y="1133.3698481561821">org.supremecode.shared.LspConfig</node>
+    <node x="-190.0" y="651.5">org.supremecode.shared.LanguageConfig</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="org.supremecode.shared.LanguageConfig" target="org.supremecode.shared.TesterConfig" relationship="TO_ONE">
+      <point x="0.0" y="162.5" />
+      <point x="0.0" y="-106.5" />
+    </edge>
+    <edge source="org.supremecode.shared.LanguageConfig" target="org.supremecode.shared.LspConfig" relationship="TO_ONE">
+      <point x="-133.0" y="0.0" />
+      <point x="-379.03362255965294" y="814.0" />
+      <point x="0.0" y="-50.5" />
+    </edge>
+    <edge source="org.supremecode.shared.LanguageConfig" target="org.supremecode.shared.RunnerConfig" relationship="TO_ONE">
+      <point x="133.0" y="0.0" />
+      <point x="248.65347071583528" y="814.0" />
+      <point x="0.0" y="-64.5" />
+    </edge>
+    <edge source="org.supremecode.shared.PlatformConfig" target="org.supremecode.shared.LanguageConfig" relationship="TO_MANY">
+      <point x="0.0" y="36.5" />
+      <point x="-57.0" y="555.2719631236441" />
+      <point x="-57.0" y="555.2719631236441" />
+      <point x="0.0" y="-162.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.8429223744292238" showDependencies="true" x="-33.950162513542864" y="826.3949079089925" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

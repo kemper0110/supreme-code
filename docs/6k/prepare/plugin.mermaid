@@ -1,0 +1,44 @@
+classDiagram
+    class LanguageTester {
+        <<interface>>
+        TestExecutionResult verdict
+    }
+
+    class PyTestLanguageTester {
+        TestExecutionResult verdict
+    }
+    class TestExecutionResult {
+        Summary summary
+        List~TestCase~ testCases
+        boolean solved
+    }
+
+    class Summary {
+        int total
+        int passed
+        int failures
+        int errors
+        int skipped
+    }
+
+    class TestCase {
+        String name
+        String suiteName
+        TestStatus status
+        String message
+        Long durationMs
+    }
+
+    class TestStatus {
+        <<enumeration>>
+        PASSED
+        FAILED
+        ERROR
+        SKIPPED
+    }
+
+    LanguageTester <|.. PyTestLanguageTester
+    LanguageTester ..> TestExecutionResult
+    TestExecutionResult *-- Summary
+    TestExecutionResult *-- TestCase
+    TestCase --> TestStatus
