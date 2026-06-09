@@ -43,6 +43,26 @@ const workDirByMode: Record<LspMode, string> = {
     test: '/usr/test',
 }
 
+class LspConnectionError extends Error {
+    constructor(message: string, readonly closeCode: number) {
+        super(message);
+    }
+}
+
+function closeReason(message: string) {
+    return Buffer.byteLength(message) <= 123 ? message : `${message.slice(0, 120)}...`;
+}
+
+function toCloseError(error: unknown): LspConnectionError {
+    if (error instanceof LspConnectionError) {
+        return error;
+    }
+    if (error instanceof z.ZodError) {
+        return new LspConnectionError('Invalid LSP connection query', 1008);
+    }
+    return new LspConnectionError('Failed to start language server', 1011);
+}
+
 async function waitForContainerReady(container: Docker.Container): Promise<void> {
     while (true) {
         const inspect = await container.inspect();
@@ -73,9 +93,9 @@ type LSP = {
 async function createLSP(language: string, mode: LspMode): Promise<LSP> {
     const languageConfig = config.languages[language]
     if (!languageConfig)
-        throw new Error("language not found")
+        throw new LspConnectionError(`Language '${language}' not found`, 1008)
     if (!languageConfig.lspConfig)
-        throw new Error("lspConfig not found")
+        throw new LspConnectionError(`Language '${language}' has no LSP config`, 1008)
 
     const container = await docker.createContainer({
         Image: languageConfig.lspConfig.image,
@@ -208,18 +228,28 @@ function launchLanguageServer(socket: IWebSocket, lsp: LSP) {
 }
 
 server.on('upgrade', async (request: IncomingMessage, socket: Socket, head: Buffer) => {
-    const url = new URL(request.url!, `http://${request.headers.host}/`);
-    const query = querySchema.parse({
-        language: url.searchParams.get('language') ?? undefined,
-        mode: url.searchParams.get('mode') ?? undefined,
-    })
-    const lsp = await createLSP(query.language, query.mode)
-    console.log('created lsp', lsp.container.id)
-    socket.on('close', () => {
-        clearLSP(lsp.container).catch(e => {
-            console.error('Не удалось удалить LSP', e)
+    let lsp: LSP;
+    try {
+        const url = new URL(request.url!, `http://${request.headers.host}/`);
+        const query = querySchema.parse({
+            language: url.searchParams.get('language') ?? undefined,
+            mode: url.searchParams.get('mode') ?? undefined,
         })
-    })
+        lsp = await createLSP(query.language, query.mode)
+        console.log('created lsp', lsp.container.id)
+        socket.on('close', () => {
+            clearLSP(lsp.container).catch(e => {
+                console.error('Не удалось удалить LSP', e)
+            })
+        })
+    } catch (error) {
+        const closeError = toCloseError(error);
+        console.error('failed to create lsp', error);
+        wss.handleUpgrade(request, socket, head, (webSocket) => {
+            webSocket.close(closeError.closeCode, closeReason(closeError.message));
+        });
+        return;
+    }
 
     wss.handleUpgrade(request, socket, head, (webSocket) => {
         lsp.container.wait().then(() => {
