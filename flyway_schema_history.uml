@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.flyway_schema_history</OriginalElement>
+  <nodes>
+    <node x="16.031551704496678" y="-276.65015806111694">8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.tag</node>
+    <node x="261.7534246575342" y="-290.65015806111694">8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem_language</node>
+    <node x="250.7534246575342" y="-122.01580611169649">8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem</node>
+    <node x="377.4270284510011" y="-782.9157007376184">8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.solution_result</node>
+    <node x="-0.5899809187482106" y="-100.01738672286612">8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem_tags</node>
+    <node x="377.4270284510011" y="-494.7829293993677">8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.solution</node>
+    <node x="520.100632244468" y="-297.60906217070595">8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.users</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.solution" target="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem_language" relationship="REFERENCES">
+      <point x="-118.0" y="79.0" />
+      <point x="11.173603793466896" y="-65.0" />
+    </edge>
+    <edge source="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.solution" target="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.users" relationship="REFERENCES">
+      <point x="118.0" y="79.0" />
+      <point x="-9.673603793466896" y="-79.0" />
+    </edge>
+    <edge source="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem_language" target="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem" relationship="REFERENCES">
+      <point x="0.0" y="65.0" />
+      <point x="0.0" y="-93.0" />
+    </edge>
+    <edge source="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem_tags" target="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem" relationship="REFERENCES">
+      <point x="88.5" y="20.50158061116963" />
+      <point x="-123.0" y="0.0" />
+    </edge>
+    <edge source="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem_tags" target="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.tag" relationship="REFERENCES">
+      <point x="15.121532623244889" y="-50.5" />
+      <point x="0.0" y="51.0" />
+    </edge>
+    <edge source="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.solution_result" target="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.solution" relationship="REFERENCES">
+      <point x="22.5" y="121.0" />
+      <point x="0.0" y="-79.0" />
+    </edge>
+    <edge source="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.problem" target="8a3ec439-c8c6-4db6-b4ae-bcd092d71a9a.TABLE:supreme_code.supreme_code.users" relationship="REFERENCES">
+      <point x="123.0" y="0.0" />
+      <point x="630.600632244468" y="-29.01580611169649" />
+      <point x="0.0" y="79.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.8876585928489042" showDependencies="false" x="595.6365644490645" y="-356.9352910602911" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+
